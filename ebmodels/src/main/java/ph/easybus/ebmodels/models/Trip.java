@@ -62,9 +62,9 @@ public class Trip extends BaseObservable implements Parcelable {
         parcel.readLongArray(datesData);
         time = new Date(datesData[0]);
         date = new Date(datesData[1]);
-        startDate = new Date(datesData[2]);
-        expiryDate = new Date(datesData[3]);
 
+        if (datesData[2] > -1) startDate = new Date(datesData[2]);
+        if (datesData[3] > -1) expiryDate = new Date(datesData[3]);
         if (datesData[4] > -1) dateCreated = new Date(datesData[4]);
 
         long[] disabledDatesData = new long[disabledDatesCount];
@@ -155,8 +155,10 @@ public class Trip extends BaseObservable implements Parcelable {
         parcel.writeIntArray(new int[] { id, reservationCount, disabledDates.size() });
         parcel.writeStringArray(new String[] { mongoId, linerName, origin, destination,
                 office, createdBy, code, dltbId });
-        parcel.writeLongArray(new long[] { time.getTime(), date.getTime(), startDate.getTime(),
-            expiryDate.getTime(), dateCreated != null ? dateCreated.getTime() : -1 });
+        parcel.writeLongArray(new long[] { time.getTime(), date.getTime(),
+                startDate != null ? startDate.getTime() : -1,
+                expiryDate != null ? expiryDate.getTime() : -1,
+                dateCreated != null ? dateCreated.getTime() : -1 });
 
         long[] disabledDatesArray = new long[disabledDates.size()];
         for (int i = 0; i < disabledDates.size(); i++) {
