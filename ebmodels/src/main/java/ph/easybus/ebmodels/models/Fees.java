@@ -54,20 +54,6 @@ public class Fees extends BaseObservable implements Parcelable {
         return object;
     }
 
-    @Deprecated
-    public static Fees getFees(JSONObject object) {
-        Fees fees = new Fees();
-        try {
-            if (object.has("choice")) fees.setChoice(object.getDouble("choice"));
-            if (object.has("upper_fare")) fees.setUpperFare(object.getDouble("upper_fare"));
-            if (object.has("insurance")) fees.setInsurance(object.getDouble("insurance"));
-            if (object.has("liner")) fees.setLiner(object.getDouble("liner"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return fees;
-    }
-
     public int describeContents() { return 0; }
 
     public double getChoice() { return choice; }

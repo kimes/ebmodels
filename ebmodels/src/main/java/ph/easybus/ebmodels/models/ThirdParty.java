@@ -36,20 +36,19 @@ public class ThirdParty implements Parcelable {
         }
     }
 
-    @Deprecated
-    public static ThirdParty getThirdParty(JSONObject object) {
-        ThirdParty nThirdParty = new ThirdParty();
+    public JSONObject toJSON() {
+        JSONObject object = new JSONObject();
         try {
-            if (object.has("name")) nThirdParty.setName(object.getString("name"));
-            if (object.has("reference")) nThirdParty.setReference(object.getString("reference"));
-            if (object.has("origin")) nThirdParty.setOrigin(object.getString("origin"));
-            if (object.has("destination")) nThirdParty.setDestination(object.getString("destination"));
-            if (object.has("trip_code")) nThirdParty.setTripCode(object.getString("trip_code"));
-            if (object.has("trip_time")) nThirdParty.setTripTime(object.getString("trip_time"));
+            object.put("name", name);
+            object.put("reference", reference);
+            object.put("origin", origin);
+            object.put("destination", destination);
+            object.put("trip_code", tripCode);
+            object.put("trip_time", tripTime);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return nThirdParty;
+        return object;
     }
 
     public void writeToParcel(Parcel parcel, int flags) {

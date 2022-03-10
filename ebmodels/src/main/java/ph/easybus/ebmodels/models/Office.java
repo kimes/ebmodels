@@ -55,20 +55,6 @@ public class Office implements Parcelable {
         parcel.writeStringArray(new String[] { label, address, phoneNo, mapUrl });
     }
 
-    @Deprecated
-    public static Office getOffice(JSONObject officeObject) {
-        Office nOffice = new Office();
-        try {
-            nOffice.setLabel(officeObject.getString("label"));
-            nOffice.setAddress(officeObject.getString("address"));
-            nOffice.setPhoneNumber(officeObject.getString("phone"));
-            nOffice.setMapUrl(officeObject.getString("map"));
-        } catch(JSONException ex) {
-            ex.printStackTrace();
-        }
-        return nOffice;
-    }
-
     public String getLabel() { return label; }
     public String getAddress() { return address; }
     public String getPhoneNumber() { return phoneNo; }

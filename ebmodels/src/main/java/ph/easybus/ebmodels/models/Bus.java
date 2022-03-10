@@ -82,39 +82,6 @@ public class Bus implements Parcelable {
         }
     }
 
-    @Deprecated
-    public static Bus getBus(JSONObject busObject) {
-        Bus nBus = new Bus();
-        try {
-            if (busObject.has("name")) nBus.setName(busObject.getString("name"));
-            if (busObject.has("description")) nBus.setDescription(busObject.getString("description"));
-            if (busObject.has("blocked_seats")) nBus.setBlockedSeats(busObject.getInt("blocked_seats"));
-            if (busObject.has("pwd_seats")) nBus.setPwdSeats(busObject.getInt("pwd_seats"));
-            if (busObject.has("total_seats")) nBus.setTotalSeats(busObject.getInt("total_seats"));
-            if (busObject.has("layout")) nBus.setLayout(busObject.getString("layout"));
-
-            /* Getting Amenities */
-            if (busObject.has("amenities")) {
-                JSONArray busAmen = busObject.getJSONArray("amenities");
-                ArrayList<Integer> amenities = new ArrayList<Integer>();
-                for (int i = 0; i < busAmen.length(); i++) amenities.add(busAmen.getInt(i));
-                nBus.setAmenities(amenities);
-            }
-
-            /* Getting Seat Map */
-            if (busObject.has("seat_map")) {
-                JSONArray busSeatMapArray = busObject.getJSONArray("seat_map");
-                ArrayList<String> seatMap = new ArrayList<String>();
-                for (int i = 0; i < busSeatMapArray.length(); i++) seatMap.add(busSeatMapArray.getString(i));
-                nBus.setSeatMap(seatMap);
-            }
-            return nBus;
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-        }
-        return nBus;
-    }
-
     public String getSeatMapText()
     {
         String seatMapText = "";

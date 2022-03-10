@@ -171,45 +171,6 @@ public class Trip extends BaseObservable implements Parcelable {
         parcel.writeParcelable(thirdParty, flags);
     }
 
-    @Deprecated
-    public static Trip getTrip(JSONObject tripObject, Date tripDate) {
-        Trip nTrip = new Trip();
-        try {
-            if (tripObject.has("_id")) nTrip.setMongoId(tripObject.getString("_id"));
-            if (tripObject.has("reservation_count")) nTrip.setReservationCount(tripObject.getInt("reservation_count"));
-            if (tripObject.has("fare")) nTrip.setFare(tripObject.getDouble("fare"));
-            if (tripObject.has("origin")) nTrip.setOrigin(tripObject.getString("origin"));
-            if (tripObject.has("destination")) nTrip.setDestination(tripObject.getString("destination"));
-            if (tripObject.has("liner_name"))nTrip.setLinerName(tripObject.getString("liner_name"));
-            if (tripObject.has("time")) {
-                nTrip.setTime(DateTimeUtils.toDateUtc(tripObject.getString("time")));
-            }
-            nTrip.setDate(tripDate);
-
-            if (tripObject.has("third_party"))
-                nTrip.setThirdParty(new ThirdParty(tripObject.getJSONObject("third_party")));
-
-            if (tripObject.has("bus")) {
-                JSONObject busObject = tripObject.getJSONObject("bus");
-                Bus nBus = new Bus(busObject);
-                nTrip.setBus(nBus);
-            }
-
-            if (tripObject.has("routes")) {
-                JSONArray routeJSONArray = tripObject.getJSONArray("routes");
-                ArrayList<Route> routeArray = new ArrayList<>();
-                for (int j = 0; j < routeJSONArray.length(); j++) {
-                    routeArray.add(new Route(routeJSONArray.getJSONObject(j)));
-                }
-                nTrip.setRoutes(routeArray);
-            }
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-        }
-
-        return nTrip;
-    }
-
     public boolean isSpecial() { return special; }
     public boolean isExtra() { return extra; }
     public int getId() { return id; }

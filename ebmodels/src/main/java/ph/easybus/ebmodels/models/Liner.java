@@ -85,24 +85,6 @@ public class Liner implements Parcelable {
         parcel.writeTypedList(offices);
     }
 
-    @Deprecated
-    public static Liner getLiner(JSONObject linerObject) {
-        Liner nLiner = new Liner();
-        try {
-            nLiner = new Liner(linerObject.getString("name"), linerObject.getString("policies"));
-            JSONArray officeJSONArray = linerObject.getJSONArray("offices");
-
-            ArrayList<Office> officeList = new ArrayList<Office>();
-            for (int i = 0; i < officeJSONArray.length(); i++) {
-                officeList.add(new Office(officeJSONArray.getJSONObject(i)));
-            }
-            nLiner.setOffices(officeList);
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-        }
-        return nLiner;
-    }
-
     public boolean isServiceFeeEnabled() { return serviceFeeEnabled; }
     public boolean isPaymayaEnabled() { return paymayaEnabled; }
     public boolean isGCashEnabled() { return gCashEnabled; }

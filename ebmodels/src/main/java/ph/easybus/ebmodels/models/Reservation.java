@@ -329,6 +329,8 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("other_details", otherDetails);
             object.put("reserved_date", DateTimeUtils.toISODateUtc(reservedDate));
 
+            if (thirdParty != null) object.put("third_party", thirdParty.toJSON());
+
             if (expiresAt != null) object.put("expires_at",
                     DateTimeUtils.toISODateUtc(expiresAt));
 
@@ -368,62 +370,6 @@ public class Reservation extends BaseObservable implements Parcelable {
                 Liner nLiner = new Liner(liners.getJSONObject(0));
                 nReservation.setLiner(nLiner);
             }
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-        }
-        return nReservation;
-    }
-
-    @Deprecated
-    public static Reservation getReservation(JSONObject object) {
-        Reservation nReservation = new Reservation();
-        try {
-            Trip reservationTrip = new Trip();
-            if (object.has("trip_id")) reservationTrip.setMongoId(object.getString("trip_id"));
-            if (object.has("trip_date")) {
-                reservationTrip.setDate(DateTimeUtils.toDate(object.getString("trip_date")));
-            }
-            nReservation.setTrip(reservationTrip);
-
-            if (object.has("third_party"))
-                nReservation.setThirdParty(ThirdParty.getThirdParty(object.getJSONObject("third_party")));
-
-            if (object.has("_id")) nReservation.setMongoId(object.getString("_id"));
-            if (object.has("name")) nReservation.setName(new Name(object.getJSONObject("name")));
-            if (object.has("email")) nReservation.setEmail(object.getString("email"));
-            if (object.has("boarding_point")) nReservation.setBoarding(object.getString("boarding_point"));
-            if (object.has("dropping_point")) nReservation.setDropping(object.getString("dropping_point"));
-            if (object.has("reserved_by")) nReservation.setReservedBy(object.getString("reserved_by"));
-            if (object.has("seat_types")) nReservation.setSeatTypes(object.getString("seat_types"));
-            if (object.has("short_alias")) nReservation.setShortAlias(object.getString("short_alias"));
-            if (object.has("liner_name")) nReservation.setLinerName(object.getString("liner_name"));
-            if (object.has("office")) nReservation.setOffice(object.getString("office"));
-            if (object.has("confirmation_code"))
-                nReservation.setConfirmationCode(object.getString("confirmation_code"));
-            if (object.has("status")) nReservation.setStatus(object.getInt("status"));
-            if (object.has("role")) nReservation.setRole(object.getInt("role"));
-            if (object.has("source")) nReservation.setSource(object.getInt("source"));
-            if (object.has("receipt_number")) nReservation.setReceiptNo(object.getString("receipt_number"));
-            if (object.has("payment_type")) nReservation.setPaymentType(object.getString("payment_type"));
-            if (object.has("payment_remarks")) nReservation.setPaymentRemarks(object.getString("payment_remarks"));
-
-            if (object.has("reserved_seats")) {
-                JSONArray reservedSeatsJSONArray = object.getJSONArray("reserved_seats");
-                ObservableArrayList<Integer> reservedSeats = new ObservableArrayList<>();
-                for (int i = 0; i < reservedSeatsJSONArray.length(); i++) {
-                    reservedSeats.add(reservedSeatsJSONArray.getInt(i));
-                }
-                nReservation.setReservedSeats(reservedSeats);
-            }
-
-            if (object.has("total_fare")) nReservation.setTotalFare(object.getDouble("total_fare"));
-            if (object.has("farePerSeat")) nReservation.setFarePerSeat(object.getDouble("farePerSeat"));
-            if (object.has("web_fee")) nReservation.setWebFee(object.getDouble("web_fee"));
-
-            if (object.has("discount"))
-                nReservation.setDiscount(new Discount(object.getJSONObject("discount")));
-            if (object.has("fees"))
-                nReservation.setFees(new Fees(object.getJSONObject("fees")));
         } catch (JSONException ex) {
             ex.printStackTrace();
         }

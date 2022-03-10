@@ -50,19 +50,6 @@ public class Discount extends BaseObservable implements Parcelable {
         return object;
     }
 
-    @Deprecated
-    public static Discount getDiscount(JSONObject object) {
-        Discount discount = new Discount();
-        try {
-            if (object.has("type")) discount.setType(object.getInt("type"));
-            if (object.has("percent")) discount.setPercent(object.getDouble("percent"));
-            if (object.has("id_number")) discount.setIdNumber(object.getString("id_number"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return discount;
-    }
-
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeInt(type);
         parcel.writeDouble(percent);
