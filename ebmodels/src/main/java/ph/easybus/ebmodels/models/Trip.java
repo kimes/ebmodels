@@ -25,7 +25,7 @@ public class Trip extends BaseObservable implements Parcelable {
     @Bindable
     private int id, reservationCount;
     private double fare;
-    private String mongoId, linerName, origin, destination, office, createdBy, code;
+    private String mongoId, dltbId, linerName, origin, destination, office, createdBy, code;
     private Bus bus;
     private Date time, date, dateCreated, startDate, expiryDate;
     private ThirdParty thirdParty;
@@ -47,7 +47,7 @@ public class Trip extends BaseObservable implements Parcelable {
         reservationCount = ints[1];
         disabledDatesCount = ints[2];
 
-        String[] strings = new String[7];
+        String[] strings = new String[8];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         linerName = strings[1];
@@ -56,6 +56,7 @@ public class Trip extends BaseObservable implements Parcelable {
         office = strings[4];
         createdBy = strings[5];
         code = strings[6];
+        dltbId = strings[7];
 
         long[] datesData = new long[5];
         parcel.readLongArray(datesData);
@@ -84,6 +85,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public Trip(JSONObject object, Date date) {
         try {
             if (object.has("_id")) mongoId = object.getString("_id");
+            if (object.has("id")) dltbId = object.getString("id");
             if (object.has("isExtra")) extra = object.getBoolean("isExtra");
             if (object.has("reservation_count")) reservationCount = object.getInt("reservation_count");
             if (object.has("fare")) fare = object.getDouble("fare");
@@ -152,7 +154,7 @@ public class Trip extends BaseObservable implements Parcelable {
         parcel.writeBooleanArray(new boolean[] { special, extra });
         parcel.writeIntArray(new int[] { id, reservationCount, disabledDates.size() });
         parcel.writeStringArray(new String[] { mongoId, linerName, origin, destination,
-                office, createdBy, code });
+                office, createdBy, code, dltbId });
         parcel.writeLongArray(new long[] { time.getTime(), date.getTime(), startDate.getTime(),
             expiryDate.getTime(), dateCreated != null ? dateCreated.getTime() : -1 });
 
@@ -218,6 +220,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public String getOrigin() { return origin; }
     public String getDestination() { return destination; }
     public String getCode() { return code; }
+    public String getDltbId() { return dltbId; }
     public Date getTime() { return time; }
     public Date getDate() { return date; }
     public Date getStartDate() { return startDate; }
@@ -242,6 +245,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public void setOrigin(String origin) { this.origin = origin; }
     public void setDestination(String destination) { this.destination = destination; }
     public void setCode(String code) { this.code = code; }
+    public void setDltbId(String dltbId) { this.dltbId = dltbId; }
     public void setFare(double fare) { this.fare = fare; }
     public void setTime(Date time) { this.time = time; }
     public void setDate(Date date) { this.date = date; }
