@@ -190,7 +190,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("trip_id")) {
                 reservationTrip.setMongoId(object.getString("trip_id"));
             }
-            if (object.has("id")) {
+            if (object.has("dltb_trip_id")) {
                 reservationTrip.setDltbId(object.getString("id"));
             }
             if (object.has("trip_date")) {
