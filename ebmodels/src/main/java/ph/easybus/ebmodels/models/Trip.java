@@ -28,7 +28,7 @@ public class Trip extends BaseObservable implements Parcelable {
     private String mongoId, dltbId, linerName, origin, destination, office, createdBy, code;
     private Bus bus;
     private Date time, date, dateCreated, startDate, expiryDate;
-    private ThirdParty thirdParty = new ThirdParty();
+    private ThirdParty thirdParty;
     private ArrayList<Route> routes = new ArrayList<>();
     private ArrayList<Date> disabledDates = new ArrayList<>();
 
