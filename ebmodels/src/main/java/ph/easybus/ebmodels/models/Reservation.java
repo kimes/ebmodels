@@ -26,7 +26,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     private String mongoId, email, mobile = "", boarding, dropping,
             reservedBy, seatTypes, shortAlias, linerName, office = "",
             confirmationCode = "", referenceNumber = "", paymentType = "Cash", paymentRemarks, receiptNo,
-            remarks, otherDetails = "", paymentQr = "";
+            remarks, otherDetails = "", sellerCode = "", paymentQr = "";
 
     @Bindable
     private boolean webReservation = true, printed, modified, clustered = false, doUpdate = true;
@@ -93,6 +93,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         remarks = reservation.getRemarks();
         otherDetails = reservation.getOtherDetails();
         paymentQr = reservation.getPaymentQr();
+        sellerCode = reservation.getSellerCode();
 
         reservedDate = reservation.getReservedDate();
         expiresAt = reservation.getExpiresAt();
@@ -115,7 +116,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     }
 
     public Reservation(Parcel parcel) {
-        String[] strings = new String[18];
+        String[] strings = new String[19];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         email = strings[1];
@@ -135,6 +136,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         remarks = strings[15];
         otherDetails = strings[16];
         paymentQr = strings[17];
+        sellerCode = strings[18];
 
         double[] doubles = new double[4];
         parcel.readDoubleArray(doubles);
@@ -247,6 +249,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("payment_remarks")) paymentRemarks = object.getString("payment_remarks");
             if (object.has("other_details")) otherDetails = object.getString("other_details");
             if (object.has("paymentQr")) paymentQr = object.getString("paymentQr");
+            if (object.has("seller_code")) sellerCode = object.getString("seller_code");
 
             if (object.has("doUpdate")) doUpdate = object.getBoolean("doUpdate");
 
@@ -330,6 +333,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("payment_type", paymentType);
             object.put("payment_remarks", paymentRemarks);
             object.put("other_details", otherDetails);
+            object.put("seller_code", sellerCode);
             object.put("reserved_date", DateTimeUtils.toISODateUtc(reservedDate));
 
             if (bus != null) object.put("bus", bus.toJSON());
@@ -384,7 +388,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         parcel.writeStringArray(new String[] { mongoId, email, mobile,
                 boarding, dropping, reservedBy, seatTypes, shortAlias, linerName, office,
                 confirmationCode, referenceNumber, paymentType, paymentRemarks, receiptNo,
-                remarks, otherDetails, paymentQr });
+                remarks, otherDetails, paymentQr, sellerCode });
         parcel.writeDoubleArray(new double[] { totalFare, webFee, farePerSeat, penaltyFee });
 
         int[] parcelReservedSeats = new int[reservedSeats.size()];
@@ -447,6 +451,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public String getRemarks() { return remarks; }
     public String getOtherDetails() { return otherDetails; }
     public String getPaymentQr() { return paymentQr; }
+    public String getSellerCode() { return sellerCode; }
     public Date getReservedDate() { return reservedDate; }
     public Date getExpiresAt() { return expiresAt; }
     public ObservableArrayList<Integer> getReservedSeats() {
@@ -548,6 +553,10 @@ public class Reservation extends BaseObservable implements Parcelable {
     public void setPaymentQr(String paymentQr) {
         this.paymentQr = paymentQr;
         notifyPropertyChanged(BR.paymentQr);
+    }
+    public void setSellerCode(String sellerCode) {
+        this.sellerCode = sellerCode;
+        notifyPropertyChanged(BR.sellerCode);
     }
     public void setReservedDate(Date reservedDate) { this.reservedDate = reservedDate; }
     public void setExpiresAt(Date expiresAt) { this.expiresAt = expiresAt; }
