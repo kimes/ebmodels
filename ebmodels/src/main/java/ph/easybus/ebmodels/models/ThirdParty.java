@@ -8,12 +8,13 @@ import org.json.JSONObject;
 
 public class ThirdParty implements Parcelable {
 
-    private String name, reference, origin, destination, tripCode, tripTime;
+    private String name, reference, origin, destination,
+            tripCode, tripTime, trip = "", reservationPath;
 
     public ThirdParty() {}
 
     public ThirdParty(Parcel parcel) {
-        String[] data = new String[6];
+        String[] data = new String[8];
         parcel.readStringArray(data);
         name = data[0];
         reference = data[1];
@@ -21,6 +22,8 @@ public class ThirdParty implements Parcelable {
         destination = data[3];
         tripCode = data[4];
         tripTime = data[5];
+        trip = data[6];
+        reservationPath = data[7];
     }
 
     public ThirdParty(JSONObject object) {
@@ -31,6 +34,8 @@ public class ThirdParty implements Parcelable {
             if (object.has("destination")) destination = object.getString("destination");
             if (object.has("trip_code")) tripCode = object.getString("trip_code");
             if (object.has("trip_time")) tripTime = object.getString("trip_time");
+            if (object.has("trip")) trip = object.getString("trip");
+            if (object.has("reservation_path")) reservationPath = object.getString("reservation_path");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -45,6 +50,7 @@ public class ThirdParty implements Parcelable {
             object.put("destination", destination);
             object.put("trip_code", tripCode);
             object.put("trip_time", tripTime);
+            object.put("trip", trip);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -52,8 +58,9 @@ public class ThirdParty implements Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeStringArray(new String[] { name, reference, origin, destination,
-            tripCode, tripTime });
+        parcel.writeStringArray(new String[] {
+            name, reference, origin, destination,
+            tripCode, tripTime, trip, reservationPath });
     }
 
     public int describeContents() {
@@ -66,6 +73,8 @@ public class ThirdParty implements Parcelable {
     public String getDestination() { return destination; }
     public String getTripCode() { return tripCode; }
     public String getTripTime() { return tripTime; }
+    public String getTrip() { return trip; }
+    public String getReservationPath() { return reservationPath; }
 
     public void setName(String name) { this.name = name; }
     public void setReference(String reference) { this.reference = reference; }
@@ -73,6 +82,8 @@ public class ThirdParty implements Parcelable {
     public void setDestination(String destination) { this.destination = destination; }
     public void setTripCode(String tripCode) { this.tripCode = tripCode; }
     public void setTripTime(String tripTime) { this.tripTime = tripTime; }
+    public void setTrip(String trip) { this.trip = trip; }
+    public void setReservationPath(String reservationPath) { this.reservationPath = reservationPath; }
 
     public static final Creator<ThirdParty> CREATOR = new Creator<ThirdParty>() {
         public ThirdParty createFromParcel(Parcel parcel) { return new ThirdParty(parcel); }
