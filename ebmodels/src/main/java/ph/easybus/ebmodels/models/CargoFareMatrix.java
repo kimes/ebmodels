@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class CargoFareMatrix implements Parcelable {
 
-    private String name = "", origin = "", linerName = "";
+    private String mongoId = "", name = "", origin = "", linerName = "";
     public ArrayList<Double> regularRates = new ArrayList<>();
     public ArrayList<String> destinations = new ArrayList<>();
     public ArrayList<CargoFixedRate> fixedRates = new ArrayList<>();
@@ -23,11 +23,12 @@ public class CargoFareMatrix implements Parcelable {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public CargoFareMatrix(Parcel parcel) {
-        String[] strings = new String[3];
+        String[] strings = new String[4];
         parcel.readStringArray(strings);
-        name = strings[0];
-        origin = strings[1];
-        linerName = strings[2];
+        mongoId = strings[0];
+        name = strings[1];
+        origin = strings[2];
+        linerName = strings[3];
 
         int size = parcel.readInt();
         double[] regRates = new double[size];
@@ -46,6 +47,7 @@ public class CargoFareMatrix implements Parcelable {
 
     public CargoFareMatrix(JSONObject object) {
         try {
+            if (object.has("_id")) mongoId = object.getString("_id");
             if (object.has("name")) name = object.getString("name");
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("liner_name")) linerName = object.getString("liner_name");
@@ -80,7 +82,7 @@ public class CargoFareMatrix implements Parcelable {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeStringArray(new String[] { name, origin, linerName });
+        parcel.writeStringArray(new String[] { mongoId, name, origin, linerName });
 
         double[] regRates = new double[regularRates.size()];
         for (int i = 0; i < regularRates.size(); i++) {
@@ -97,6 +99,7 @@ public class CargoFareMatrix implements Parcelable {
     public JSONObject toJSON() {
         JSONObject object = new JSONObject();
         try {
+            object.put("_id", mongoId);
             object.put("name", name);
             object.put("origin", origin);
             object.put("liner_name", linerName);
@@ -126,6 +129,7 @@ public class CargoFareMatrix implements Parcelable {
 
     public int describeContents() { return 0; }
 
+    public String getMongoId() { return mongoId; }
     public String getName() { return name; }
     public String getOrigin() { return origin; }
     public String getLinerName() { return linerName; }
@@ -133,6 +137,7 @@ public class CargoFareMatrix implements Parcelable {
     public ArrayList<String> getDestinations() { return destinations; }
     public ArrayList<CargoFixedRate> getFixedRates() { return fixedRates; }
 
+    public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setName(String name) { this.name = name; }
     public void setOrigin(String origin) { this.origin = origin; }
     public void setLinerName(String linerName) { this.linerName = linerName; }
