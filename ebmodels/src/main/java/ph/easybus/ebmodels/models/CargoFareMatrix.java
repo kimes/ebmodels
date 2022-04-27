@@ -15,9 +15,9 @@ import java.util.ArrayList;
 public class CargoFareMatrix implements Parcelable {
 
     private String mongoId = "", name = "", origin = "", linerName = "";
-    public ArrayList<Double> regularRates = new ArrayList<>();
-    public ArrayList<String> destinations = new ArrayList<>();
-    public ArrayList<CargoFixedRate> fixedRates = new ArrayList<>();
+    private ArrayList<Double> regularRates = new ArrayList<>();
+    private ArrayList<String> destinations = new ArrayList<>();
+    private ArrayList<CargoFixedRate> fixedRates = new ArrayList<>();
 
     public CargoFareMatrix() {}
 
