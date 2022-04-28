@@ -32,7 +32,8 @@ public class Reservation extends BaseObservable implements Parcelable {
     private boolean webReservation = true, printed, modified, clustered = false, doUpdate = true;
 
     @Bindable
-    private int id = 0, status = 0, role = 0, source, sendStatus = 0, transactionId = 0;
+    private int id = 0, status = 0, role = 0, source, sendStatus = 0,
+            transactionId = 0, printCount = 0;
 
     @Bindable
     private double webFee, farePerSeat, totalFare, penaltyFee;
@@ -69,6 +70,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         source = reservation.getSource();
         sendStatus = reservation.getSendStatus();
         transactionId = reservation.getTransactionId();
+        printCount = reservation.getPrintCount();
 
         webFee = reservation.getWebFee();
         farePerSeat = reservation.getFarePerSeat();
@@ -160,13 +162,14 @@ public class Reservation extends BaseObservable implements Parcelable {
         bus = parcel.readParcelable(Bus.class.getClassLoader());
         thirdParty = parcel.readParcelable(ThirdParty.class.getClassLoader());
 
-        int[] ints = new int[5];
+        int[] ints = new int[6];
         parcel.readIntArray(ints);
         id = ints[0];
         status = ints[1];
         role = ints[2];
         source = ints[3];
         transactionId = ints[4];
+        printCount = ints[5];
 
         boolean[] booleans = new boolean[5];
         parcel.readBooleanArray(booleans);
@@ -243,6 +246,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("status")) status = object.getInt("status");
             if (object.has("role")) role = object.getInt("role");
             if (object.has("source")) source = object.getInt("source");
+            if (object.has("print_count")) printCount = object.getInt("print_count");
             if (object.has("receipt_number")) receiptNo = object.getString("receipt_number");
             if (object.has("remarks")) remarks = object.getString("remarks");
             if (object.has("payment_type")) paymentType = object.getString("payment_type");
@@ -318,6 +322,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("web_fee", webFee);
             object.put("penalty_fee", penaltyFee);
             object.put("source", source);
+            object.put("print_count", printCount);
             object.put("role", role);
             object.put("status", status);
             object.put("reference_number", referenceNumber);
@@ -402,7 +407,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         parcel.writeParcelable(liner, flags);
         parcel.writeParcelable(bus, flags);
         parcel.writeParcelable(thirdParty, flags);
-        parcel.writeIntArray(new int[] { id, status, role, source, transactionId });
+        parcel.writeIntArray(new int[] { id, status, role, source, transactionId, printCount });
         parcel.writeBooleanArray(new boolean[] { webReservation, modified, printed, clustered, doUpdate });
 
         parcel.writeLongArray(new long[] { reservedDate.getTime(),
@@ -428,6 +433,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public int getSource() { return source; }
     public int getSendStatus() { return sendStatus; }
     public int getTransactionId() { return transactionId; }
+    public int getPrintCount() { return printCount; }
     public double getWebFee() { return webFee; }
     public double getTotalFare() { return totalFare; }
     public double getFarePerSeat() { return farePerSeat; }
@@ -501,6 +507,10 @@ public class Reservation extends BaseObservable implements Parcelable {
     }
     public void setTransactionId(int transactionId) {
         this.transactionId = transactionId;
+    }
+    public void setPrintCount(int printCount) {
+        this.printCount = printCount;
+        notifyPropertyChanged(BR.printCount);
     }
     public void setWebFee(double webFee) {
         this.webFee = webFee;
