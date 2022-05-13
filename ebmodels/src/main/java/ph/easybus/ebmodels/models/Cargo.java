@@ -27,7 +27,7 @@ public class Cargo extends BaseObservable implements Parcelable {
 
     @Bindable
     private String mongoId, origin, destination, description, linerName,
-            senderMobile, receiverMobile, referenceNumber, paymentType = "Cash", paymentRemarks,
+            senderMobile = "", receiverMobile = "", referenceNumber, paymentType = "Cash", paymentRemarks,
             shippedBy;
 
     private Date dropOffDate = Calendar.getInstance().getTime();
