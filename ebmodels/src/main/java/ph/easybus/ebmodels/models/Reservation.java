@@ -295,7 +295,15 @@ public class Reservation extends BaseObservable implements Parcelable {
     }
 
     public boolean partialCompareTo(Reservation reservation) {
-        if (reservation.getTrip().getMongoId().equals(trip.getMongoId()) &&
+        String localTripId = "", reservationTripId = "";
+        if (thirdParty != null) localTripId = thirdParty.getTrip();
+        else localTripId = trip.getMongoId();
+
+        if (reservation.getThirdParty() != null)
+            reservationTripId = reservation.getThirdParty().getTrip();
+        else reservationTripId = reservation.getTrip().getMongoId();
+
+        if (reservationTripId.equals(localTripId) &&
             reservation.getTrip().getDate().equals(trip.getDate())) {
             for (int seat: reservation.getReservedSeats()) {
                 if (!getReservedSeats().contains(seat)) return false;
