@@ -12,6 +12,9 @@ import org.json.JSONObject;
 
 public class Passenger extends BaseObservable implements Parcelable {
 
+    @Bindable
+    private boolean hasNameError = false, hasDiscountError = false;
+
     private int seatNo = 0, seatSpecialType = 0;
 
     @Bindable
@@ -76,6 +79,8 @@ public class Passenger extends BaseObservable implements Parcelable {
 
     public int describeContents() { return 0; }
 
+    public boolean isHasNameError() { return hasNameError; }
+    public boolean isHasDiscountError() { return hasDiscountError; }
     public int getSeatNo() { return seatNo; }
     public int getSeatSpecialType() { return seatSpecialType; }
     public String getReferenceNo() { return referenceNo; }
@@ -83,6 +88,15 @@ public class Passenger extends BaseObservable implements Parcelable {
     public Discount getDiscount() { return discount; }
     public void setSeatNo(int seatNo) { this.seatNo = seatNo; }
     public void setSeatSpecialType(int seatSpecialType) { this.seatSpecialType = seatSpecialType; }
+
+    public void setHasNameError(boolean hasNameError) {
+        this.hasNameError = hasNameError;
+        notifyPropertyChanged(BR.hasNameError);
+    }
+    public void setHasDiscountError(boolean hasDiscountError) {
+        this.hasDiscountError = hasDiscountError;
+        notifyPropertyChanged(BR.hasDiscountError);
+    }
     public void setReferenceNo(String referenceNo) {
         this.referenceNo = referenceNo;
         notifyPropertyChanged(BR.referenceNo);

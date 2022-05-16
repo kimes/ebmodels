@@ -18,6 +18,7 @@ public class Discount extends BaseObservable implements Parcelable {
     @Bindable
     private double percent;
 
+    @Bindable
     private String idNumber;
 
     public Discount() {}
@@ -69,7 +70,10 @@ public class Discount extends BaseObservable implements Parcelable {
         this.percent = percent;
         notifyPropertyChanged(BR.percent);
     }
-    public void setIdNumber(String idNumber) { this.idNumber = idNumber; }
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+        notifyPropertyChanged(BR.idNumber);
+    }
 
     public static final Creator<Discount> CREATOR = new Creator<Discount>() {
         public Discount createFromParcel(Parcel parcel) { return new Discount(parcel); }
