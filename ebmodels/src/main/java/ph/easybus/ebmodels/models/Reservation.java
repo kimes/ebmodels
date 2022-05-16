@@ -311,7 +311,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("_id", mongoId);
             object.put("trip_id", trip.getMongoId());
             object.put("trip_date", DateTimeUtils.toISODate(trip.getDate()));
-            object.put("trip_time", DateTimeUtils.toISODateUtc(trip.getDate()));
+            object.put("trip_time", DateTimeUtils.toISODateUtc(trip.getTime()));
             object.put("liner_name", linerName);
             object.put("origin", trip.getOrigin());
             object.put("destination", trip.getDestination());
