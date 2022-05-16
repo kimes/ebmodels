@@ -19,7 +19,7 @@ public class Discount extends BaseObservable implements Parcelable {
     private double percent;
 
     @Bindable
-    private String idNumber;
+    private String idNumber = "";
 
     public Discount() {}
 
