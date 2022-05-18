@@ -24,7 +24,7 @@ public class Trip extends BaseObservable implements Parcelable {
     private boolean special, extra;
     @Bindable
     private int id, reservationCount;
-    private double fare;
+    private double fare, ferryFare;
     private String mongoId, dltbId, linerName, origin, destination, office, createdBy, code;
     private Bus bus;
     private Date time, date, dateCreated, startDate, expiryDate;
@@ -33,8 +33,6 @@ public class Trip extends BaseObservable implements Parcelable {
     private ArrayList<Date> disabledDates = new ArrayList<>();
 
     public Trip(Parcel parcel) {
-        fare = parcel.readDouble();
-
         boolean[] booleans = new boolean[2];
         parcel.readBooleanArray(booleans);
         special = booleans[0];
@@ -46,6 +44,11 @@ public class Trip extends BaseObservable implements Parcelable {
         id = ints[0];
         reservationCount = ints[1];
         disabledDatesCount = ints[2];
+
+        double[] doubles = new double[2];
+        parcel.readDoubleArray(doubles);
+        fare = doubles[0];
+        ferryFare = doubles[1];
 
         String[] strings = new String[8];
         parcel.readStringArray(strings);
@@ -89,6 +92,7 @@ public class Trip extends BaseObservable implements Parcelable {
             if (object.has("isExtra")) extra = object.getBoolean("isExtra");
             if (object.has("reservation_count")) reservationCount = object.getInt("reservation_count");
             if (object.has("fare")) fare = object.getDouble("fare");
+            if (object.has("ferry_fare")) ferryFare = object.getDouble("ferry_fare");
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("destination")) destination = object.getString("destination");
             if (object.has("code")) code = object.getString("code");
@@ -150,9 +154,9 @@ public class Trip extends BaseObservable implements Parcelable {
     public int describeContents() { return 0; }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeDouble(fare);
         parcel.writeBooleanArray(new boolean[] { special, extra });
         parcel.writeIntArray(new int[] { id, reservationCount, disabledDates.size() });
+        parcel.writeDoubleArray(new double[] { fare, ferryFare });
         parcel.writeStringArray(new String[] { mongoId, linerName, origin, destination,
                 office, createdBy, code, dltbId });
         parcel.writeLongArray(new long[] { time.getTime(), date.getTime(),
@@ -176,6 +180,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public int getId() { return id; }
     public int getReservationCount() { return reservationCount; }
     public double getFare() { return fare; }
+    public double getFerryFare() { return ferryFare; }
     public String getMongoId() { return mongoId; }
     public String getLinerName() { return linerName; }
     public String getOffice() { return office; }
@@ -210,6 +215,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public void setCode(String code) { this.code = code; }
     public void setDltbId(String dltbId) { this.dltbId = dltbId; }
     public void setFare(double fare) { this.fare = fare; }
+    public void setFerryFare(double ferryFare) { this.ferryFare = ferryFare; }
     public void setTime(Date time) { this.time = time; }
     public void setDate(Date date) { this.date = date; }
     public void setStartDate(Date startDate) { this.startDate = startDate; }
