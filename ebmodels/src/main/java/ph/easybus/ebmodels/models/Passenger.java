@@ -18,6 +18,9 @@ public class Passenger extends BaseObservable implements Parcelable {
     private int seatNo = 0, seatSpecialType = 0;
 
     @Bindable
+    private long ticketNo = 0;
+
+    @Bindable
     private String referenceNo = "";
 
     @Bindable
@@ -41,6 +44,7 @@ public class Passenger extends BaseObservable implements Parcelable {
         try {
             if (object.has("name")) name = new Name(object.getJSONObject("name"));
             if (object.has("discount")) discount = new Discount(object.getJSONObject("discount"));
+            if (object.has("ticket_number")) ticketNo = object.getLong("ticket_number");
             if (object.has("reference_number")) referenceNo = object.getString("reference_number");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -53,6 +57,10 @@ public class Passenger extends BaseObservable implements Parcelable {
         seatNo = ints[0];
         seatSpecialType = ints[1];
 
+        long[] longs = new long[1];
+        parcel.readLongArray(longs);
+        ticketNo = longs[0];
+
         referenceNo = parcel.readString();
         name = parcel.readParcelable(Name.class.getClassLoader());
         discount = parcel.readParcelable(Discount.class.getClassLoader());
@@ -63,6 +71,7 @@ public class Passenger extends BaseObservable implements Parcelable {
         try {
             object.put("name", name.toJSON());
             object.put("discount", discount.toJSON());
+            object.put("ticket_number", ticketNo);
             object.put("reference_number", referenceNo);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -72,6 +81,7 @@ public class Passenger extends BaseObservable implements Parcelable {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeIntArray(new int[] { seatNo, seatSpecialType });
+        parcel.writeLongArray(new long[] { ticketNo });
         parcel.writeString(referenceNo);
         parcel.writeParcelable(name, flags);
         parcel.writeParcelable(discount, flags);
@@ -83,6 +93,7 @@ public class Passenger extends BaseObservable implements Parcelable {
     public boolean isHasDiscountError() { return hasDiscountError; }
     public int getSeatNo() { return seatNo; }
     public int getSeatSpecialType() { return seatSpecialType; }
+    public long getTicketNo() { return ticketNo; }
     public String getReferenceNo() { return referenceNo; }
     public Name getName() { return name; }
     public Discount getDiscount() { return discount; }
@@ -96,6 +107,10 @@ public class Passenger extends BaseObservable implements Parcelable {
     public void setHasDiscountError(boolean hasDiscountError) {
         this.hasDiscountError = hasDiscountError;
         notifyPropertyChanged(BR.hasDiscountError);
+    }
+    public void setTicketNo(long ticketNo) {
+        this.ticketNo = ticketNo;
+        notifyPropertyChanged(BR.ticketNo);
     }
     public void setReferenceNo(String referenceNo) {
         this.referenceNo = referenceNo;

@@ -26,7 +26,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     private String mongoId, email, mobile = "", boarding, dropping,
             reservedBy, seatTypes, shortAlias, linerName, office = "",
             confirmationCode = "", referenceNumber = "", paymentType = "Cash", paymentRemarks, receiptNo,
-            remarks, otherDetails = "", sellerCode = "", paymentQr = "";
+            remarks, otherDetails = "", sellerCode = "", paymentQr = "", printedBy = "";
 
     @Bindable
     private boolean webReservation = true, printed, modified, clustered = false, doUpdate = true;
@@ -96,6 +96,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         otherDetails = reservation.getOtherDetails();
         paymentQr = reservation.getPaymentQr();
         sellerCode = reservation.getSellerCode();
+        printedBy = reservation.getPrintedBy();
 
         reservedDate = reservation.getReservedDate();
         expiresAt = reservation.getExpiresAt();
@@ -118,7 +119,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     }
 
     public Reservation(Parcel parcel) {
-        String[] strings = new String[19];
+        String[] strings = new String[20];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         email = strings[1];
@@ -139,6 +140,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         otherDetails = strings[16];
         paymentQr = strings[17];
         sellerCode = strings[18];
+        printedBy = strings[19];
 
         double[] doubles = new double[4];
         parcel.readDoubleArray(doubles);
@@ -227,9 +229,6 @@ public class Reservation extends BaseObservable implements Parcelable {
 
             trip = reservationTrip;
 
-            if (object.has("third_party"))
-                thirdParty = new ThirdParty(object.getJSONObject("third_party"));
-
             if (object.has("_id")) mongoId = object.getString("_id");
             if (object.has("name")) name = new Name(object.getJSONObject("name"));
             if (object.has("email")) email = object.getString("email");
@@ -254,6 +253,14 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("other_details")) otherDetails = object.getString("other_details");
             if (object.has("paymentQr")) paymentQr = object.getString("paymentQr");
             if (object.has("seller_code")) sellerCode = object.getString("seller_code");
+            if (object.has("printed_by")) printedBy = object.getString("printed_by");
+
+            if (object.has("total_fare")) totalFare = object.getDouble("total_fare");
+            if (object.has("farePerSeat")) farePerSeat = object.getDouble("farePerSeat");
+            if (object.has("web_fee")) webFee = object.getDouble("web_fee");
+            if (object.has("penalty_fee")) penaltyFee = object.getDouble("penalty_fee");
+            if (object.has("discount")) discount = new Discount(object.getJSONObject("discount"));
+            if (object.has("fees")) fees = new Fees(object.getJSONObject("fees"));
 
             if (object.has("doUpdate")) doUpdate = object.getBoolean("doUpdate");
 
@@ -283,12 +290,8 @@ public class Reservation extends BaseObservable implements Parcelable {
                 this.reservedSeats = reservedSeats;
             }
 
-            if (object.has("total_fare")) totalFare = object.getDouble("total_fare");
-            if (object.has("farePerSeat")) farePerSeat = object.getDouble("farePerSeat");
-            if (object.has("web_fee")) webFee = object.getDouble("web_fee");
-            if (object.has("penalty_fee")) penaltyFee = object.getDouble("penalty_fee");
-            if (object.has("discount")) discount = new Discount(object.getJSONObject("discount"));
-            if (object.has("fees")) fees = new Fees(object.getJSONObject("fees"));
+            if (object.has("third_party"))
+                thirdParty = new ThirdParty(object.getJSONObject("third_party"));
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
@@ -347,6 +350,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("payment_remarks", paymentRemarks);
             object.put("other_details", otherDetails);
             object.put("seller_code", sellerCode);
+            object.put("printed_by", printedBy);
             object.put("reserved_date", DateTimeUtils.toISODateUtc(reservedDate));
 
             if (bus != null) object.put("bus", bus.toJSON());
@@ -401,7 +405,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         parcel.writeStringArray(new String[] { mongoId, email, mobile,
                 boarding, dropping, reservedBy, seatTypes, shortAlias, linerName, office,
                 confirmationCode, referenceNumber, paymentType, paymentRemarks, receiptNo,
-                remarks, otherDetails, paymentQr, sellerCode });
+                remarks, otherDetails, paymentQr, sellerCode, printedBy });
         parcel.writeDoubleArray(new double[] { totalFare, webFee, farePerSeat, penaltyFee });
 
         int[] parcelReservedSeats = new int[reservedSeats.size()];
@@ -466,6 +470,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public String getOtherDetails() { return otherDetails; }
     public String getPaymentQr() { return paymentQr; }
     public String getSellerCode() { return sellerCode; }
+    public String getPrintedBy() { return printedBy; }
     public Date getReservedDate() { return reservedDate; }
     public Date getExpiresAt() { return expiresAt; }
     public ObservableArrayList<Integer> getReservedSeats() {
@@ -575,6 +580,10 @@ public class Reservation extends BaseObservable implements Parcelable {
     public void setSellerCode(String sellerCode) {
         this.sellerCode = sellerCode;
         notifyPropertyChanged(BR.sellerCode);
+    }
+    public void setPrintedBy(String printedBy) {
+        this.printedBy = printedBy;
+        notifyPropertyChanged(BR.printedBy);
     }
     public void setReservedDate(Date reservedDate) { this.reservedDate = reservedDate; }
     public void setExpiresAt(Date expiresAt) { this.expiresAt = expiresAt; }
