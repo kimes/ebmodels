@@ -36,7 +36,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             transactionId = 0, printCount = 0;
 
     @Bindable
-    private double webFee, farePerSeat, totalFare, penaltyFee;
+    private double webFee, farePerSeat, totalFare, penaltyFee, ferryFare = 0;
 
     private Date reservedDate = Calendar.getInstance().getTime(), expiresAt;
 
@@ -76,6 +76,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         farePerSeat = reservation.getFarePerSeat();
         totalFare = reservation.getTotalFare();
         penaltyFee = reservation.getPenaltyFee();
+        ferryFare = reservation.getFerryFare();
 
         mongoId = reservation.getMongoId();
         email = reservation.getEmail();
@@ -142,12 +143,13 @@ public class Reservation extends BaseObservable implements Parcelable {
         sellerCode = strings[18];
         printedBy = strings[19];
 
-        double[] doubles = new double[4];
+        double[] doubles = new double[5];
         parcel.readDoubleArray(doubles);
         totalFare = doubles[0];
         webFee = doubles[1];
         farePerSeat = doubles[2];
         penaltyFee = doubles[3];
+        ferryFare = doubles[4];
 
         int size = parcel.readInt();
         int[] seatsData = new int[size];
@@ -259,6 +261,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("farePerSeat")) farePerSeat = object.getDouble("farePerSeat");
             if (object.has("web_fee")) webFee = object.getDouble("web_fee");
             if (object.has("penalty_fee")) penaltyFee = object.getDouble("penalty_fee");
+            if (object.has("ferry_fare")) ferryFare = object.getDouble("ferry_fare");
             if (object.has("discount")) discount = new Discount(object.getJSONObject("discount"));
             if (object.has("fees")) fees = new Fees(object.getJSONObject("fees"));
 
@@ -353,6 +356,8 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("printed_by", printedBy);
             object.put("reserved_date", DateTimeUtils.toISODateUtc(reservedDate));
 
+            object.put("ferry_fare", ferryFare);
+
             if (bus != null) object.put("bus", bus.toJSON());
             if (thirdParty != null) object.put("third_party", thirdParty.toJSON());
 
@@ -406,7 +411,7 @@ public class Reservation extends BaseObservable implements Parcelable {
                 boarding, dropping, reservedBy, seatTypes, shortAlias, linerName, office,
                 confirmationCode, referenceNumber, paymentType, paymentRemarks, receiptNo,
                 remarks, otherDetails, paymentQr, sellerCode, printedBy });
-        parcel.writeDoubleArray(new double[] { totalFare, webFee, farePerSeat, penaltyFee });
+        parcel.writeDoubleArray(new double[] { totalFare, webFee, farePerSeat, penaltyFee, ferryFare });
 
         int[] parcelReservedSeats = new int[reservedSeats.size()];
         for (int i = 0; i < reservedSeats.size(); i++) {
@@ -451,6 +456,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public double getFarePerSeat() { return farePerSeat; }
     public double getTotalAmount() { return (webFee + totalFare); }
     public double getPenaltyFee() { return penaltyFee; }
+    public double getFerryFare() { return ferryFare; }
     public String getMongoId() { return mongoId; }
     public String getReceiptNo() { return receiptNo; }
     public String getConfirmationCode() { return confirmationCode; }
@@ -540,6 +546,10 @@ public class Reservation extends BaseObservable implements Parcelable {
     public void setPenaltyFee(double penaltyFee) {
         this.penaltyFee = penaltyFee;
         notifyPropertyChanged(BR.penaltyFee);
+    }
+    public void setFerryFare(double ferryFare) {
+        this.ferryFare = ferryFare;
+        notifyPropertyChanged(BR.ferryFare);
     }
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setReceiptNo(String receiptNo) { this.receiptNo = receiptNo; }
