@@ -15,7 +15,8 @@ public class Passenger extends BaseObservable implements Parcelable {
     @Bindable
     private boolean hasNameError = false, hasDiscountError = false;
 
-    private int seatNo = 0, seatSpecialType = 0;
+    @Bindable
+    private int seatNo = 0, seatSpecialType = 0, seriesNo = 1;
 
     @Bindable
     private long ticketNo = 0;
@@ -52,10 +53,11 @@ public class Passenger extends BaseObservable implements Parcelable {
     }
 
     public Passenger(Parcel parcel) {
-        int[] ints = new int[2];
+        int[] ints = new int[3];
         parcel.readIntArray(ints);
         seatNo = ints[0];
         seatSpecialType = ints[1];
+        seriesNo = ints[2];
 
         long[] longs = new long[1];
         parcel.readLongArray(longs);
@@ -80,7 +82,7 @@ public class Passenger extends BaseObservable implements Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeIntArray(new int[] { seatNo, seatSpecialType });
+        parcel.writeIntArray(new int[] { seatNo, seatSpecialType, seriesNo });
         parcel.writeLongArray(new long[] { ticketNo });
         parcel.writeString(referenceNo);
         parcel.writeParcelable(name, flags);
@@ -93,12 +95,17 @@ public class Passenger extends BaseObservable implements Parcelable {
     public boolean isHasDiscountError() { return hasDiscountError; }
     public int getSeatNo() { return seatNo; }
     public int getSeatSpecialType() { return seatSpecialType; }
+    public int getSeriesNo() { return seriesNo; }
     public long getTicketNo() { return ticketNo; }
     public String getReferenceNo() { return referenceNo; }
     public Name getName() { return name; }
     public Discount getDiscount() { return discount; }
     public void setSeatNo(int seatNo) { this.seatNo = seatNo; }
     public void setSeatSpecialType(int seatSpecialType) { this.seatSpecialType = seatSpecialType; }
+    public void setSeriesNo(int seriesNo) {
+        this.seriesNo = seriesNo;
+        notifyPropertyChanged(BR.seriesNo);
+    }
 
     public void setHasNameError(boolean hasNameError) {
         this.hasNameError = hasNameError;
