@@ -272,7 +272,9 @@ public class Reservation extends BaseObservable implements Parcelable {
             }
 
             if (object.has("expires_at")) {
-                expiresAt = DateTimeUtils.toDateUtc(object.getString("expires_at"));
+                if (!object.isNull("expires_at")) {
+                    expiresAt = DateTimeUtils.toDateUtc(object.getString("expires_at"));
+                }
             }
 
             if (object.has("passengers")) {
