@@ -28,6 +28,10 @@ public class ThirdParty implements Parcelable {
         tripCode = data[4];
         trip = data[5];
         reservationPath = data[6];
+
+        long[] longs = new long[1];
+        parcel.readLongArray(longs);
+        if (longs[0] > 0) { tripTime = new Date(longs[0]); }
     }
 
     public ThirdParty(JSONObject object) {
