@@ -36,7 +36,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             transactionId = 0, printCount = 0;
 
     @Bindable
-    private double webFee, farePerSeat, totalFare, penaltyFee, ferryFare = 0;
+    private double webFee, farePerSeat, totalFare, penaltyFee, ferryFare = 0, systemFee;
 
     private Date reservedDate = Calendar.getInstance().getTime(), expiresAt;
 
@@ -77,6 +77,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         totalFare = reservation.getTotalFare();
         penaltyFee = reservation.getPenaltyFee();
         ferryFare = reservation.getFerryFare();
+        systemFee = reservation.getSystemFee();
 
         mongoId = reservation.getMongoId();
         email = reservation.getEmail();
@@ -143,13 +144,14 @@ public class Reservation extends BaseObservable implements Parcelable {
         sellerCode = strings[18];
         printedBy = strings[19];
 
-        double[] doubles = new double[5];
+        double[] doubles = new double[6];
         parcel.readDoubleArray(doubles);
         totalFare = doubles[0];
         webFee = doubles[1];
         farePerSeat = doubles[2];
         penaltyFee = doubles[3];
         ferryFare = doubles[4];
+        systemFee = doubles[5];
 
         int size = parcel.readInt();
         int[] seatsData = new int[size];
@@ -260,6 +262,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("total_fare")) totalFare = object.getDouble("total_fare");
             if (object.has("farePerSeat")) farePerSeat = object.getDouble("farePerSeat");
             if (object.has("web_fee")) webFee = object.getDouble("web_fee");
+            if (object.has("system_fee")) systemFee = object.getDouble("system_fee");
             if (object.has("penalty_fee")) penaltyFee = object.getDouble("penalty_fee");
             if (object.has("ferry_fare")) ferryFare = object.getDouble("ferry_fare");
             if (object.has("discount")) discount = new Discount(object.getJSONObject("discount"));
@@ -336,6 +339,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("total_fare", totalFare);
             object.put("farePerSeat", farePerSeat);
             object.put("web_fee", webFee);
+            object.put("system_fee", systemFee);
             object.put("penalty_fee", penaltyFee);
             object.put("source", source);
             object.put("print_count", printCount);
@@ -413,7 +417,8 @@ public class Reservation extends BaseObservable implements Parcelable {
                 boarding, dropping, reservedBy, seatTypes, shortAlias, linerName, office,
                 confirmationCode, referenceNumber, paymentType, paymentRemarks, receiptNo,
                 remarks, otherDetails, paymentQr, sellerCode, printedBy });
-        parcel.writeDoubleArray(new double[] { totalFare, webFee, farePerSeat, penaltyFee, ferryFare });
+        parcel.writeDoubleArray(new double[] { totalFare, webFee, farePerSeat,
+                penaltyFee, ferryFare, systemFee });
 
         int[] parcelReservedSeats = new int[reservedSeats.size()];
         for (int i = 0; i < reservedSeats.size(); i++) {
@@ -459,6 +464,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public double getTotalAmount() { return (webFee + totalFare); }
     public double getPenaltyFee() { return penaltyFee; }
     public double getFerryFare() { return ferryFare; }
+    public double getSystemFee() { return systemFee; }
     public String getMongoId() { return mongoId; }
     public String getReceiptNo() { return receiptNo; }
     public String getConfirmationCode() { return confirmationCode; }
@@ -552,6 +558,10 @@ public class Reservation extends BaseObservable implements Parcelable {
     public void setFerryFare(double ferryFare) {
         this.ferryFare = ferryFare;
         notifyPropertyChanged(BR.ferryFare);
+    }
+    public void setSystemFee(double systemFee) {
+        this.systemFee = systemFee;
+        notifyPropertyChanged(BR.systemFee);
     }
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setReceiptNo(String receiptNo) { this.receiptNo = receiptNo; }
