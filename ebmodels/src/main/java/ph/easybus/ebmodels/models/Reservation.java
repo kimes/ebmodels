@@ -461,7 +461,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public double getWebFee() { return webFee; }
     public double getTotalFare() { return totalFare; }
     public double getFarePerSeat() { return farePerSeat; }
-    public double getTotalAmount() { return (webFee + totalFare); }
+    public double getTotalAmount() { return (systemFee + webFee + totalFare); }
     public double getPenaltyFee() { return penaltyFee; }
     public double getFerryFare() { return ferryFare; }
     public double getSystemFee() { return systemFee; }
