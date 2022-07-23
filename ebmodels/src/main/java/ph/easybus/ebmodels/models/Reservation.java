@@ -38,7 +38,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     @Bindable
     private double webFee, farePerSeat, totalFare, penaltyFee, ferryFare = 0, systemFee;
 
-    private Date reservedDate = Calendar.getInstance().getTime(), expiresAt;
+    private Date reservedDate = Calendar.getInstance().getTime(), expiresAt, printedDate;
 
     private Name name = new Name();
     private Trip trip;
@@ -102,6 +102,7 @@ public class Reservation extends BaseObservable implements Parcelable {
 
         reservedDate = reservation.getReservedDate();
         expiresAt = reservation.getExpiresAt();
+        printedDate = reservation.getPrintedDate();
 
         name = reservation.getName();
         trip = reservation.getTrip();
@@ -185,10 +186,11 @@ public class Reservation extends BaseObservable implements Parcelable {
         clustered = booleans[3];
         doUpdate = booleans[4];
 
-        long[] longData = new long[2];
+        long[] longData = new long[3];
         parcel.readLongArray(longData);
         reservedDate = new Date(longData[0]);
         if (longData[1] > 0) { expiresAt = new Date(longData[1]); }
+        if (longData[2] > 0) { printedDate = new Date(longData[2]); }
 
         Parcelable[] passParcel = parcel.readParcelableArray(Passenger.class.getClassLoader());
         ObservableArrayList<Passenger> pass = new ObservableArrayList<>();
@@ -277,6 +279,12 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("expires_at")) {
                 if (!object.isNull("expires_at")) {
                     expiresAt = DateTimeUtils.toDateUtc(object.getString("expires_at"));
+                }
+            }
+
+            if (object.has("printed_date")) {
+                if (!object.isNull("printed_date")) {
+                    printedDate = DateTimeUtils.toDateUtc(object.getString("printed_date"));
                 }
             }
 
@@ -370,6 +378,9 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (expiresAt != null) object.put("expires_at",
                     DateTimeUtils.toISODateUtc(expiresAt));
 
+            if (printedDate != null) object.put("printed_date",
+                    DateTimeUtils.toISODateUtc(printedDate));
+
             if (passengers != null) {
                 JSONArray passengersJSONArray = new JSONArray();
                 for (int i = 0; i < passengers.size(); i++) {
@@ -435,7 +446,8 @@ public class Reservation extends BaseObservable implements Parcelable {
         parcel.writeBooleanArray(new boolean[] { webReservation, modified, printed, clustered, doUpdate });
 
         parcel.writeLongArray(new long[] { reservedDate.getTime(),
-                (expiresAt != null ? expiresAt.getTime() : -1) });
+                (expiresAt != null ? expiresAt.getTime() : -1),
+                (printedDate != null ? printedDate.getTime() : -1) });
 
         Passenger[] pass = new Passenger[passengers.size()];
         for (int i = 0; i < passengers.size(); i++) {
@@ -487,6 +499,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public String getPrintedBy() { return printedBy; }
     public Date getReservedDate() { return reservedDate; }
     public Date getExpiresAt() { return expiresAt; }
+    public Date getPrintedDate() { return printedDate; }
     public ObservableArrayList<Integer> getReservedSeats() {
         return reservedSeats;
     }
@@ -609,6 +622,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     }
     public void setReservedDate(Date reservedDate) { this.reservedDate = reservedDate; }
     public void setExpiresAt(Date expiresAt) { this.expiresAt = expiresAt; }
+    public void setPrintedDate(Date printedDate) { this.printedDate = printedDate; }
     public void setLiner(Liner liner) { this.liner = liner;}
     public void setName(Name name) { this.name = name; }
     public void setTrip(Trip trip) { this.trip = trip; }
