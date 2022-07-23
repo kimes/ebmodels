@@ -15,7 +15,6 @@ public class ThirdParty implements Parcelable {
     private String name, reference, origin, destination,
             tripCode, trip = "", reservationPath;
     private Date tripTime;
-    private Bus bus;
 
     public ThirdParty() {}
 
@@ -33,8 +32,6 @@ public class ThirdParty implements Parcelable {
         long[] longs = new long[1];
         parcel.readLongArray(longs);
         if (longs[0] > 0) { tripTime = new Date(longs[0]); }
-
-        bus = parcel.readParcelable(Bus.class.getClassLoader());
     }
 
     public ThirdParty(JSONObject object) {
@@ -52,8 +49,6 @@ public class ThirdParty implements Parcelable {
                     tripTime = DateTimeUtils.toDateUtc(object.getString("trip_time"));
                 }
             }
-
-            if (object.has("bus")) bus = new Bus(object.getJSONObject("bus"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -68,7 +63,6 @@ public class ThirdParty implements Parcelable {
             object.put("destination", destination);
             object.put("trip_code", tripCode);
             object.put("trip", trip);
-            object.put("bus", bus.toJSON());
 
             if (tripTime != null) object.put("trip_time", DateTimeUtils.toISODateUtc(tripTime));
         } catch (JSONException e) {
@@ -83,7 +77,6 @@ public class ThirdParty implements Parcelable {
             tripCode, trip, reservationPath });
         parcel.writeLongArray(new long[] {
                 (tripTime != null) ? tripTime.getTime() : -1 });
-        parcel.writeParcelable(bus, flags);
     }
 
     public int describeContents() {
@@ -98,7 +91,6 @@ public class ThirdParty implements Parcelable {
     public String getTrip() { return trip; }
     public String getReservationPath() { return reservationPath; }
     public Date getTripTime() { return tripTime; }
-    public Bus getBus() { return bus; }
 
     public void setName(String name) { this.name = name; }
     public void setReference(String reference) { this.reference = reference; }
@@ -108,7 +100,6 @@ public class ThirdParty implements Parcelable {
     public void setTrip(String trip) { this.trip = trip; }
     public void setReservationPath(String reservationPath) { this.reservationPath = reservationPath; }
     public void setTripTime(Date tripTime) { this.tripTime = tripTime; }
-    public void setBus(Bus bus) { this.bus = bus; }
 
     public static final Creator<ThirdParty> CREATOR = new Creator<ThirdParty>() {
         public ThirdParty createFromParcel(Parcel parcel) { return new ThirdParty(parcel); }
