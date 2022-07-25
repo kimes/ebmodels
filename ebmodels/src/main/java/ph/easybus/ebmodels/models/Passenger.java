@@ -13,7 +13,7 @@ import org.json.JSONObject;
 public class Passenger extends BaseObservable implements Parcelable {
 
     @Bindable
-    private boolean hasNameError = false, hasDiscountError = false;
+    private boolean hasNameError = false, hasDiscountError = false, selectedToPrint = true;
 
     @Bindable
     private int seatNo = 0, seatSpecialType = 0, seriesNo = 1;
@@ -93,6 +93,7 @@ public class Passenger extends BaseObservable implements Parcelable {
 
     public boolean isHasNameError() { return hasNameError; }
     public boolean isHasDiscountError() { return hasDiscountError; }
+    public boolean isSelectedToPrint() { return selectedToPrint; }
     public int getSeatNo() { return seatNo; }
     public int getSeatSpecialType() { return seatSpecialType; }
     public int getSeriesNo() { return seriesNo; }
@@ -115,6 +116,11 @@ public class Passenger extends BaseObservable implements Parcelable {
         this.hasDiscountError = hasDiscountError;
         notifyPropertyChanged(BR.hasDiscountError);
     }
+    public void setSelectedToPrint(boolean selectedToPrint) {
+        this.selectedToPrint = selectedToPrint;
+        notifyPropertyChanged(BR.selectedToPrint);
+    }
+
     public void setTicketNo(long ticketNo) {
         this.ticketNo = ticketNo;
         notifyPropertyChanged(BR.ticketNo);
