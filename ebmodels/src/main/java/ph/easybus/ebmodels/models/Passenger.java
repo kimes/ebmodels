@@ -53,6 +53,10 @@ public class Passenger extends BaseObservable implements Parcelable {
     }
 
     public Passenger(Parcel parcel) {
+        boolean[] booleans = new boolean[1];
+        parcel.readBooleanArray(booleans);
+        selectedToPrint = booleans[0];
+
         int[] ints = new int[3];
         parcel.readIntArray(ints);
         seatNo = ints[0];
@@ -82,6 +86,7 @@ public class Passenger extends BaseObservable implements Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeBooleanArray(new boolean[] { selectedToPrint });
         parcel.writeIntArray(new int[] { seatNo, seatSpecialType, seriesNo });
         parcel.writeLongArray(new long[] { ticketNo });
         parcel.writeString(referenceNo);
