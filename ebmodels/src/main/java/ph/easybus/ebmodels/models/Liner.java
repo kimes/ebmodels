@@ -63,7 +63,7 @@ public class Liner implements Parcelable {
             if (object.has("offices")) {
                 JSONArray officeJSONArray = object.getJSONArray("offices");
 
-                ArrayList<Office> officeList = new ArrayList<Office>();
+                ArrayList<Office> officeList = new ArrayList<>();
                 for (int i = 0; i < officeJSONArray.length(); i++) {
                     officeList.add(new Office(officeJSONArray.getJSONObject(i)));
                 }
@@ -72,6 +72,27 @@ public class Liner implements Parcelable {
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public JSONObject toJSON() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("name", linerName);
+            object.put("policies", policies);
+
+            JSONObject settings = new JSONObject();
+            settings.put("service_fee", serviceFeeEnabled);
+
+            JSONObject payments = new JSONObject();
+            payments.put("paymaya", paymayaEnabled);
+            payments.put("gcash", gCashEnabled);
+            settings.put("payments", payments);
+
+            object.put("booker_settings", settings);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 
     public int describeContents() {

@@ -99,6 +99,8 @@ public class User extends BaseObservable implements Parcelable {
             object.put("salt", salt);
             object.put("isAgent", isAgent);
             object.put("name", name.toJSON());
+            object.put("liner", liner.toJSON());
+            object.put("agent", agent.toJSON());
         } catch (JSONException e) {
             e.printStackTrace();
         }
