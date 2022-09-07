@@ -56,6 +56,9 @@ public class Reservation extends BaseObservable implements Parcelable {
     @Bindable
     private ObservableArrayList<Passenger> passengers = new ObservableArrayList<>();
 
+    @Bindable
+    private ObservableArrayList<Infant> infants = new ObservableArrayList<>();
+
     public Reservation() {}
 
     public Reservation(Reservation reservation) {
@@ -114,6 +117,7 @@ public class Reservation extends BaseObservable implements Parcelable {
 
         reservedSeats = reservation.getReservedSeats();
         passengers = reservation.getPassengers();
+        infants = reservation.getInfants();
     }
 
     public Reservation(String firstName, String lastName, String email) {
@@ -195,9 +199,16 @@ public class Reservation extends BaseObservable implements Parcelable {
         Parcelable[] passParcel = parcel.readParcelableArray(Passenger.class.getClassLoader());
         ObservableArrayList<Passenger> pass = new ObservableArrayList<>();
         for (Parcelable parcelable : passParcel) {
-            pass.add((Passenger) parcelable);
+            pass.add((Passenger)parcelable);
         }
         passengers = pass;
+
+        Parcelable[] infantsParcel = parcel.readParcelableArray(Infant.class.getClassLoader());
+        ObservableArrayList<Infant> infs = new ObservableArrayList<>();
+        for (Parcelable parcelable : infantsParcel) {
+            infs.add((Infant)parcelable);
+        }
+        infants = infs;
     }
 
     public Reservation(JSONObject object) {
@@ -297,6 +308,15 @@ public class Reservation extends BaseObservable implements Parcelable {
                 this.passengers = passengers;
             }
 
+            if (object.has("infants")) {
+                JSONArray infantsJSONArray = object.getJSONArray("infants");
+                ObservableArrayList<Infant> infants = new ObservableArrayList<>();
+                for (int i = 0; i < infantsJSONArray.length(); i++) {
+                    infants.add(new Infant(infantsJSONArray.getJSONObject(i)));
+                }
+                this.infants = infants;
+            }
+
             if (object.has("reserved_seats")) {
                 JSONArray reservedSeatsJSONArray = object.getJSONArray("reserved_seats");
                 ObservableArrayList<Integer> reservedSeats = new ObservableArrayList<>();
@@ -389,6 +409,14 @@ public class Reservation extends BaseObservable implements Parcelable {
                 object.put("passengers", passengersJSONArray);
             }
 
+            if (infants != null) {
+                JSONArray infantsJSONArray = new JSONArray();
+                for (int i = 0; i < infants.size(); i++) {
+                    infantsJSONArray.put(infants.get(i).toJSON());
+                }
+                object.put("infants", infantsJSONArray);
+            }
+
             object.put("name", name.toJSON());
 
             object.put("reserved_seats", new JSONArray(reservedSeats));
@@ -398,29 +426,6 @@ public class Reservation extends BaseObservable implements Parcelable {
             e.printStackTrace();
         }
         return object;
-    }
-
-    public static Reservation getReservationWithTrip(JSONObject reserveWithTripObject) {
-        Reservation nReservation = new Reservation();
-        try {
-            nReservation = new Reservation(reserveWithTripObject);
-            if (reserveWithTripObject.has("tripInfo")) {
-                JSONArray trips = reserveWithTripObject.getJSONArray("tripInfo");
-                JSONObject tripObject = trips.getJSONObject(0);
-                Trip nTrip = new Trip(tripObject,
-                        DateTimeUtils.toDate(reserveWithTripObject.getString("trip_date")));
-                nReservation.setTrip(nTrip);
-            }
-
-            if (reserveWithTripObject.has("linerInfo")) {
-                JSONArray liners = reserveWithTripObject.getJSONArray("linerInfo");
-                Liner nLiner = new Liner(liners.getJSONObject(0));
-                nReservation.setLiner(nLiner);
-            }
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-        }
-        return nReservation;
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
@@ -452,6 +457,12 @@ public class Reservation extends BaseObservable implements Parcelable {
         Passenger[] pass = new Passenger[passengers.size()];
         for (int i = 0; i < passengers.size(); i++) {
             pass[i] = passengers.get(i);
+        }
+        parcel.writeParcelableArray(pass, flags);
+
+        Infant[] infs = new Infant[infants.size()];
+        for (int i = 0; i < infants.size(); i++) {
+            infs[i] = infants.get(i);
         }
         parcel.writeParcelableArray(pass, flags);
     }
@@ -511,6 +522,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public Fees getFees() { return fees; }
     public ThirdParty getThirdParty() { return thirdParty; }
     public ObservableArrayList<Passenger> getPassengers() { return passengers; }
+    public ObservableArrayList<Infant> getInfants() { return infants; }
 
     public void setWebReservation(boolean webReservation) {
         this.webReservation = webReservation;
@@ -636,6 +648,10 @@ public class Reservation extends BaseObservable implements Parcelable {
     public void setPassengers(ObservableArrayList<Passenger> passengers) {
         this.passengers = passengers;
         notifyPropertyChanged(BR.passengers);
+    }
+    public void setInfants(ObservableArrayList<Infant> infants) {
+        this.infants = infants;
+        notifyPropertyChanged(BR.infants);
     }
     public void setReservedSeats(ObservableArrayList<Integer> reservedSeats) {
         this.reservedSeats = reservedSeats;
