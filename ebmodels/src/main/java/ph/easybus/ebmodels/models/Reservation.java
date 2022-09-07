@@ -464,7 +464,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         for (int i = 0; i < infants.size(); i++) {
             infs[i] = infants.get(i);
         }
-        parcel.writeParcelableArray(pass, flags);
+        parcel.writeParcelableArray(infs, flags);
     }
 
     public int describeContents() { return 0; }
