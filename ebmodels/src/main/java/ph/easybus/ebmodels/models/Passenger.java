@@ -13,13 +13,16 @@ import org.json.JSONObject;
 public class Passenger extends BaseObservable implements Parcelable {
 
     @Bindable
-    private boolean hasNameError = false, hasDiscountError = false, selectedToPrint = true;
+    private boolean hasNameError = false, hasDiscountError = false, selectedToPrint = true, edited = false;
 
     @Bindable
     private int seatNo = 0, seatSpecialType = 0, seriesNo = 1;
 
     @Bindable
     private long ticketNo = 0;
+
+    @Bindable
+    private double editFee = 0d;
 
     @Bindable
     private String referenceNo = "";
@@ -47,15 +50,17 @@ public class Passenger extends BaseObservable implements Parcelable {
             if (object.has("discount")) discount = new Discount(object.getJSONObject("discount"));
             if (object.has("ticket_number")) ticketNo = object.getLong("ticket_number");
             if (object.has("reference_number")) referenceNo = object.getString("reference_number");
+            if (object.has("edit_fee")) editFee = object.getDouble("edit_fee");
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     public Passenger(Parcel parcel) {
-        boolean[] booleans = new boolean[1];
+        boolean[] booleans = new boolean[2];
         parcel.readBooleanArray(booleans);
         selectedToPrint = booleans[0];
+        edited = booleans[1];
 
         int[] ints = new int[3];
         parcel.readIntArray(ints);
@@ -66,6 +71,10 @@ public class Passenger extends BaseObservable implements Parcelable {
         long[] longs = new long[1];
         parcel.readLongArray(longs);
         ticketNo = longs[0];
+
+        double[] doubles = new double[1];
+        parcel.readDoubleArray(doubles);
+        editFee = doubles[0];
 
         referenceNo = parcel.readString();
         name = parcel.readParcelable(Name.class.getClassLoader());
@@ -79,6 +88,7 @@ public class Passenger extends BaseObservable implements Parcelable {
             object.put("discount", discount.toJSON());
             object.put("ticket_number", ticketNo);
             object.put("reference_number", referenceNo);
+            object.put("edit_fee", editFee);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -86,9 +96,10 @@ public class Passenger extends BaseObservable implements Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeBooleanArray(new boolean[] { selectedToPrint });
+        parcel.writeBooleanArray(new boolean[] { selectedToPrint, edited });
         parcel.writeIntArray(new int[] { seatNo, seatSpecialType, seriesNo });
         parcel.writeLongArray(new long[] { ticketNo });
+        parcel.writeDoubleArray(new double[] { editFee });
         parcel.writeString(referenceNo);
         parcel.writeParcelable(name, flags);
         parcel.writeParcelable(discount, flags);
@@ -99,10 +110,12 @@ public class Passenger extends BaseObservable implements Parcelable {
     public boolean isHasNameError() { return hasNameError; }
     public boolean isHasDiscountError() { return hasDiscountError; }
     public boolean isSelectedToPrint() { return selectedToPrint; }
+    public boolean isEdited() { return edited; }
     public int getSeatNo() { return seatNo; }
     public int getSeatSpecialType() { return seatSpecialType; }
     public int getSeriesNo() { return seriesNo; }
     public long getTicketNo() { return ticketNo; }
+    public double getEditFee() { return editFee; }
     public String getReferenceNo() { return referenceNo; }
     public Name getName() { return name; }
     public Discount getDiscount() { return discount; }
@@ -125,10 +138,18 @@ public class Passenger extends BaseObservable implements Parcelable {
         this.selectedToPrint = selectedToPrint;
         notifyPropertyChanged(BR.selectedToPrint);
     }
+    public void setEdited(boolean edited) {
+        this.edited = edited;
+        notifyPropertyChanged(BR.edited);
+    }
 
     public void setTicketNo(long ticketNo) {
         this.ticketNo = ticketNo;
         notifyPropertyChanged(BR.ticketNo);
+    }
+    public void setEditFee(double editFee) {
+        this.editFee = editFee;
+        notifyPropertyChanged(BR.editFee);
     }
     public void setReferenceNo(String referenceNo) {
         this.referenceNo = referenceNo;
