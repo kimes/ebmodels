@@ -44,6 +44,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     private Trip trip;
     private Liner liner;
     private Bus bus;
+    private Adjustment adjustment;
 
     @Bindable
     private Discount discount = new Discount();
@@ -171,6 +172,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         trip = parcel.readParcelable(Trip.class.getClassLoader());
         liner = parcel.readParcelable(Liner.class.getClassLoader());
         bus = parcel.readParcelable(Bus.class.getClassLoader());
+        adjustment = parcel.readParcelable(Adjustment.class.getClassLoader());
         thirdParty = parcel.readParcelable(ThirdParty.class.getClassLoader());
 
         int[] ints = new int[6];
@@ -280,6 +282,10 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("ferry_fare")) ferryFare = object.getDouble("ferry_fare");
             if (object.has("discount")) discount = new Discount(object.getJSONObject("discount"));
             if (object.has("fees")) fees = new Fees(object.getJSONObject("fees"));
+
+            if (object.has("adjustment")) {
+                adjustment = new Adjustment(object.getJSONObject("adjustment"));
+            }
 
             if (object.has("doUpdate")) doUpdate = object.getBoolean("doUpdate");
 
@@ -393,6 +399,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("ferry_fare", ferryFare);
 
             if (bus != null) object.put("bus", bus.toJSON());
+            if (adjustment != null) object.put("adjustment", adjustment.toJSON());
             if (thirdParty != null) object.put("third_party", thirdParty.toJSON());
 
             if (expiresAt != null) object.put("expires_at",
@@ -446,6 +453,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         parcel.writeParcelable(trip, flags);
         parcel.writeParcelable(liner, flags);
         parcel.writeParcelable(bus, flags);
+        parcel.writeParcelable(adjustment, flags);
         parcel.writeParcelable(thirdParty, flags);
         parcel.writeIntArray(new int[] { id, status, role, source, transactionId, printCount });
         parcel.writeBooleanArray(new boolean[] { webReservation, modified, printed, clustered, doUpdate });
@@ -518,6 +526,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public Name getName() { return name; }
     public Trip getTrip() { return trip; }
     public Bus getBus() { return bus; }
+    public Adjustment getAdjustment() { return adjustment; }
     public Discount getDiscount() { return discount; }
     public Fees getFees() { return fees; }
     public ThirdParty getThirdParty() { return thirdParty; }
@@ -639,6 +648,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public void setName(Name name) { this.name = name; }
     public void setTrip(Trip trip) { this.trip = trip; }
     public void setBus(Bus bus) { this.bus = bus; }
+    public void setAdjustment(Adjustment adjustment) { this.adjustment = adjustment; }
     public void setDiscount(Discount discount) {
         this.discount = discount;
         notifyPropertyChanged(BR.discount);
