@@ -283,8 +283,8 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("discount")) discount = new Discount(object.getJSONObject("discount"));
             if (object.has("fees")) fees = new Fees(object.getJSONObject("fees"));
 
-            if (object.has("adjustment")) {
-                adjustment = new Adjustment(object.getJSONObject("adjustment"));
+            if (object.has("adjustments")) {
+                adjustment = new Adjustment(object.getJSONObject("adjustments"));
             }
 
             if (object.has("doUpdate")) doUpdate = object.getBoolean("doUpdate");
@@ -399,7 +399,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("ferry_fare", ferryFare);
 
             if (bus != null) object.put("bus", bus.toJSON());
-            if (adjustment != null) object.put("adjustment", adjustment.toJSON());
+            if (adjustment != null) object.put("adjustments", adjustment.toJSON());
             if (thirdParty != null) object.put("third_party", thirdParty.toJSON());
 
             if (expiresAt != null) object.put("expires_at",
