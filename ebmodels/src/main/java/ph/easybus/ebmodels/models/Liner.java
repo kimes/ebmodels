@@ -17,7 +17,7 @@ public class Liner implements Parcelable {
     private boolean paymayaEnabled = false, gCashEnabled = false;
     private boolean serviceFeeEnabled = false;
 
-    private String policies, linerName;
+    private String policies, linerName, rebookingFee = "";
     private ArrayList<Office> offices = new ArrayList<>();
 
     public Liner() {}
@@ -34,10 +34,11 @@ public class Liner implements Parcelable {
         paymayaEnabled = booleans[1];
         gCashEnabled = booleans[2];
 
-        String[] data = new String[2];
+        String[] data = new String[3];
         parcel.readStringArray(data);
         policies = data[0];
         linerName = data[1];
+        rebookingFee = data[2];
 
         ArrayList<Office> officeList = new ArrayList<>();
         parcel.readTypedList(officeList, Office.CREATOR);
@@ -59,6 +60,8 @@ public class Liner implements Parcelable {
                     if (payments.has("gcash")) gCashEnabled = payments.getBoolean("gcash");
                 }
             }
+
+            if (object.has("rebooking_fee")) rebookingFee = object.getString("rebooking_fee");
 
             if (object.has("offices")) {
                 JSONArray officeJSONArray = object.getJSONArray("offices");
@@ -89,6 +92,8 @@ public class Liner implements Parcelable {
             settings.put("payments", payments);
 
             object.put("booker_settings", settings);
+
+            object.put("rebooking_fee", rebookingFee);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -101,7 +106,7 @@ public class Liner implements Parcelable {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { serviceFeeEnabled, paymayaEnabled, gCashEnabled });
-        parcel.writeStringArray(new String[] { policies, linerName });
+        parcel.writeStringArray(new String[] { policies, linerName, rebookingFee });
 
         parcel.writeTypedList(offices);
     }
@@ -111,6 +116,7 @@ public class Liner implements Parcelable {
     public boolean isGCashEnabled() { return gCashEnabled; }
     public String getPolicies() { return policies; }
     public String getLinerName() { return linerName; }
+    public String getRebookingFee() { return rebookingFee; }
     public ArrayList<Office> getOffices() { return offices; }
 
     public void setServiceFeeEnabled(boolean serviceFeeEnabled) { this.serviceFeeEnabled = serviceFeeEnabled; }
@@ -120,6 +126,8 @@ public class Liner implements Parcelable {
     public void setOffices(ArrayList<Office> offices) { this.offices = offices; }
     public void setPolicies(String policies) { this.policies = policies; }
     public void setLinerName(String linerName) { this.linerName = linerName; }
+
+    public void setRebookingFee(String rebookingFee) { this.rebookingFee = rebookingFee; }
 
     public static final Creator<Liner> CREATOR = new Creator<Liner>() {
         public Liner createFromParcel(Parcel parcel) {
