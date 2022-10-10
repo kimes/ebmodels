@@ -23,12 +23,12 @@ public class Cargo extends BaseObservable implements Parcelable {
     private int id = 0, status = 0, shipmentStatus = 0, packagesCount = 0;
 
     @Bindable
-    private double declaredValue = 0, totalAmount = 0, totalWeight = 0;
+    private double declaredValue = 0, totalAmount = 0, totalWeight = 0, systemFee = 0, processingFee = 0;
 
     @Bindable
     private String mongoId, origin, destination, description, linerName,
             senderMobile = "", receiverMobile = "", referenceNumber, paymentType = "Cash", paymentRemarks,
-            shippedBy;
+            shippedBy, paymentQr = "";
 
     private Date dropOffDate = Calendar.getInstance().getTime();
 
@@ -47,13 +47,15 @@ public class Cargo extends BaseObservable implements Parcelable {
         shipmentStatus = ints[2];
         packagesCount = ints[3];
 
-        double[] doubles = new double[3];
+        double[] doubles = new double[5];
         parcel.readDoubleArray(doubles);
         declaredValue = doubles[0];
         totalAmount = doubles[1];
         totalWeight = doubles[2];
+        systemFee = doubles[3];
+        processingFee = doubles[4];
 
-        String[] strings = new String[11];
+        String[] strings = new String[12];
         mongoId = strings[0];
         origin = strings[1];
         destination = strings[2];
@@ -65,6 +67,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         paymentType = strings[8];
         paymentRemarks = strings[9];
         shippedBy = strings[10];
+        paymentQr = strings[11];
 
         long[] longs = new long[1];
         parcel.readLongArray(longs);
@@ -88,6 +91,9 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("declared_value")) declaredValue = object.getDouble("declared_value");
             if (object.has("total_amount")) totalAmount = object.getDouble("total_amount");
             if (object.has("total_weight")) totalWeight = object.getDouble("total_weight");
+            if (object.has("system_fee")) systemFee = object.getDouble("system_fee");
+            if (object.has("processing_fee")) processingFee = object.getDouble("processing_fee");
+
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("destination")) destination = object.getString("destination");
             if (object.has("description")) description = object.getString("description");
@@ -98,6 +104,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("payment_type")) paymentType = object.getString("payment_type");
             if (object.has("payment_remarks")) paymentRemarks = object.getString("payment_remarks");
             if (object.has("shipped_by")) shippedBy = object.getString("shipped_by");
+
 
             if (object.has("drop_off_date")) {
                 dropOffDate = DateTimeUtils.toDateUtc(object.getString("drop_off_date"));
@@ -133,6 +140,9 @@ public class Cargo extends BaseObservable implements Parcelable {
             object.put("declared_value", declaredValue);
             object.put("total_amount", totalAmount);
             object.put("total_weight", totalWeight);
+            object.put("system_fee", systemFee);
+            object.put("processing_fee", processingFee);
+
             object.put("origin", origin);
             object.put("destination", destination);
             object.put("description", description);
@@ -161,10 +171,11 @@ public class Cargo extends BaseObservable implements Parcelable {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeIntArray(new int[] { id, status, shipmentStatus, packagesCount });
-        parcel.writeDoubleArray(new double[] { declaredValue, totalAmount, totalWeight });
+        parcel.writeDoubleArray(new double[] { declaredValue, totalAmount, totalWeight,
+                systemFee, processingFee });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, description, linerName,
                 senderMobile, receiverMobile, referenceNumber, paymentType, paymentRemarks,
-                shippedBy });
+                shippedBy, paymentQr });
         parcel.writeLongArray(new long[] { dropOffDate.getTime() });
 
         parcel.writeParcelable(senderName, flags);
@@ -181,6 +192,8 @@ public class Cargo extends BaseObservable implements Parcelable {
     public double getDeclaredValue() { return declaredValue; }
     public double getTotalAmount() { return totalAmount; }
     public double getTotalWeight() { return totalWeight; }
+    public double getSystemFee() { return systemFee; }
+    public double getProcessingFee() { return processingFee; }
     public String getMongoId() { return mongoId; }
     public String getOrigin() { return origin; }
     public String getDestination() { return destination; }
@@ -192,6 +205,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public String getPaymentType() { return paymentType; }
     public String getPaymentRemarks() { return paymentRemarks; }
     public String getShippedBy() { return shippedBy; }
+    public String getPaymentQr() { return paymentQr; }
     public Date getDropOffDate() { return dropOffDate; }
     public Name getSenderName() { return senderName; }
     public Name getReceiverName() { return receiverName; }
@@ -227,6 +241,16 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void setTotalWeight(double totalWeight) {
         this.totalWeight = totalWeight;
         notifyPropertyChanged(BR.totalWeight);
+    }
+
+    public void setSystemFee(double systemFee) {
+        this.systemFee = systemFee;
+        notifyPropertyChanged(BR.systemFee);
+    }
+
+    public void setProcessingFee(double processingFee) {
+        this.processingFee = processingFee;
+        notifyPropertyChanged(BR.processingFee);
     }
 
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
@@ -289,6 +313,10 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void setReceiverName(Name receiverName) {
         this.receiverName = receiverName;
         notifyPropertyChanged(BR.receiverName);
+    }
+
+    public void setPaymentQr(String paymentQr) {
+        this.paymentQr = paymentQr;
     }
 
     public void setDropOffDate(Date dropOffDate) { this.dropOffDate = dropOffDate; }
