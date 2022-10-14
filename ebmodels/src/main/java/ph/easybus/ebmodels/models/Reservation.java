@@ -26,7 +26,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     private String mongoId, email, mobile = "", boarding, dropping,
             reservedBy, seatTypes, shortAlias, linerName, office = "",
             confirmationCode = "", referenceNumber = "", paymentType = "Cash", paymentRemarks, receiptNo,
-            remarks, otherDetails = "", sellerCode = "", paymentQr = "", printedBy = "";
+            remarks, otherDetails = "", sellerCode = "", paymentQr = "", printedBy = "", openTicketBy = "";
 
     @Bindable
     private boolean webReservation = true, printed, modified, clustered = false, doUpdate = true;
@@ -38,7 +38,8 @@ public class Reservation extends BaseObservable implements Parcelable {
     @Bindable
     private double webFee, farePerSeat, totalFare, penaltyFee, ferryFare = 0, systemFee;
 
-    private Date reservedDate = Calendar.getInstance().getTime(), expiresAt, printedDate;
+    @Bindable
+    private Date reservedDate = Calendar.getInstance().getTime(), expiresAt, printedDate, openTicketDate;
 
     private Name name = new Name();
     private Trip trip;
@@ -103,10 +104,12 @@ public class Reservation extends BaseObservable implements Parcelable {
         paymentQr = reservation.getPaymentQr();
         sellerCode = reservation.getSellerCode();
         printedBy = reservation.getPrintedBy();
+        openTicketBy = reservation.getOpenTicketBy();
 
         reservedDate = reservation.getReservedDate();
         expiresAt = reservation.getExpiresAt();
         printedDate = reservation.getPrintedDate();
+        openTicketDate = reservation.getOpenTicketDate();
 
         name = reservation.getName();
         trip = reservation.getTrip();
@@ -127,7 +130,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     }
 
     public Reservation(Parcel parcel) {
-        String[] strings = new String[20];
+        String[] strings = new String[21];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         email = strings[1];
@@ -149,6 +152,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         paymentQr = strings[17];
         sellerCode = strings[18];
         printedBy = strings[19];
+        openTicketBy = strings[20];
 
         double[] doubles = new double[6];
         parcel.readDoubleArray(doubles);
@@ -192,11 +196,12 @@ public class Reservation extends BaseObservable implements Parcelable {
         clustered = booleans[3];
         doUpdate = booleans[4];
 
-        long[] longData = new long[3];
+        long[] longData = new long[4];
         parcel.readLongArray(longData);
         reservedDate = new Date(longData[0]);
         if (longData[1] > 0) { expiresAt = new Date(longData[1]); }
         if (longData[2] > 0) { printedDate = new Date(longData[2]); }
+        if (longData[3] > 0) { openTicketDate = new Date(longData[3]); }
 
         Parcelable[] passParcel = parcel.readParcelableArray(Passenger.class.getClassLoader());
         ObservableArrayList<Passenger> pass = new ObservableArrayList<>();
@@ -273,6 +278,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("paymentQr")) paymentQr = object.getString("paymentQr");
             if (object.has("seller_code")) sellerCode = object.getString("seller_code");
             if (object.has("printed_by")) printedBy = object.getString("printed_by");
+            if (object.has("open_ticket_by")) openTicketBy = object.getString("open_ticket_by");
 
             if (object.has("total_fare")) totalFare = object.getDouble("total_fare");
             if (object.has("farePerSeat")) farePerSeat = object.getDouble("farePerSeat");
@@ -303,6 +309,10 @@ public class Reservation extends BaseObservable implements Parcelable {
                 if (!object.isNull("printed_date")) {
                     printedDate = DateTimeUtils.toDateUtc(object.getString("printed_date"));
                 }
+            }
+
+            if (object.has("open_ticket_date")) {
+                openTicketDate = DateTimeUtils.toDateUtc(object.getString("open_ticket_date"));
             }
 
             if (object.has("passengers")) {
@@ -394,6 +404,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("other_details", otherDetails);
             object.put("seller_code", sellerCode);
             object.put("printed_by", printedBy);
+            object.put("open_ticket_by", openTicketBy);
             object.put("reserved_date", DateTimeUtils.toISODateUtc(reservedDate));
 
             object.put("ferry_fare", ferryFare);
@@ -407,6 +418,9 @@ public class Reservation extends BaseObservable implements Parcelable {
 
             if (printedDate != null) object.put("printed_date",
                     DateTimeUtils.toISODateUtc(printedDate));
+
+            if (openTicketDate != null) object.put("open_ticket_date",
+                    DateTimeUtils.toISODateUtc(openTicketDate));
 
             if (passengers != null) {
                 JSONArray passengersJSONArray = new JSONArray();
@@ -439,7 +453,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         parcel.writeStringArray(new String[] { mongoId, email, mobile,
                 boarding, dropping, reservedBy, seatTypes, shortAlias, linerName, office,
                 confirmationCode, referenceNumber, paymentType, paymentRemarks, receiptNo,
-                remarks, otherDetails, paymentQr, sellerCode, printedBy });
+                remarks, otherDetails, paymentQr, sellerCode, printedBy, openTicketBy });
         parcel.writeDoubleArray(new double[] { totalFare, webFee, farePerSeat,
                 penaltyFee, ferryFare, systemFee });
 
@@ -460,7 +474,8 @@ public class Reservation extends BaseObservable implements Parcelable {
 
         parcel.writeLongArray(new long[] { reservedDate.getTime(),
                 (expiresAt != null ? expiresAt.getTime() : -1),
-                (printedDate != null ? printedDate.getTime() : -1) });
+                (printedDate != null ? printedDate.getTime() : -1),
+                (openTicketDate != null ? openTicketDate.getTime() : -1 )});
 
         Passenger[] pass = new Passenger[passengers.size()];
         for (int i = 0; i < passengers.size(); i++) {
@@ -516,9 +531,11 @@ public class Reservation extends BaseObservable implements Parcelable {
     public String getPaymentQr() { return paymentQr; }
     public String getSellerCode() { return sellerCode; }
     public String getPrintedBy() { return printedBy; }
+    public String getOpenTicketBy() { return openTicketBy; }
     public Date getReservedDate() { return reservedDate; }
     public Date getExpiresAt() { return expiresAt; }
     public Date getPrintedDate() { return printedDate; }
+    public Date getOpenTicketDate() { return openTicketDate; }
     public ObservableArrayList<Integer> getReservedSeats() {
         return reservedSeats;
     }
@@ -641,9 +658,25 @@ public class Reservation extends BaseObservable implements Parcelable {
         this.printedBy = printedBy;
         notifyPropertyChanged(BR.printedBy);
     }
-    public void setReservedDate(Date reservedDate) { this.reservedDate = reservedDate; }
+    public void setOpenTicketBy(String openTicketBy) {
+        this.openTicketBy = openTicketBy;
+        notifyPropertyChanged(BR.openTicketBy);
+    }
+
+    public void setReservedDate(Date reservedDate) {
+        this.reservedDate = reservedDate;
+        notifyPropertyChanged(BR.reservedDate);
+    }
     public void setExpiresAt(Date expiresAt) { this.expiresAt = expiresAt; }
-    public void setPrintedDate(Date printedDate) { this.printedDate = printedDate; }
+    public void setPrintedDate(Date printedDate) {
+        this.printedDate = printedDate;
+        notifyPropertyChanged(BR.printedDate);
+    }
+    public void setOpenTicketDate(Date openTicketDate) {
+        this.openTicketDate = openTicketDate;
+        notifyPropertyChanged(BR.openTicketDate);
+
+    }
     public void setLiner(Liner liner) { this.liner = liner;}
     public void setName(Name name) { this.name = name; }
     public void setTrip(Trip trip) { this.trip = trip; }

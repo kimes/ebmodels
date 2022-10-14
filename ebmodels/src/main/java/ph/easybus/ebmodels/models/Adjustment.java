@@ -13,6 +13,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
+import ph.easybus.ebmodels.utils.DateTimeUtils;
+
 public class Adjustment extends BaseObservable implements Parcelable {
 
     @Bindable
@@ -25,7 +29,10 @@ public class Adjustment extends BaseObservable implements Parcelable {
     private double amount = 0;
 
     @Bindable
-    private String related = "";
+    private String related = "", rebookBy = "";
+
+    @Bindable
+    private Date rebookDate;
 
     @Bindable
     private ObservableArrayList<Integer> seatsNotRebook = new ObservableArrayList<>();
@@ -45,10 +52,17 @@ public class Adjustment extends BaseObservable implements Parcelable {
         parcel.readDoubleArray(doubles);
         amount = doubles[0];
 
-        String[] strings = new String[1];
+        String[] strings = new String[2];
         parcel.readStringArray(strings);
         related = strings[0];
+        rebookBy = strings[1];
 
+        long[] dates = new long[1];
+        parcel.readLongArray(dates);
+        if (dates[0] > 0) { rebookDate = new Date(dates[0]); }
+
+        // EB-8OIDU4TKCQ
+        // EB-QNTWUPF4IJ
         int size = parcel.readInt();
         int[] seatsData = new int[size];
         parcel.readIntArray(seatsData);
@@ -65,6 +79,11 @@ public class Adjustment extends BaseObservable implements Parcelable {
             if (object.has("status")) status = object.getInt("status");
             if (object.has("amount")) amount = object.getDouble("amount");
             if (object.has("related")) related = object.getString("related");
+            if (object.has("rebook_by")) rebookBy = object.getString("rebook_by");
+
+            if (object.has("rebook_date"))
+                rebookDate = DateTimeUtils.toDateUtc(object.getString("rebook_date"));
+
             if (object.has("seatsNotRebook")) {
                 JSONArray seatsArray = object.getJSONArray("seatsNotRebook");
                 seatsNotRebook = new ObservableArrayList<>();
@@ -84,6 +103,9 @@ public class Adjustment extends BaseObservable implements Parcelable {
             object.put("status", status);
             object.put("amount", amount);
             object.put("related", related);
+            object.put("rebook_by", rebookBy);
+
+            if (rebookDate != null) object.put("rebook_date", DateTimeUtils.toISODateUtc(rebookDate));
 
             JSONArray seatsArray = new JSONArray();
             for (int i = 0; i < seatsNotRebook.size(); i++) {
@@ -100,7 +122,9 @@ public class Adjustment extends BaseObservable implements Parcelable {
         parcel.writeBooleanArray(new boolean[] { seatsLeft });
         parcel.writeIntArray(new int[] { status });
         parcel.writeDoubleArray(new double[] { amount });
-        parcel.writeStringArray(new String[] { related });
+        parcel.writeStringArray(new String[] { related, rebookBy });
+
+        parcel.writeLongArray(new long[] { (rebookDate != null ? rebookDate.getTime() : -1) });
 
         int[] parcelReservedSeats = new int[seatsNotRebook.size()];
         for (int i = 0; i < seatsNotRebook.size(); i++) {
@@ -116,6 +140,8 @@ public class Adjustment extends BaseObservable implements Parcelable {
     public int getStatus() { return status; }
     public double getAmount() { return amount; }
     public String getRelated() { return related; }
+    public String getRebookBy() { return rebookBy; }
+    public Date getRebookDate() { return rebookDate; }
     public ObservableArrayList<Integer> getSeatsNotRebook() { return seatsNotRebook; }
 
     public void setSeatsLeft(boolean seatsLeft) {
@@ -133,6 +159,14 @@ public class Adjustment extends BaseObservable implements Parcelable {
     public void setRelated(String related) {
         this.related = related;
         notifyPropertyChanged(BR.related);
+    }
+    public void setRebookBy(String rebookBy) {
+        this.rebookBy = rebookBy;
+        notifyPropertyChanged(BR.rebookBy);
+    }
+    public void setRebookDate(Date rebookDate) {
+        this.rebookDate = rebookDate;
+        notifyPropertyChanged(BR.rebookDate);
     }
     public void setSeatsNotRebook(ObservableArrayList<Integer> seatsNotRebook) {
         this.seatsNotRebook = seatsNotRebook;
