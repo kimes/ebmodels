@@ -13,6 +13,9 @@ import org.json.JSONObject;
 public class Infant extends BaseObservable implements Parcelable {
 
     @Bindable
+    private int index = 0;
+
+    @Bindable
     private long ticketNo = 0;
 
     @Bindable
@@ -25,6 +28,7 @@ public class Infant extends BaseObservable implements Parcelable {
 
     public Infant(JSONObject object) {
         try {
+            if (object.has("index")) index = object.getInt("index");
             if (object.has("ticket_number")) ticketNo = object.getLong("ticket_number");
             if (object.has("amount")) amount = object.getDouble("amount");
             if (object.has("name")) name = new Name(object.getJSONObject("name"));
@@ -34,6 +38,7 @@ public class Infant extends BaseObservable implements Parcelable {
     }
 
     public Infant(Parcel parcel) {
+        index = parcel.readInt();
         ticketNo = parcel.readLong();
         amount = parcel.readDouble();
 
@@ -43,6 +48,7 @@ public class Infant extends BaseObservable implements Parcelable {
     public JSONObject toJSON() {
         JSONObject object = new JSONObject();
         try {
+            object.put("index", index);
             object.put("ticket_number", ticketNo);
             object.put("amount", amount);
             object.put("name", name.toJSON());
@@ -53,6 +59,7 @@ public class Infant extends BaseObservable implements Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeInt(index);
         parcel.writeLong(ticketNo);
         parcel.writeDouble(amount);
         parcel.writeParcelable(name, flags);
@@ -60,10 +67,15 @@ public class Infant extends BaseObservable implements Parcelable {
 
     public int describeContents() { return 0; }
 
+    public int getIndex() { return index; }
     public long getTicketNo() { return ticketNo; }
     public double getAmount() { return amount; }
     public Name getName() { return name; }
 
+    public void setIndex(int index) {
+        this.index = index;
+        notifyPropertyChanged(BR.index);
+    }
     public void setTicketNo(long ticketNo) {
         this.ticketNo = ticketNo;
         notifyPropertyChanged(BR.ticketNo);

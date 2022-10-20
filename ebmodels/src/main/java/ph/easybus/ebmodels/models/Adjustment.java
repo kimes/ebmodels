@@ -37,6 +37,9 @@ public class Adjustment extends BaseObservable implements Parcelable {
     @Bindable
     private ObservableArrayList<Integer> seatsNotRebook = new ObservableArrayList<>();
 
+    @Bindable
+    private ObservableArrayList<Integer> infantsNotRebook = new ObservableArrayList<>();
+
     public Adjustment() {}
 
     public Adjustment(Parcel parcel) {
@@ -61,8 +64,6 @@ public class Adjustment extends BaseObservable implements Parcelable {
         parcel.readLongArray(dates);
         if (dates[0] > 0) { rebookDate = new Date(dates[0]); }
 
-        // EB-8OIDU4TKCQ
-        // EB-QNTWUPF4IJ
         int size = parcel.readInt();
         int[] seatsData = new int[size];
         parcel.readIntArray(seatsData);
@@ -70,6 +71,15 @@ public class Adjustment extends BaseObservable implements Parcelable {
         seatsNotRebook = new ObservableArrayList<>();
         for (int seat: seatsData) {
             seatsNotRebook.add(seat);
+        }
+
+        int infantsSize = parcel.readInt();
+        int[] infantsData = new int[infantsSize];
+        parcel.readIntArray(infantsData);
+
+        infantsNotRebook = new ObservableArrayList<>();
+        for (int seat : infantsData) {
+            infantsNotRebook.add(seat);
         }
     }
 
@@ -88,7 +98,15 @@ public class Adjustment extends BaseObservable implements Parcelable {
                 JSONArray seatsArray = object.getJSONArray("seatsNotRebook");
                 seatsNotRebook = new ObservableArrayList<>();
                 for (int i = 0; i < seatsArray.length(); i++) {
-                    seatsArray.getInt(i);
+                    seatsNotRebook.add(seatsArray.getInt(i));
+                }
+            }
+
+            if (object.has("infantsNotRebook")) {
+                JSONArray infantsArray = object.getJSONArray("infantsNotRebook");
+                infantsNotRebook = new ObservableArrayList<>();
+                for (int i = 0; i < infantsArray.length(); i++) {
+                    infantsNotRebook.add(infantsArray.getInt(i));
                 }
             }
         } catch (JSONException e) {
@@ -112,6 +130,12 @@ public class Adjustment extends BaseObservable implements Parcelable {
                 seatsArray.put(seatsNotRebook.get(i));
             }
             object.put("seatsNotRebook", seatsArray);
+
+            JSONArray infantsArray = new JSONArray();
+            for (int i = 0; i < infantsNotRebook.size(); i++) {
+                infantsArray.put(infantsNotRebook.get(i));
+            }
+            object.put("infantsNotRebook", infantsArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -132,6 +156,13 @@ public class Adjustment extends BaseObservable implements Parcelable {
         }
         parcel.writeInt(seatsNotRebook.size());
         parcel.writeIntArray(parcelReservedSeats);
+
+        int[] parcelInfants = new int[infantsNotRebook.size()];
+        for (int i = 0; i < infantsNotRebook.size(); i++) {
+            parcelInfants[i] = infantsNotRebook.get(i);
+        }
+        parcel.writeInt(infantsNotRebook.size());
+        parcel.writeIntArray(parcelInfants);
     }
 
     public int describeContents() { return 0; }
@@ -143,6 +174,7 @@ public class Adjustment extends BaseObservable implements Parcelable {
     public String getRebookBy() { return rebookBy; }
     public Date getRebookDate() { return rebookDate; }
     public ObservableArrayList<Integer> getSeatsNotRebook() { return seatsNotRebook; }
+    public ObservableArrayList<Integer> getInfantsNotRebook() { return infantsNotRebook; }
 
     public void setSeatsLeft(boolean seatsLeft) {
         this.seatsLeft = seatsLeft;
@@ -171,6 +203,10 @@ public class Adjustment extends BaseObservable implements Parcelable {
     public void setSeatsNotRebook(ObservableArrayList<Integer> seatsNotRebook) {
         this.seatsNotRebook = seatsNotRebook;
         notifyPropertyChanged(BR.seatsNotRebook);
+    }
+    public void setInfantsNotRebook(ObservableArrayList<Integer> infantsNotRebook) {
+        this.infantsNotRebook = infantsNotRebook;
+        notifyPropertyChanged(BR.infantsNotRebook);
     }
 
     public static final Creator<Adjustment> CREATOR = new Creator<Adjustment>() {
