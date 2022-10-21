@@ -13,6 +13,9 @@ import org.json.JSONObject;
 public class Infant extends BaseObservable implements Parcelable {
 
     @Bindable
+    private boolean selected = true;
+
+    @Bindable
     private int index = 0;
 
     @Bindable
@@ -38,6 +41,10 @@ public class Infant extends BaseObservable implements Parcelable {
     }
 
     public Infant(Parcel parcel) {
+        boolean[] booleans = new boolean[1];
+        parcel.readBooleanArray(booleans);
+        selected = booleans[0];
+
         index = parcel.readInt();
         ticketNo = parcel.readLong();
         amount = parcel.readDouble();
@@ -59,6 +66,7 @@ public class Infant extends BaseObservable implements Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeBooleanArray(new boolean[] { selected });
         parcel.writeInt(index);
         parcel.writeLong(ticketNo);
         parcel.writeDouble(amount);
@@ -67,11 +75,16 @@ public class Infant extends BaseObservable implements Parcelable {
 
     public int describeContents() { return 0; }
 
+    public boolean isSelected() { return selected; }
     public int getIndex() { return index; }
     public long getTicketNo() { return ticketNo; }
     public double getAmount() { return amount; }
     public Name getName() { return name; }
 
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        notifyPropertyChanged(BR.selected);
+    }
     public void setIndex(int index) {
         this.index = index;
         notifyPropertyChanged(BR.index);
