@@ -29,9 +29,14 @@ public class Trip extends BaseObservable implements Parcelable {
     private Bus bus;
     private Date time, date, dateCreated, startDate, expiryDate;
     private ThirdParty thirdParty;
+
+    @Bindable
+    private TripAssign tripAssign = new TripAssign();
+
     private ArrayList<Route> routes = new ArrayList<>();
     private ArrayList<Date> disabledDates = new ArrayList<>();
 
+    public Trip() {}
     public Trip(Parcel parcel) {
         boolean[] booleans = new boolean[2];
         parcel.readBooleanArray(booleans);
@@ -84,6 +89,7 @@ public class Trip extends BaseObservable implements Parcelable {
 
         bus = parcel.readParcelable(Bus.class.getClassLoader());
         thirdParty = parcel.readParcelable(ThirdParty.class.getClassLoader());
+        tripAssign = parcel.readParcelable(TripAssign.class.getClassLoader());
     }
 
     public Trip(JSONObject object, Date date) {
@@ -116,6 +122,10 @@ public class Trip extends BaseObservable implements Parcelable {
 
             if (object.has("third_party"))
                 thirdParty = new ThirdParty(object.getJSONObject("third_party"));
+
+            if (object.has("trip_assign")) {
+                tripAssign = new TripAssign(object.getJSONObject("trip_assign"));
+            }
 
             if (object.has("bus")) {
                 bus = new Bus(object.getJSONObject("bus"));
@@ -151,8 +161,6 @@ public class Trip extends BaseObservable implements Parcelable {
         }
     }
 
-    public Trip() {}
-
     public int describeContents() { return 0; }
 
     public void writeToParcel(Parcel parcel, int flags) {
@@ -175,6 +183,7 @@ public class Trip extends BaseObservable implements Parcelable {
         parcel.writeTypedList(routes);
         parcel.writeParcelable(bus, flags);
         parcel.writeParcelable(thirdParty, flags);
+        parcel.writeParcelable(tripAssign, flags);
     }
 
     public boolean isSpecial() { return special; }
@@ -199,6 +208,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public Date getDateCreated() { return dateCreated; }
     public Bus getBus() { return bus; }
     public ThirdParty getThirdParty() { return thirdParty; }
+    public TripAssign getTripAssign() { return tripAssign; }
     public ArrayList<Date> getDisabledDates() { return disabledDates; }
     public ArrayList<Route> getRoutes() { return routes; }
 
@@ -227,6 +237,10 @@ public class Trip extends BaseObservable implements Parcelable {
     public void setDateCreated(Date dateCreated) { this.dateCreated = dateCreated; }
     public void setBus(Bus bus) { this.bus = bus; }
     public void setThirdParty(ThirdParty thirdParty) { this.thirdParty = thirdParty; }
+    public void setTripAssign(TripAssign tripAssign) {
+        this.tripAssign = tripAssign;
+        notifyPropertyChanged(BR.tripAssign);
+    }
     public void setRoutes(ArrayList<Route> routes) { this.routes = routes; }
     public void setDisabledDates(ArrayList<Date> disabledDates) { this.disabledDates = disabledDates; }
 
