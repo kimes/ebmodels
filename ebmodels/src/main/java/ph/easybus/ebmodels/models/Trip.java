@@ -33,6 +33,9 @@ public class Trip extends BaseObservable implements Parcelable {
     @Bindable
     private TripAssign tripAssign = new TripAssign();
 
+    @Bindable
+    private TripStatus status = new TripStatus();
+
     private ArrayList<Route> routes = new ArrayList<>();
     private ArrayList<Date> disabledDates = new ArrayList<>();
 
@@ -90,6 +93,7 @@ public class Trip extends BaseObservable implements Parcelable {
         bus = parcel.readParcelable(Bus.class.getClassLoader());
         thirdParty = parcel.readParcelable(ThirdParty.class.getClassLoader());
         tripAssign = parcel.readParcelable(TripAssign.class.getClassLoader());
+        status = parcel.readParcelable(TripStatus.class.getClassLoader());
     }
 
     public Trip(JSONObject object, Date date) {
@@ -125,6 +129,10 @@ public class Trip extends BaseObservable implements Parcelable {
 
             if (object.has("trip_assign")) {
                 tripAssign = new TripAssign(object.getJSONObject("trip_assign"));
+            }
+
+            if (object.has("status")) {
+                status = new TripStatus(object.getJSONObject("status"));
             }
 
             if (object.has("bus")) {
@@ -184,6 +192,7 @@ public class Trip extends BaseObservable implements Parcelable {
         parcel.writeParcelable(bus, flags);
         parcel.writeParcelable(thirdParty, flags);
         parcel.writeParcelable(tripAssign, flags);
+        parcel.writeParcelable(status, flags);
     }
 
     public boolean isSpecial() { return special; }
@@ -209,6 +218,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public Bus getBus() { return bus; }
     public ThirdParty getThirdParty() { return thirdParty; }
     public TripAssign getTripAssign() { return tripAssign; }
+    public TripStatus getStatus() { return status; }
     public ArrayList<Date> getDisabledDates() { return disabledDates; }
     public ArrayList<Route> getRoutes() { return routes; }
 
@@ -240,6 +250,10 @@ public class Trip extends BaseObservable implements Parcelable {
     public void setTripAssign(TripAssign tripAssign) {
         this.tripAssign = tripAssign;
         notifyPropertyChanged(BR.tripAssign);
+    }
+    public void setStatus(TripStatus status) {
+        this.status = status;
+        notifyPropertyChanged(BR.status);
     }
     public void setRoutes(ArrayList<Route> routes) { this.routes = routes; }
     public void setDisabledDates(ArrayList<Date> disabledDates) { this.disabledDates = disabledDates; }
