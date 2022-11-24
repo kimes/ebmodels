@@ -61,6 +61,9 @@ public class Reservation extends BaseObservable implements Parcelable {
     @Bindable
     private ObservableArrayList<Infant> infants = new ObservableArrayList<>();
 
+    @Bindable
+    private ObservableArrayList<Reservation> children = new ObservableArrayList<>();
+
     public Reservation() {}
 
     public Reservation(Reservation reservation) {
@@ -122,6 +125,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         reservedSeats = reservation.getReservedSeats();
         passengers = reservation.getPassengers();
         infants = reservation.getInfants();
+        children = reservation.getChildren();
     }
 
     public Reservation(String firstName, String lastName, String email) {
@@ -216,6 +220,13 @@ public class Reservation extends BaseObservable implements Parcelable {
             infs.add((Infant)parcelable);
         }
         infants = infs;
+
+        Parcelable[] childrenParcel = parcel.readParcelableArray(Reservation.class.getClassLoader());
+        ObservableArrayList<Reservation> childs = new ObservableArrayList<>();
+        for (Parcelable parcelable : childrenParcel) {
+            childs.add((Reservation)parcelable);
+        }
+        children = childs;
     }
 
     public Reservation(JSONObject object) {
@@ -331,6 +342,15 @@ public class Reservation extends BaseObservable implements Parcelable {
                     infants.add(new Infant(infantsJSONArray.getJSONObject(i)));
                 }
                 this.infants = infants;
+            }
+
+            if (object.has("children")) {
+                JSONArray childrenJSONArray = object.getJSONArray("children");
+                ObservableArrayList<Reservation> childs = new ObservableArrayList<>();
+                for (int i = 0; i < childrenJSONArray.length(); i++) {
+                    childs.add(new Reservation(childrenJSONArray.getJSONObject(i)));
+                }
+                children = childs;
             }
 
             if (object.has("reserved_seats")) {
@@ -488,6 +508,12 @@ public class Reservation extends BaseObservable implements Parcelable {
             infs[i] = infants.get(i);
         }
         parcel.writeParcelableArray(infs, flags);
+
+        Reservation[] childArray = new Reservation[children.size()];
+        for (int i = 0; i < children.size(); i++) {
+            childArray[i] = children.get(i);
+        }
+        parcel.writeParcelableArray(childArray, flags);
     }
 
     public int describeContents() { return 0; }
@@ -549,6 +575,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public ThirdParty getThirdParty() { return thirdParty; }
     public ObservableArrayList<Passenger> getPassengers() { return passengers; }
     public ObservableArrayList<Infant> getInfants() { return infants; }
+    public ObservableArrayList<Reservation> getChildren() { return children; }
 
     public void setWebReservation(boolean webReservation) {
         this.webReservation = webReservation;
@@ -695,6 +722,10 @@ public class Reservation extends BaseObservable implements Parcelable {
     public void setInfants(ObservableArrayList<Infant> infants) {
         this.infants = infants;
         notifyPropertyChanged(BR.infants);
+    }
+    public void setChildren(ObservableArrayList<Reservation> children) {
+        this.children = children;
+        notifyPropertyChanged(BR.children);
     }
     public void setReservedSeats(ObservableArrayList<Integer> reservedSeats) {
         this.reservedSeats = reservedSeats;
