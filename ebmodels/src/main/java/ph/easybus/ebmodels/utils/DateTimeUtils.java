@@ -83,10 +83,33 @@ public class DateTimeUtils {
         return utcDate;
     }
 
+    public static Date toDate(String date, String format) {
+        Date utcDate = Calendar.getInstance().getTime();
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.getDefault());
+            utcDate = formatter.parse(date);
+        } catch (ParseException | NullPointerException e) {
+            e.printStackTrace();
+        }
+        return utcDate;
+    }
+
     public static Date toDateUtc(String date) {
         Date utcDate = Calendar.getInstance().getTime();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(ISO_FORMAT, Locale.getDefault());
+            formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+            utcDate = formatter.parse(date);
+        } catch (ParseException | NullPointerException e) {
+            e.printStackTrace();
+        }
+        return utcDate;
+    }
+
+    public static Date toDateUtc(String date, String format) {
+        Date utcDate = Calendar.getInstance().getTime();
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.getDefault());
             formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
             utcDate = formatter.parse(date);
         } catch (ParseException | NullPointerException e) {
