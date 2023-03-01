@@ -59,7 +59,7 @@ public class GroupedAgentTransaction extends BaseObservable implements Parcelabl
             if (object.has("type")) type = object.getInt("type");
             if (object.has("total_seats")) totalSeats = object.getInt("total_seats");
             if (object.has("amount")) amount = object.getDouble("amount");
-            if (object.has("date")) date = DateTimeUtils.toDate(object.getString("date"), "YYYY-MM-dd");
+            if (object.has("date")) date = DateTimeUtils.toDate(object.getString("date"), "yyyy-MM-dd");
 
             if (object.has("reservations")) {
                 JSONArray resArray = object.getJSONArray("reservations");

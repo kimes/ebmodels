@@ -41,7 +41,7 @@ public class GroupedReservation extends BaseObservable implements Parcelable {
 
     public GroupedReservation(JSONObject object) {
         try {
-            if (object.has("date")) date = DateTimeUtils.toDate(object.getString("date"), "YYYY-MM-dd");
+            if (object.has("date")) date = DateTimeUtils.toDate(object.getString("date"), "yyyy-MM-dd");
 
             if (object.has("reservations")) {
                 JSONArray resArray = object.getJSONArray("reservations");
