@@ -15,7 +15,7 @@ public class User extends BaseObservable implements Parcelable {
     @Bindable
     private boolean isAgent = false;
 
-    private int id, status = 0, role = 0;
+    private int id, status = 0, role = 0, reservationsAll = 0, reservationsMonthly = 0, reservationsWeekly = 0;
     private String mongoId, email, password, linerName = "", office = "", shortAlias = "0", hashedPassword,
         provider, salt;
 
@@ -51,6 +51,10 @@ public class User extends BaseObservable implements Parcelable {
 
             if (object.has("isAgent")) isAgent = object.getBoolean("isAgent");
             if (object.has("agent")) agent = new Agent(object.getJSONObject("agent"));
+
+            if (object.has("reservations_all")) reservationsAll = object.getInt("reservations_all");
+            if (object.has("reservations_monthly")) reservationsMonthly = object.getInt("reservations_monthly");
+            if (object.has("reservations_weekly")) reservationsWeekly = object.getInt("reservations_weekly");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -61,11 +65,14 @@ public class User extends BaseObservable implements Parcelable {
         parcel.readBooleanArray(booleans);
         isAgent = booleans[0];
 
-        int[] ints = new int[3];
+        int[] ints = new int[6];
         parcel.readIntArray(ints);
         id = ints[0];
         status = ints[1];
         role = ints[2];
+        reservationsAll = ints[3];
+        reservationsMonthly = ints[4];
+        reservationsWeekly = ints[5];
 
         String[] strings = new String[9];
         parcel.readStringArray(strings);
@@ -109,7 +116,9 @@ public class User extends BaseObservable implements Parcelable {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { isAgent });
-        parcel.writeIntArray(new int[] { id, status, role });
+        parcel.writeIntArray(new int[] {
+                id, status, role,
+                reservationsAll, reservationsMonthly, reservationsWeekly });
         parcel.writeStringArray(new String[] {
                 mongoId, email, password, linerName, office, shortAlias, hashedPassword,
                 provider, salt
@@ -125,6 +134,9 @@ public class User extends BaseObservable implements Parcelable {
     public boolean getIsAgent() { return isAgent; }
     public int getId() { return id; }
     public int getStatus() { return status; }
+    public int getReservationsAll() { return reservationsAll; }
+    public int getReservationsMonthly() { return reservationsMonthly; }
+    public int getReservationsWeekly() { return reservationsWeekly; }
     public int getRole() { return role; }
     public String getMongoId() { return mongoId; }
     public String getEmail() { return email; }
@@ -146,6 +158,9 @@ public class User extends BaseObservable implements Parcelable {
     public void setId(int id) { this.id = id; }
     public void setStatus(int status) { this.status = status; }
     public void setRole(int role) { this.role = role; }
+    public void setReservationsAll(int reservationsAll) { this.reservationsAll = reservationsAll; }
+    public void setReservationsMonthly(int reservationsMonthly) { this.reservationsMonthly = reservationsMonthly; }
+    public void setReservationsWeekly(int reservationsWeekly) { this.reservationsWeekly = reservationsWeekly; }
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setEmail(String email) { this.email = email; }
     public void setPassword(String password) { this.password = password; }
