@@ -17,7 +17,7 @@ public class User extends BaseObservable implements Parcelable {
 
     private int id, status = 0, role = 0, reservationsAll = 0, reservationsMonthly = 0, reservationsWeekly = 0;
     private String mongoId, email, password, linerName = "", office = "", shortAlias = "0", hashedPassword,
-        provider, salt;
+        provider, salt, mobile, sellerCode;
 
     private Name name = new Name();
     private Liner liner = new Liner();
@@ -47,6 +47,9 @@ public class User extends BaseObservable implements Parcelable {
             if (object.has("salt")) salt = object.getString("salt");
             if (object.has("name")) name = new Name(object.getJSONObject("name"));
 
+            if (object.has("mobile")) mobile = object.getString("mobile");
+            if (object.has("seller_code")) sellerCode = object.getString("seller_code");
+
             if (object.has("liner")) liner = new Liner(object.getJSONObject("liner"));
 
             if (object.has("isAgent")) isAgent = object.getBoolean("isAgent");
@@ -74,7 +77,7 @@ public class User extends BaseObservable implements Parcelable {
         reservationsMonthly = ints[4];
         reservationsWeekly = ints[5];
 
-        String[] strings = new String[9];
+        String[] strings = new String[11];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         email = strings[1];
@@ -85,6 +88,8 @@ public class User extends BaseObservable implements Parcelable {
         hashedPassword = strings[6];
         provider = strings[7];
         salt = strings[8];
+        mobile = strings[9];
+        sellerCode = strings[10];
 
         name = parcel.readParcelable(Name.class.getClassLoader());
         liner = parcel.readParcelable(Liner.class.getClassLoader());
@@ -104,6 +109,8 @@ public class User extends BaseObservable implements Parcelable {
             object.put("hashedPassword", hashedPassword);
             object.put("provider", provider);
             object.put("salt", salt);
+            object.put("mobile", mobile);
+            object.put("seller_code", sellerCode);
             object.put("isAgent", isAgent);
             object.put("name", name.toJSON());
             object.put("liner", liner.toJSON());
@@ -121,7 +128,7 @@ public class User extends BaseObservable implements Parcelable {
                 reservationsAll, reservationsMonthly, reservationsWeekly });
         parcel.writeStringArray(new String[] {
                 mongoId, email, password, linerName, office, shortAlias, hashedPassword,
-                provider, salt
+                provider, salt, mobile, sellerCode
         });
 
         parcel.writeParcelable(name, flags);
@@ -147,6 +154,8 @@ public class User extends BaseObservable implements Parcelable {
     public String getHashedPassword() { return hashedPassword; }
     public String getProvider() { return provider; }
     public String getSalt() { return salt; }
+    public String getMobile() { return mobile; }
+    public String getSellerCode() { return sellerCode; }
     public Name getName() { return name; }
     public Liner getLiner() { return liner; }
     public Agent getAgent() { return agent; }
@@ -170,6 +179,8 @@ public class User extends BaseObservable implements Parcelable {
     public void setHashedPassword(String hashedPassword) { this.hashedPassword = hashedPassword; }
     public void setProvider(String provider) { this.provider = provider; }
     public void setSalt(String salt) { this.salt = salt; }
+    public void setMobile(String mobile) { this.mobile = mobile; }
+    public void setSellerCode(String sellerCode) { this.sellerCode = sellerCode; }
     public void setName(Name name) { this.name = name; }
     public void setLiner(Liner liner) { this.liner = liner; }
     public void setAgent(Agent agent) {
