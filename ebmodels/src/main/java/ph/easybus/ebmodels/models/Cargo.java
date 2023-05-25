@@ -19,8 +19,11 @@ import ph.easybus.ebmodels.utils.DateTimeUtils;
 
 public class Cargo extends BaseObservable implements Parcelable {
 
+    public static final int TYPE_DEFAULT = 0, TYPE_CHECKED_IN = 1;
+
     @Bindable
-    private int id = 0, status = 0, shipmentStatus = 0, packagesCount = 0;
+    private int id = 0, status = 0, shipmentStatus = 0, packagesCount = 0,
+            type = TYPE_DEFAULT, paxCount = 0;
 
     @Bindable
     private double declaredValue = 0, totalAmount = 0, totalWeight = 0, systemFee = 0, processingFee = 0;
@@ -40,12 +43,14 @@ public class Cargo extends BaseObservable implements Parcelable {
     public Cargo() {}
 
     public Cargo(Parcel parcel) {
-        int[] ints = new int[4];
+        int[] ints = new int[6];
         parcel.readIntArray(ints);
         id = ints[0];
         status = ints[1];
         shipmentStatus = ints[2];
         packagesCount = ints[3];
+        type = ints[4];
+        paxCount = ints[5];
 
         double[] doubles = new double[5];
         parcel.readDoubleArray(doubles);
@@ -88,6 +93,9 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("status")) status = object.getInt("status");
             if (object.has("shipment_status")) shipmentStatus = object.getInt("shipment_status");
             if (object.has("packages_count")) packagesCount = object.getInt("packages_count");
+            if (object.has("type")) type = object.getInt("type");
+            if (object.has("pax_count")) paxCount = object.getInt("pax_count");
+
             if (object.has("declared_value")) declaredValue = object.getDouble("declared_value");
             if (object.has("total_amount")) totalAmount = object.getDouble("total_amount");
             if (object.has("total_weight")) totalWeight = object.getDouble("total_weight");
@@ -104,7 +112,6 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("payment_type")) paymentType = object.getString("payment_type");
             if (object.has("payment_remarks")) paymentRemarks = object.getString("payment_remarks");
             if (object.has("shipped_by")) shippedBy = object.getString("shipped_by");
-
 
             if (object.has("drop_off_date")) {
                 dropOffDate = DateTimeUtils.toDateUtc(object.getString("drop_off_date"));
@@ -137,6 +144,9 @@ public class Cargo extends BaseObservable implements Parcelable {
             object.put("status", status);
             object.put("shipment_status", shipmentStatus);
             object.put("packages_count", packagesCount);
+            object.put("type", type);
+            object.put("pax_count", paxCount);
+
             object.put("declared_value", declaredValue);
             object.put("total_amount", totalAmount);
             object.put("total_weight", totalWeight);
@@ -170,7 +180,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeIntArray(new int[] { id, status, shipmentStatus, packagesCount });
+        parcel.writeIntArray(new int[] { id, status, shipmentStatus, packagesCount, type, paxCount });
         parcel.writeDoubleArray(new double[] { declaredValue, totalAmount, totalWeight,
                 systemFee, processingFee });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, description, linerName,
@@ -189,6 +199,8 @@ public class Cargo extends BaseObservable implements Parcelable {
     public int getStatus() { return status; }
     public int getShipmentStatus() { return shipmentStatus; }
     public int getPackagesCount() { return packagesCount; }
+    public int getType() { return type; }
+    public int getPaxCount() { return paxCount; }
     public double getDeclaredValue() { return declaredValue; }
     public double getTotalAmount() { return totalAmount; }
     public double getTotalWeight() { return totalWeight; }
@@ -226,6 +238,16 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void setPackagesCount(int packagesCount) {
         this.packagesCount = packagesCount;
         notifyPropertyChanged(BR.packagesCount);
+    }
+
+    public void setType(int type) {
+        this.type = type;
+        notifyPropertyChanged(BR.type);
+    }
+
+    public void setPaxCount(int paxCount) {
+        this.paxCount = paxCount;
+        notifyPropertyChanged(BR.paxCount);
     }
 
     public void setDeclaredValue(double declaredValue) {
