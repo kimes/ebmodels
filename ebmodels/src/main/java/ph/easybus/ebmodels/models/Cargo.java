@@ -31,7 +31,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     @Bindable
     private String mongoId, origin, destination, description, linerName,
             senderMobile = "", receiverMobile = "", referenceNumber, paymentType = "Cash", paymentRemarks,
-            shippedBy, paymentQr = "";
+            shippedBy, paymentQr = "", blNumber;
 
     private Date dropOffDate = Calendar.getInstance().getTime();
 
@@ -60,7 +60,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         systemFee = doubles[3];
         processingFee = doubles[4];
 
-        String[] strings = new String[12];
+        String[] strings = new String[13];
         mongoId = strings[0];
         origin = strings[1];
         destination = strings[2];
@@ -73,6 +73,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         paymentRemarks = strings[9];
         shippedBy = strings[10];
         paymentQr = strings[11];
+        blNumber = strings[12];
 
         long[] longs = new long[1];
         parcel.readLongArray(longs);
@@ -112,6 +113,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("payment_type")) paymentType = object.getString("payment_type");
             if (object.has("payment_remarks")) paymentRemarks = object.getString("payment_remarks");
             if (object.has("shipped_by")) shippedBy = object.getString("shipped_by");
+            if (object.has("bl_number")) blNumber = object.getString("bl_number");
 
             if (object.has("drop_off_date")) {
                 dropOffDate = DateTimeUtils.toDateUtc(object.getString("drop_off_date"));
@@ -163,6 +165,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             object.put("payment_type", paymentType);
             object.put("payment_remarks", paymentRemarks);
             object.put("shipped_by", shippedBy);
+            object.put("bl_number", blNumber);
 
             object.put("drop_off_date", DateTimeUtils.toISODateUtc(dropOffDate));
             object.put("sender_name", senderName.toJSON());
@@ -185,7 +188,7 @@ public class Cargo extends BaseObservable implements Parcelable {
                 systemFee, processingFee });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, description, linerName,
                 senderMobile, receiverMobile, referenceNumber, paymentType, paymentRemarks,
-                shippedBy, paymentQr });
+                shippedBy, paymentQr, blNumber });
         parcel.writeLongArray(new long[] { dropOffDate.getTime() });
 
         parcel.writeParcelable(senderName, flags);
@@ -218,6 +221,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public String getPaymentRemarks() { return paymentRemarks; }
     public String getShippedBy() { return shippedBy; }
     public String getPaymentQr() { return paymentQr; }
+    public String getBlNumber() { return blNumber; }
     public Date getDropOffDate() { return dropOffDate; }
     public Name getSenderName() { return senderName; }
     public Name getReceiverName() { return receiverName; }
@@ -320,6 +324,11 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void setPaymentRemarks(String paymentRemarks) {
         this.paymentRemarks = paymentRemarks;
         notifyPropertyChanged(BR.paymentRemarks);
+    }
+
+    public void setBlNumber(String blNumber) {
+        this.blNumber = blNumber;
+        notifyPropertyChanged(BR.blNumber);
     }
 
     public void setShippedBy(String shippedBy) {
