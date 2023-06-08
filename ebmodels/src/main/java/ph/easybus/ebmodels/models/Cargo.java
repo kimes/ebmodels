@@ -40,6 +40,9 @@ public class Cargo extends BaseObservable implements Parcelable {
 
     private ArrayList<String> images = new ArrayList<>();
 
+    @Bindable
+    private ArrayList<CargoStatusLog> statusLogs = new ArrayList<>();
+
     public Cargo() {}
 
     public Cargo(Parcel parcel) {
@@ -85,6 +88,10 @@ public class Cargo extends BaseObservable implements Parcelable {
         ArrayList<String> i = new ArrayList<>();
         parcel.readStringList(i);
         images = i;
+
+        ArrayList<CargoStatusLog> c = new ArrayList<>();
+        parcel.readParcelableList(c, CargoStatusLog.class.getClassLoader());
+        statusLogs = c;
     }
 
     public Cargo(JSONObject object) {
@@ -132,6 +139,14 @@ public class Cargo extends BaseObservable implements Parcelable {
                 JSONArray array = object.getJSONArray("images");
                 for (int i = 0; i < array.length(); i++) {
                     images.add(array.getString(i));
+                }
+            }
+
+            if (object.has("status_logs")) {
+                statusLogs = new ArrayList<>();
+                JSONArray array = object.getJSONArray("status_logs");
+                for (int i = 0; i < array.length(); i++) {
+                    statusLogs.add(new CargoStatusLog(array.getJSONObject(i)));
                 }
             }
         } catch (JSONException e) {
@@ -194,6 +209,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         parcel.writeParcelable(senderName, flags);
         parcel.writeParcelable(receiverName, flags);
         parcel.writeStringList(images);
+        parcel.writeParcelableList(statusLogs, flags);
     }
 
     public int describeContents() { return 0; }
@@ -226,6 +242,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public Name getSenderName() { return senderName; }
     public Name getReceiverName() { return receiverName; }
     public ArrayList<String> getImages() { return images; }
+    public ArrayList<CargoStatusLog> getStatusLogs() { return statusLogs; }
 
     public void setId(int id) { this.id = id; }
 
@@ -352,6 +369,10 @@ public class Cargo extends BaseObservable implements Parcelable {
 
     public void setDropOffDate(Date dropOffDate) { this.dropOffDate = dropOffDate; }
     public void setImages(ArrayList<String> images) { this.images = images; }
+    public void setStatusLogs(ArrayList<CargoStatusLog> statusLogs) {
+        this.statusLogs = statusLogs;
+        notifyPropertyChanged(BR.statusLogs);
+    }
 
     public static final Creator<Cargo> CREATOR = new Creator<Cargo>() {
         public Cargo createFromParcel(Parcel parcel) { return new Cargo(parcel); }
