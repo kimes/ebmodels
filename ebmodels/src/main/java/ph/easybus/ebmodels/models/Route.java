@@ -62,12 +62,14 @@ public class Route implements Parcelable {
     public int getType() { return type; }
     public double getFareDeduct() { return fareDeduct; }
     public double getKmp() { return kmp; }
+    public double getTimeAdjustment() { return timeAdjustment; }
     public String getName() { return name; }
     public void setId(int id) { this.id = id; }
     public void setName(String name) { this.name = name; }
     public void setType(int type) { this.type = type; }
     public void setFareDeduct(double fareDeduct) { this.fareDeduct = fareDeduct; }
     public void setKmp(double kmp) { this.kmp = kmp; }
+    public void setTimeAdjustment(double timeAdjustment) { this.timeAdjustment = timeAdjustment; }
     public String toString() { return name; }
 
     public static final Creator<Route> CREATOR = new Creator<Route>() {
