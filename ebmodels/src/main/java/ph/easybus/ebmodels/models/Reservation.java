@@ -36,7 +36,8 @@ public class Reservation extends BaseObservable implements Parcelable {
             transactionId = 0, printCount = 0;
 
     @Bindable
-    private double webFee, farePerSeat, totalFare, penaltyFee, ferryFare = 0, systemFee;
+    private double webFee, farePerSeat, totalFare, penaltyFee, ferryFare = 0,
+            systemFee, boardingTimeAdjustment = 0;
 
     @Bindable
     private Date reservedDate = Calendar.getInstance().getTime(), expiresAt, printedDate, openTicketDate;
@@ -86,6 +87,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         penaltyFee = reservation.getPenaltyFee();
         ferryFare = reservation.getFerryFare();
         systemFee = reservation.getSystemFee();
+        boardingTimeAdjustment = reservation.getBoardingTimeAdjustment();
 
         mongoId = reservation.getMongoId();
         email = reservation.getEmail();
@@ -158,7 +160,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         printedBy = strings[19];
         openTicketBy = strings[20];
 
-        double[] doubles = new double[6];
+        double[] doubles = new double[7];
         parcel.readDoubleArray(doubles);
         totalFare = doubles[0];
         webFee = doubles[1];
@@ -166,6 +168,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         penaltyFee = doubles[3];
         ferryFare = doubles[4];
         systemFee = doubles[5];
+        boardingTimeAdjustment = doubles[6];
 
         int size = parcel.readInt();
         int[] seatsData = new int[size];
@@ -297,6 +300,8 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (object.has("system_fee")) systemFee = object.getDouble("system_fee");
             if (object.has("penalty_fee")) penaltyFee = object.getDouble("penalty_fee");
             if (object.has("ferry_fare")) ferryFare = object.getDouble("ferry_fare");
+            if (object.has("boarding_time_adjustment"))
+                boardingTimeAdjustment = object.getDouble("boarding_time_adjustment");
             if (object.has("discount")) discount = new Discount(object.getJSONObject("discount"));
             if (object.has("fees")) fees = new Fees(object.getJSONObject("fees"));
 
@@ -429,6 +434,8 @@ public class Reservation extends BaseObservable implements Parcelable {
 
             object.put("ferry_fare", ferryFare);
 
+            object.put("boarding_time_adjustment", boardingTimeAdjustment);
+
             if (bus != null) object.put("bus", bus.toJSON());
             if (adjustment != null) object.put("adjustments", adjustment.toJSON());
             if (thirdParty != null) object.put("third_party", thirdParty.toJSON());
@@ -475,7 +482,7 @@ public class Reservation extends BaseObservable implements Parcelable {
                 confirmationCode, referenceNumber, paymentType, paymentRemarks, receiptNo,
                 remarks, otherDetails, paymentQr, sellerCode, printedBy, openTicketBy });
         parcel.writeDoubleArray(new double[] { totalFare, webFee, farePerSeat,
-                penaltyFee, ferryFare, systemFee });
+                penaltyFee, ferryFare, systemFee, boardingTimeAdjustment });
 
         int[] parcelReservedSeats = new int[reservedSeats.size()];
         for (int i = 0; i < reservedSeats.size(); i++) {
@@ -537,6 +544,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public double getPenaltyFee() { return penaltyFee; }
     public double getFerryFare() { return ferryFare; }
     public double getSystemFee() { return systemFee; }
+    public double getBoardingTimeAdjustment() { return boardingTimeAdjustment; }
     public String getMongoId() { return mongoId; }
     public String getReceiptNo() { return receiptNo; }
     public String getConfirmationCode() { return confirmationCode; }
@@ -640,6 +648,10 @@ public class Reservation extends BaseObservable implements Parcelable {
     public void setSystemFee(double systemFee) {
         this.systemFee = systemFee;
         notifyPropertyChanged(BR.systemFee);
+    }
+    public void setBoardingTimeAdjustment(double boardingTimeAdjustment) {
+        this.boardingTimeAdjustment = boardingTimeAdjustment;
+        notifyPropertyChanged(BR.boardingTimeAdjustment);
     }
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setReceiptNo(String receiptNo) { this.receiptNo = receiptNo; }

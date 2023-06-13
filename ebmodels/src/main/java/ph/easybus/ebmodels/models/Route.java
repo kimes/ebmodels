@@ -12,7 +12,7 @@ import org.json.JSONObject;
 public class Route implements Parcelable {
 
     private int id, type;
-    private double fareDeduct, kmp;
+    private double fareDeduct, kmp, timeAdjustment = 0;
     private String name;
 
     public Route() {}
@@ -23,10 +23,11 @@ public class Route implements Parcelable {
         id = ints[0];
         type = ints[1];
 
-        double[] doubles = new double[2];
+        double[] doubles = new double[3];
         parcel.readDoubleArray(doubles);
         fareDeduct = doubles[0];
         kmp = doubles[1];
+        timeAdjustment = doubles[2];
 
         name = parcel.readString();
     }
@@ -41,6 +42,7 @@ public class Route implements Parcelable {
         try {
             if (object.has("type")) type = object.getInt("type");
             if (object.has("kmp")) kmp = object.getDouble("kmp");
+            if (object.has("time_adjustment")) timeAdjustment = object.getDouble("time_adjustment");
             if (object.has("fare_deduct")) fareDeduct = object.getDouble("fare_deduct");
             if (object.has("name")) name = object.getString("name");
         } catch (JSONException e) {
@@ -52,7 +54,7 @@ public class Route implements Parcelable {
 
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeIntArray(new int[] { id, type });
-        parcel.writeDoubleArray(new double[] { fareDeduct, kmp });
+        parcel.writeDoubleArray(new double[] { fareDeduct, kmp, timeAdjustment });
         parcel.writeString(name);
     }
 
