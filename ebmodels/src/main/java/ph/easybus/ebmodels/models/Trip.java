@@ -144,13 +144,15 @@ public class Trip extends BaseObservable implements Parcelable {
                 ArrayList<Route> routeArray = new ArrayList<>();
                 for (int j = 0; j < routeJSONArray.length(); j++) {
                     JSONObject routeObject = routeJSONArray.getJSONObject(j);
+                    Route nRoute = new Route(routeObject);
+                    /*
                     int type = 0;
                     double fareDeduct = 0.0;
                     String name = "";
                     if (routeObject.has("type")) type = routeObject.getInt("type");
                     if (routeObject.has("fare_deduct")) fareDeduct = routeObject.getDouble("fare_deduct");
                     if (routeObject.has("name")) name = routeObject.getString("name");
-                    Route nRoute = new Route(name, fareDeduct, type);
+                    Route nRoute = new Route(name, fareDeduct, type); */
                     routeArray.add(nRoute);
                 }
                 routes = routeArray;
