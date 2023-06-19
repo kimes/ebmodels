@@ -38,6 +38,9 @@ public class Cargo extends BaseObservable implements Parcelable {
     @Bindable
     private Name senderName = new Name(), receiverName = new Name();
 
+    @Bindable
+    private Trip trip;
+
     private ArrayList<String> images = new ArrayList<>();
 
     @Bindable
@@ -84,6 +87,8 @@ public class Cargo extends BaseObservable implements Parcelable {
 
         senderName = parcel.readParcelable(Name.class.getClassLoader());
         receiverName = parcel.readParcelable(Name.class.getClassLoader());
+
+        trip = parcel.readParcelable(Trip.class.getClassLoader());
 
         ArrayList<String> i = new ArrayList<>();
         parcel.readStringList(i);
@@ -132,6 +137,11 @@ public class Cargo extends BaseObservable implements Parcelable {
 
             if (object.has("receiver_name")) {
                 receiverName = new Name(object.getJSONObject("receiver_name"));
+            }
+
+            if (object.has("trip")) {
+                Date tripDate = DateTimeUtils.toDate(object.getString("trip_date"));
+                trip = new Trip(object.getJSONObject("trip"), tripDate);
             }
 
             if (object.has("images")) {
@@ -208,6 +218,7 @@ public class Cargo extends BaseObservable implements Parcelable {
 
         parcel.writeParcelable(senderName, flags);
         parcel.writeParcelable(receiverName, flags);
+        parcel.writeParcelable(trip, flags);
         parcel.writeStringList(images);
         parcel.writeParcelableList(statusLogs, flags);
     }
@@ -241,6 +252,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public Date getDropOffDate() { return dropOffDate; }
     public Name getSenderName() { return senderName; }
     public Name getReceiverName() { return receiverName; }
+    public Trip getTrip() { return trip; }
     public ArrayList<String> getImages() { return images; }
     public ArrayList<CargoStatusLog> getStatusLogs() { return statusLogs; }
 
@@ -361,6 +373,11 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void setReceiverName(Name receiverName) {
         this.receiverName = receiverName;
         notifyPropertyChanged(BR.receiverName);
+    }
+
+    public void setTrip(Trip trip) {
+        this.trip = trip;
+        notifyPropertyChanged(BR.trip);
     }
 
     public void setPaymentQr(String paymentQr) {
