@@ -14,7 +14,11 @@ import java.util.ArrayList;
 
 public class CargoFareMatrix implements Parcelable {
 
-    private String mongoId = "", name = "", origin = "", linerName = "";
+    private double minWeight = 0;
+    private String mongoId = "", name = "", origin = "", linerName = "",
+        portersFee = "", systemFee = "",
+        baseAmountRegular = "", baseAmountFixed = "",
+        totalAmountRegular = "", totalAmountFixed = "";
     private ArrayList<Double> regularRates = new ArrayList<>();
     private ArrayList<String> destinations = new ArrayList<>();
     private ArrayList<CargoFixedRate> fixedRates = new ArrayList<>();
@@ -52,6 +56,23 @@ public class CargoFareMatrix implements Parcelable {
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("liner_name")) linerName = object.getString("liner_name");
 
+            if (object.has("min_weight")) minWeight = object.getDouble("min_weight");
+
+            if (object.has("porters_fee"))
+                portersFee = object.getString("porters_fee");
+            if (object.has("system_fee"))
+                systemFee = object.getString("system_fee");
+
+            if (object.has("base_amount_regular"))
+                baseAmountRegular = object.getString("base_amount_regular");
+            if (object.has("base_amount_fixed"))
+                baseAmountFixed = object.getString("base_amount_fixed");
+
+            if (object.has("total_amount_regular"))
+                totalAmountRegular = object.getString("total_amount_regular");
+            if (object.has("total_amount_fixed"))
+                totalAmountFixed = object.getString("total_amount_fixed");
+
             if (object.has("regular_rates")) {
                 JSONArray regRates = object.getJSONArray("regular_rates");
                 regularRates = new ArrayList<>();
@@ -82,7 +103,10 @@ public class CargoFareMatrix implements Parcelable {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeStringArray(new String[] { mongoId, name, origin, linerName });
+        parcel.writeDoubleArray(new double[] { minWeight });
+        parcel.writeStringArray(new String[] { mongoId, name, origin, linerName,
+            portersFee, systemFee, baseAmountRegular, baseAmountFixed,
+            totalAmountRegular, totalAmountFixed });
 
         double[] regRates = new double[regularRates.size()];
         for (int i = 0; i < regularRates.size(); i++) {
@@ -103,6 +127,14 @@ public class CargoFareMatrix implements Parcelable {
             object.put("name", name);
             object.put("origin", origin);
             object.put("liner_name", linerName);
+
+            object.put("min_weight", minWeight);
+            object.put("porters_fee", portersFee);
+            object.put("system_fee", systemFee);
+            object.put("base_amount_regular", baseAmountRegular);
+            object.put("base_amount_fixed", baseAmountFixed);
+            object.put("total_amount_regular", totalAmountRegular);
+            object.put("total_amount_fixed", totalAmountFixed);
 
             JSONArray regRates = new JSONArray();
             for (int i = 0; i < regularRates.size(); i++) {
