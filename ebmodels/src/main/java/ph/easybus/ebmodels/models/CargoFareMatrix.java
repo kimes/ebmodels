@@ -165,6 +165,16 @@ public class CargoFareMatrix implements Parcelable {
     public String getName() { return name; }
     public String getOrigin() { return origin; }
     public String getLinerName() { return linerName; }
+
+    public double getMinWeight() { return minWeight; }
+    public String getPortersFee() { return portersFee; }
+    public String getSystemFee() { return systemFee; }
+    public String getBaseAmountRegular() { return baseAmountRegular; }
+    public String getBaseAmountFixed() { return baseAmountFixed; }
+    public String getTotalAmountRegular() { return totalAmountRegular; }
+    public String getTotalAmountFixed() { return totalAmountFixed; }
+
+
     public ArrayList<Double> getRegularRates() { return regularRates; }
     public ArrayList<String> getDestinations() { return destinations; }
     public ArrayList<CargoFixedRate> getFixedRates() { return fixedRates; }
