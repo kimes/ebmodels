@@ -183,6 +183,13 @@ public class CargoFareMatrix implements Parcelable {
     public void setName(String name) { this.name = name; }
     public void setOrigin(String origin) { this.origin = origin; }
     public void setLinerName(String linerName) { this.linerName = linerName; }
+    public void setMinWeight(double minWeight) { this.minWeight = minWeight; }
+    public void setPortersFee(String portersFee) { this.portersFee = portersFee; }
+    public void setSystemFee(String systemFee) { this.systemFee = systemFee; }
+    public void setBaseAmountRegular(String baseAmountRegular) { this.baseAmountRegular = baseAmountRegular; }
+    public void setBaseAmountFixed(String baseAmountFixed) { this.baseAmountFixed = baseAmountFixed; }
+    public void setTotalAmountRegular(String totalAmountRegular) { this.totalAmountRegular = totalAmountRegular; }
+    public void setTotalAmountFixed(String totalAmountFixed) { this.totalAmountFixed = totalAmountFixed; }
     public void setRegularRates(ArrayList<Double> regularRates) { this.regularRates = regularRates; }
     public void setDestinations(ArrayList<String> destinations) { this.destinations = destinations; }
     public void setFixedRates(ArrayList<CargoFixedRate> fixedRates) {
