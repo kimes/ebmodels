@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class CargoFixedRate extends BaseObservable implements Parcelable {
 
+    private double weight = 0;
     private String item;
     private ArrayList<Double> rates = new ArrayList<>();
 
@@ -25,6 +26,7 @@ public class CargoFixedRate extends BaseObservable implements Parcelable {
     public CargoFixedRate(JSONObject object) {
         try {
             if (object.has("item")) item = object.getString("item");
+            if (object.has("weight")) weight = object.getDouble("weight");
 
             if (object.has("rates")) {
                 JSONArray ratesArray = object.getJSONArray("rates");
@@ -41,6 +43,8 @@ public class CargoFixedRate extends BaseObservable implements Parcelable {
     public CargoFixedRate(Parcel parcel) {
         item = parcel.readString();
 
+        weight = parcel.readDouble();
+
         int rateCount = parcel.readInt();
         double[] ratesArray = new double[rateCount];
         parcel.readDoubleArray(ratesArray);
@@ -54,6 +58,8 @@ public class CargoFixedRate extends BaseObservable implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(item);
 
+        parcel.writeDouble(weight);
+
         parcel.writeInt(rates.size());
         double[] ratesArray = new double[rates.size()];
         for (int i = 0; i < rates.size(); i++) {
@@ -66,6 +72,7 @@ public class CargoFixedRate extends BaseObservable implements Parcelable {
         JSONObject object = new JSONObject();
         try {
             object.put("item", item);
+            object.put("weight", weight);
 
             JSONArray ratesArray = new JSONArray();
             for (int i = 0; i < rates.size(); i++) {
@@ -80,10 +87,12 @@ public class CargoFixedRate extends BaseObservable implements Parcelable {
 
     public int describeContents() { return 0; }
 
+    public double getWeight() { return weight; }
     public String getItem() { return item; }
     public ArrayList<Double> getRates() { return rates; }
 
     public void setItem(String item) { this.item = item; }
+    public void setWeight(double weight) { this.weight = weight; }
     public void setRates(ArrayList<Double> rates) { this.rates = rates; }
 
     public static Parcelable.Creator<CargoFixedRate> CREATOR = new Parcelable.Creator<CargoFixedRate>() {
