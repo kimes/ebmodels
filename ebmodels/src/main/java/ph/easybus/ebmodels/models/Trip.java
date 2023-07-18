@@ -23,8 +23,9 @@ public class Trip extends BaseObservable implements Parcelable {
 
     private boolean special, extra;
     @Bindable
-    private int id, reservationCount;
-    private double fare, ferryFare;
+    private int id, reservationCount, cargoTotalPackages, cargoTransactions;
+    @Bindable
+    private double fare, ferryFare, cargoTotalWeights;
     private String mongoId, dltbId, linerName, origin, destination, office, createdBy, code, via;
     private Bus bus;
     private Date time, date, dateCreated, startDate, expiryDate;
@@ -47,16 +48,19 @@ public class Trip extends BaseObservable implements Parcelable {
         extra = booleans[1];
 
         int disabledDatesCount = 0;
-        int[] ints = new int[3];
+        int[] ints = new int[5];
         parcel.readIntArray(ints);
         id = ints[0];
         reservationCount = ints[1];
         disabledDatesCount = ints[2];
+        cargoTotalPackages = ints[3];
+        cargoTransactions = ints[4];
 
-        double[] doubles = new double[2];
+        double[] doubles = new double[3];
         parcel.readDoubleArray(doubles);
         fare = doubles[0];
         ferryFare = doubles[1];
+        cargoTotalWeights = doubles[2];
 
         String[] strings = new String[9];
         parcel.readStringArray(strings);
@@ -104,6 +108,12 @@ public class Trip extends BaseObservable implements Parcelable {
             if (object.has("reservation_count")) reservationCount = object.getInt("reservation_count");
             if (object.has("fare")) fare = object.getDouble("fare");
             if (object.has("ferry_fare")) ferryFare = object.getDouble("ferry_fare");
+
+            if (object.has("cargo_total_packages")) cargoTotalPackages = object.getInt("cargo_total_packages");
+            if (object.has("cargo_transactions")) cargoTransactions = object.getInt("cargo_transactions");
+            if (object.has("cargo_total_weights"))
+                cargoTotalWeights = object.getDouble("cargo_total_weights");
+
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("destination")) destination = object.getString("destination");
             if (object.has("code")) code = object.getString("code");
@@ -175,8 +185,9 @@ public class Trip extends BaseObservable implements Parcelable {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { special, extra });
-        parcel.writeIntArray(new int[] { id, reservationCount, disabledDates.size() });
-        parcel.writeDoubleArray(new double[] { fare, ferryFare });
+        parcel.writeIntArray(new int[] { id, reservationCount, disabledDates.size(),
+                cargoTotalPackages, cargoTransactions });
+        parcel.writeDoubleArray(new double[] { fare, ferryFare, cargoTotalWeights });
         parcel.writeStringArray(new String[] { mongoId, linerName, origin, destination,
                 office, createdBy, code, dltbId, via });
         parcel.writeLongArray(new long[] { time.getTime(), date.getTime(),
@@ -201,8 +212,11 @@ public class Trip extends BaseObservable implements Parcelable {
     public boolean isExtra() { return extra; }
     public int getId() { return id; }
     public int getReservationCount() { return reservationCount; }
+    public int getCargoTotalPackages() { return cargoTotalPackages; }
+    public int getCargoTransactions() { return cargoTransactions; }
     public double getFare() { return fare; }
     public double getFerryFare() { return ferryFare; }
+    public double getCargoTotalWeights() { return cargoTotalWeights; }
     public String getMongoId() { return mongoId; }
     public String getLinerName() { return linerName; }
     public String getOffice() { return office; }
@@ -230,6 +244,18 @@ public class Trip extends BaseObservable implements Parcelable {
     public void setReservationCount(int reservationCount) {
         this.reservationCount = reservationCount;
         notifyPropertyChanged(BR.reservationCount);
+    }
+    public void setCargoTotalPackages(int cargoTotalPackages) {
+        this.cargoTotalPackages = cargoTotalPackages;
+        notifyPropertyChanged(BR.cargoTotalPackages);
+    }
+    public void setCargoTransactions(int cargoTransactions) {
+        this.cargoTransactions = cargoTransactions;
+        notifyPropertyChanged(BR.cargoTransactions);
+    }
+    public void setCargoTotalWeights(int cargoTotalWeights) {
+        this.cargoTotalWeights = cargoTotalWeights;
+        notifyPropertyChanged(BR.cargoTotalWeights);
     }
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setLinerName(String linerName) { this.linerName = linerName; }
