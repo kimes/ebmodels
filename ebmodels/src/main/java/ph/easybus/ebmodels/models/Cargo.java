@@ -23,7 +23,7 @@ public class Cargo extends BaseObservable implements Parcelable {
 
     @Bindable
     private int id = 0, status = 0, shipmentStatus = 0, packagesCount = 0,
-            type = TYPE_DEFAULT, paxCount = 0;
+            type = TYPE_DEFAULT, paxCount = 0, minWeight = 0;
 
     @Bindable
     private double declaredValue = 0, totalAmount = 0, totalWeight = 0, processingFee = 0,
@@ -51,7 +51,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public Cargo() {}
 
     public Cargo(Parcel parcel) {
-        int[] ints = new int[6];
+        int[] ints = new int[7];
         parcel.readIntArray(ints);
         id = ints[0];
         status = ints[1];
@@ -59,6 +59,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         packagesCount = ints[3];
         type = ints[4];
         paxCount = ints[5];
+        minWeight = ints[6];
 
         /* { declaredValue, totalAmount, totalWeight, processingFee,
                 systemFee, baseAmount, excessFee, portersFee, declaredValueFee,
@@ -120,6 +121,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("packages_count")) packagesCount = object.getInt("packages_count");
             if (object.has("type")) type = object.getInt("type");
             if (object.has("pax_count")) paxCount = object.getInt("pax_count");
+            if (object.has("min_weight")) minWeight = object.getInt("min_weight");
 
             if (object.has("declared_value")) declaredValue = object.getDouble("declared_value");
             if (object.has("total_amount")) totalAmount = object.getDouble("total_amount");
@@ -192,6 +194,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             object.put("packages_count", packagesCount);
             object.put("type", type);
             object.put("pax_count", paxCount);
+            object.put("min_weight", minWeight);
 
             object.put("declared_value", declaredValue);
             object.put("total_amount", totalAmount);
@@ -237,7 +240,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         /*
             baseAmount = 0, excessFee = 0, portersFee = 0, declaredValueFee = 0,
             systemFee = 0, discountPercent = 0, discountAmount = 0; */
-        parcel.writeIntArray(new int[] { id, status, shipmentStatus, packagesCount, type, paxCount });
+        parcel.writeIntArray(new int[] { id, status, shipmentStatus, packagesCount, type, paxCount, minWeight });
         parcel.writeDoubleArray(new double[] { declaredValue, totalAmount, totalWeight, processingFee,
                 systemFee, baseAmount, excessFee, portersFee, declaredValueFee,
                 discountPercent, discountAmount });
@@ -261,6 +264,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public int getPackagesCount() { return packagesCount; }
     public int getType() { return type; }
     public int getPaxCount() { return paxCount; }
+    public int getMinWeight() { return minWeight; }
     public double getDeclaredValue() { return declaredValue; }
     public double getTotalAmount() { return totalAmount; }
     public double getTotalWeight() { return totalWeight; }
@@ -318,6 +322,11 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void setPaxCount(int paxCount) {
         this.paxCount = paxCount;
         notifyPropertyChanged(BR.paxCount);
+    }
+
+    public void setMinWeight(int minWeight) {
+        this.minWeight = minWeight;
+        notifyPropertyChanged(BR.minWeight);
     }
 
     public void setDeclaredValue(double declaredValue) {
