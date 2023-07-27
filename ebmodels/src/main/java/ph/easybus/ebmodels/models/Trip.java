@@ -25,7 +25,7 @@ public class Trip extends BaseObservable implements Parcelable {
     @Bindable
     private int id, reservationCount, cargoTotalPackages, cargoTransactions;
     @Bindable
-    private double fare, ferryFare, cargoTotalWeights;
+    private double fare, ferryFare, cargoTotalWeights, cargoTotalAmount;
     private String mongoId, dltbId, linerName, origin, destination, office, createdBy, code, via;
     private Bus bus;
     private Date time, date, dateCreated, startDate, expiryDate;
@@ -56,11 +56,12 @@ public class Trip extends BaseObservable implements Parcelable {
         cargoTotalPackages = ints[3];
         cargoTransactions = ints[4];
 
-        double[] doubles = new double[3];
+        double[] doubles = new double[4];
         parcel.readDoubleArray(doubles);
         fare = doubles[0];
         ferryFare = doubles[1];
         cargoTotalWeights = doubles[2];
+        cargoTotalAmount = doubles[3];
 
         String[] strings = new String[9];
         parcel.readStringArray(strings);
@@ -113,6 +114,8 @@ public class Trip extends BaseObservable implements Parcelable {
             if (object.has("cargo_transactions")) cargoTransactions = object.getInt("cargo_transactions");
             if (object.has("cargo_total_weights"))
                 cargoTotalWeights = object.getDouble("cargo_total_weights");
+            if (object.has("cargo_total_amount"))
+                cargoTotalAmount = object.getDouble("cargo_total_amount");
 
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("destination")) destination = object.getString("destination");
@@ -187,7 +190,7 @@ public class Trip extends BaseObservable implements Parcelable {
         parcel.writeBooleanArray(new boolean[] { special, extra });
         parcel.writeIntArray(new int[] { id, reservationCount, disabledDates.size(),
                 cargoTotalPackages, cargoTransactions });
-        parcel.writeDoubleArray(new double[] { fare, ferryFare, cargoTotalWeights });
+        parcel.writeDoubleArray(new double[] { fare, ferryFare, cargoTotalWeights, cargoTotalAmount });
         parcel.writeStringArray(new String[] { mongoId, linerName, origin, destination,
                 office, createdBy, code, dltbId, via });
         parcel.writeLongArray(new long[] { time.getTime(), date.getTime(),
@@ -217,6 +220,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public double getFare() { return fare; }
     public double getFerryFare() { return ferryFare; }
     public double getCargoTotalWeights() { return cargoTotalWeights; }
+    public double getCargoTotalAmount() { return cargoTotalAmount; }
     public String getMongoId() { return mongoId; }
     public String getLinerName() { return linerName; }
     public String getOffice() { return office; }
@@ -253,9 +257,13 @@ public class Trip extends BaseObservable implements Parcelable {
         this.cargoTransactions = cargoTransactions;
         notifyPropertyChanged(BR.cargoTransactions);
     }
-    public void setCargoTotalWeights(int cargoTotalWeights) {
+    public void setCargoTotalWeights(double cargoTotalWeights) {
         this.cargoTotalWeights = cargoTotalWeights;
         notifyPropertyChanged(BR.cargoTotalWeights);
+    }
+    public void setCargoTotalAmount(double cargoTotalAmount) {
+        this.cargoTotalAmount = cargoTotalAmount;
+        notifyPropertyChanged(BR.cargoTotalAmount);
     }
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setLinerName(String linerName) { this.linerName = linerName; }
