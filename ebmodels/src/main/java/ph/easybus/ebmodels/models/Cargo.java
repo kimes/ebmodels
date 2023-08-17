@@ -229,6 +229,11 @@ public class Cargo extends BaseObservable implements Parcelable {
             object.put("sender_name", senderName.toJSON());
             object.put("receiver_name", receiverName.toJSON());
 
+            if (trip != null) {
+                object.put("trip_id", trip.getMongoId());
+                object.put("trip_date", DateTimeUtils.toISODate(trip.getDate()));
+            }
+
             JSONArray array = new JSONArray();
             for (int i = 0; i < images.size(); i++) {
                 array.put(images.get(i));
