@@ -37,9 +37,10 @@ public class Cargo extends BaseObservable implements Parcelable {
     @Bindable
     private String mongoId, origin, destination, description, linerName,
             senderMobile = "", receiverMobile = "", referenceNumber, paymentType = "Cash", paymentRemarks,
-            shippedBy, paymentQr = "", blNumber, discountRemarks = "", sellerCode = "";
+            shippedBy, paymentQr = "", blNumber, discountRemarks = "", sellerCode = "", cancelledBy = "";
 
-    private Date dropOffDate = Calendar.getInstance().getTime();
+    @Bindable
+    private Date dropOffDate = Calendar.getInstance().getTime(), cancelledDate = null;
 
     @Bindable
     private Name senderName = new Name(), receiverName = new Name();
@@ -87,7 +88,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         discountPercent = doubles[9];
         discountAmount = doubles[10];
 
-        String[] strings = new String[15];
+        String[] strings = new String[16];
         mongoId = strings[0];
         origin = strings[1];
         destination = strings[2];
@@ -103,10 +104,12 @@ public class Cargo extends BaseObservable implements Parcelable {
         blNumber = strings[12];
         discountRemarks = strings[13];
         sellerCode = strings[14];
+        cancelledBy = strings[15];
 
-        long[] longs = new long[1];
+        long[] longs = new long[2];
         parcel.readLongArray(longs);
         dropOffDate = new Date(longs[0]);
+        if (longs[1] > 0) cancelledDate = new Date(longs[1]);
 
         senderName = parcel.readParcelable(Name.class.getClassLoader());
         receiverName = parcel.readParcelable(Name.class.getClassLoader());
@@ -159,9 +162,14 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("bl_number")) blNumber = object.getString("bl_number");
             if (object.has("discount_remarks")) discountRemarks = object.getString("discount_remarks");
             if (object.has("seller_code")) sellerCode = object.getString("seller_code");
+            if (object.has("cancelled_by")) cancelledBy = object.getString("cancelled_by");
 
             if (object.has("drop_off_date")) {
                 dropOffDate = DateTimeUtils.toDateUtc(object.getString("drop_off_date"));
+            }
+
+            if (object.has("cancelled_date")) {
+                cancelledDate = DateTimeUtils.toDateUtc(object.getString("cancelled_date"));
             }
 
             if (object.has("sender_name")) {
@@ -265,8 +273,9 @@ public class Cargo extends BaseObservable implements Parcelable {
                 discountPercent, discountAmount });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, description, linerName,
                 senderMobile, receiverMobile, referenceNumber, paymentType, paymentRemarks,
-                shippedBy, paymentQr, blNumber, discountRemarks, sellerCode });
-        parcel.writeLongArray(new long[] { dropOffDate.getTime() });
+                shippedBy, paymentQr, blNumber, discountRemarks, sellerCode, cancelledBy });
+        parcel.writeLongArray(new long[] { dropOffDate.getTime(),
+            cancelledDate != null ? cancelledDate.getTime() : -1 });
 
         parcel.writeParcelable(senderName, flags);
         parcel.writeParcelable(receiverName, flags);
@@ -312,7 +321,9 @@ public class Cargo extends BaseObservable implements Parcelable {
     public String getBlNumber() { return blNumber; }
     public String getDiscountRemarks() { return discountRemarks; }
     public String getSellerCode() { return sellerCode; }
+    public String getCancelledBy() { return cancelledBy; }
     public Date getDropOffDate() { return dropOffDate; }
+    public Date getCancelledDate() { return cancelledDate; }
     public Name getSenderName() { return senderName; }
     public Name getReceiverName() { return receiverName; }
     public Trip getTrip() { return trip; }
@@ -482,6 +493,11 @@ public class Cargo extends BaseObservable implements Parcelable {
         notifyPropertyChanged(BR.sellerCode);
     }
 
+    public void setCancelledBy(String cancelledBy) {
+        this.cancelledBy = cancelledBy;
+        notifyPropertyChanged(BR.cancelledBy);
+    }
+
     public void setSenderName(Name senderName) {
         this.senderName = senderName;
         notifyPropertyChanged(BR.senderName);
@@ -502,6 +518,12 @@ public class Cargo extends BaseObservable implements Parcelable {
     }
 
     public void setDropOffDate(Date dropOffDate) { this.dropOffDate = dropOffDate; }
+
+    public void setCancelledDate(Date cancelledDate) {
+        this.cancelledDate = cancelledDate;
+        notifyPropertyChanged(BR.cancelledDate);
+    }
+
     public void setImages(ArrayList<String> images) { this.images = images; }
     public void setStatusLogs(ArrayList<CargoStatusLog> statusLogs) {
         this.statusLogs = statusLogs;
