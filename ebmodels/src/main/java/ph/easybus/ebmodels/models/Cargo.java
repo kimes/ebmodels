@@ -1,5 +1,6 @@
 package ph.easybus.ebmodels.models;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -20,6 +21,9 @@ import ph.easybus.ebmodels.utils.DateTimeUtils;
 public class Cargo extends BaseObservable implements Parcelable {
 
     public static final int TYPE_DEFAULT = 0, TYPE_CHECKED_IN = 1;
+
+    @Bindable
+    private boolean fixed = false;
 
     @Bindable
     private int id = 0, status = 0, shipmentStatus = 0, packagesCount = 0,
@@ -51,6 +55,10 @@ public class Cargo extends BaseObservable implements Parcelable {
     public Cargo() {}
 
     public Cargo(Parcel parcel) {
+        boolean[] booleans = new boolean[1];
+        parcel.readBooleanArray(booleans);
+        fixed = booleans[0];
+
         int[] ints = new int[8];
         parcel.readIntArray(ints);
         id = ints[0];
@@ -117,6 +125,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public Cargo(JSONObject object) {
         try {
             if (object.has("_id")) mongoId = object.getString("_id");
+            if (object.has("fixed")) fixed = object.getBoolean("fixed");
 
             if (object.has("status")) status = object.getInt("status");
             if (object.has("shipment_status")) shipmentStatus = object.getInt("shipment_status");
@@ -192,6 +201,8 @@ public class Cargo extends BaseObservable implements Parcelable {
         JSONObject object = new JSONObject();
         try {
             object.put("_id", mongoId);
+            object.put("fixed", fixed);
+
             object.put("status", status);
             object.put("shipment_status", shipmentStatus);
             object.put("packages_count", packagesCount);
@@ -246,9 +257,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        /*
-            baseAmount = 0, excessFee = 0, portersFee = 0, declaredValueFee = 0,
-            systemFee = 0, discountPercent = 0, discountAmount = 0; */
+        parcel.writeBooleanArray(new boolean[] { fixed });
         parcel.writeIntArray(new int[] { id, status, shipmentStatus, packagesCount, type,
                 paxCount, minWeight, seriesNo });
         parcel.writeDoubleArray(new double[] { declaredValue, totalAmount, totalWeight, processingFee,
@@ -268,6 +277,7 @@ public class Cargo extends BaseObservable implements Parcelable {
 
     public int describeContents() { return 0; }
 
+    public boolean isFixed() { return fixed; }
     public int getId() { return id; }
     public int getStatus() { return status; }
     public int getShipmentStatus() { return shipmentStatus; }
@@ -309,6 +319,10 @@ public class Cargo extends BaseObservable implements Parcelable {
     public ArrayList<String> getImages() { return images; }
     public ArrayList<CargoStatusLog> getStatusLogs() { return statusLogs; }
 
+    public void setFixed(boolean fixed) {
+        this.fixed = fixed;
+        notifyPropertyChanged(BR.fixed);
+    }
     public void setId(int id) { this.id = id; }
 
     public void setStatus(int status) {
