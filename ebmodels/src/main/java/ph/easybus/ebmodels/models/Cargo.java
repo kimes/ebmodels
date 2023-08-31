@@ -37,7 +37,8 @@ public class Cargo extends BaseObservable implements Parcelable {
     @Bindable
     private String mongoId, origin, destination, description, linerName,
             senderMobile = "", receiverMobile = "", referenceNumber, paymentType = "Cash", paymentRemarks,
-            shippedBy, paymentQr = "", blNumber, discountRemarks = "", sellerCode = "", cancelledBy = "";
+            shippedBy, paymentQr = "", blNumber, discountRemarks = "", sellerCode = "", cancelledBy = "",
+            office = "";
 
     @Bindable
     private Date dropOffDate = Calendar.getInstance().getTime(), cancelledDate = null;
@@ -88,7 +89,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         discountPercent = doubles[9];
         discountAmount = doubles[10];
 
-        String[] strings = new String[16];
+        String[] strings = new String[17];
         mongoId = strings[0];
         origin = strings[1];
         destination = strings[2];
@@ -105,6 +106,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         discountRemarks = strings[13];
         sellerCode = strings[14];
         cancelledBy = strings[15];
+        office = strings[16];
 
         long[] longs = new long[2];
         parcel.readLongArray(longs);
@@ -152,6 +154,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("destination")) destination = object.getString("destination");
             if (object.has("description")) description = object.getString("description");
+            if (object.has("office")) office = object.getString("office");
             if (object.has("liner_name")) linerName = object.getString("liner_name");
             if (object.has("sender_mobile")) senderMobile = object.getString("sender_mobile");
             if (object.has("receiver_mobile")) receiverMobile = object.getString("receiver_mobile");
@@ -233,6 +236,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             object.put("origin", origin);
             object.put("destination", destination);
             object.put("description", description);
+            object.put("office", office);
             object.put("liner_name", linerName);
             object.put("sender_mobile", senderMobile);
             object.put("receiver_mobile", receiverMobile);
@@ -273,7 +277,7 @@ public class Cargo extends BaseObservable implements Parcelable {
                 discountPercent, discountAmount });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, description, linerName,
                 senderMobile, receiverMobile, referenceNumber, paymentType, paymentRemarks,
-                shippedBy, paymentQr, blNumber, discountRemarks, sellerCode, cancelledBy });
+                shippedBy, paymentQr, blNumber, discountRemarks, sellerCode, cancelledBy, office });
         parcel.writeLongArray(new long[] { dropOffDate.getTime(),
             cancelledDate != null ? cancelledDate.getTime() : -1 });
 
@@ -310,6 +314,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public String getOrigin() { return origin; }
     public String getDestination() { return destination; }
     public String getDescription() { return description; }
+    public String getOffice() { return office; }
     public String getLinerName() { return linerName; }
     public String getSenderMobile() { return senderMobile; }
     public String getReceiverMobile() { return receiverMobile; }
@@ -441,6 +446,11 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void setDescription(String description) {
         this.description = description;
         notifyPropertyChanged(BR.description);
+    }
+
+    public void setOffice(String office) {
+        this.office = office;
+        notifyPropertyChanged(BR.office);
     }
 
     public void setLinerName(String linerName) {
