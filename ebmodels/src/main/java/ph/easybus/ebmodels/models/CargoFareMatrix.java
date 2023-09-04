@@ -20,8 +20,8 @@ public class CargoFareMatrix implements Parcelable {
         baseAmountRegular = "", baseAmountFixed = "",
         totalAmountRegular = "", totalAmountFixed = "";
     private ArrayList<Double> regularRates = new ArrayList<>();
-    private ArrayList<String> destinations = new ArrayList<>();
-    private ArrayList<CargoFixedRate> fixedRates = new ArrayList<>();
+    private ArrayList<String> destinations = new ArrayList<>(), destinationsCheckin = new ArrayList<>();
+    private ArrayList<CargoFixedRate> fixedRates = new ArrayList<>(), fixedRatesCheckin = new ArrayList<>();
 
     public CargoFareMatrix() {}
 
@@ -45,8 +45,14 @@ public class CargoFareMatrix implements Parcelable {
         destinations = new ArrayList<>();
         parcel.readStringList(destinations);
 
+        destinationsCheckin = new ArrayList<>();
+        parcel.readStringList(destinationsCheckin);
+
         fixedRates = new ArrayList<>();
         parcel.readParcelableList(fixedRates, CargoFixedRate.class.getClassLoader());
+
+        fixedRatesCheckin = new ArrayList<>();
+        parcel.readParcelableList(fixedRatesCheckin, CargoFixedRate.class.getClassLoader());
     }
 
     public CargoFareMatrix(JSONObject object) {
@@ -96,6 +102,22 @@ public class CargoFareMatrix implements Parcelable {
                     fixedRates.add(new CargoFixedRate(fixRates.getJSONObject(i)));
                 }
             }
+
+            if (object.has("destinations_checkin")) {
+                JSONArray dests = object.getJSONArray("destinations_checkin");
+                destinationsCheckin = new ArrayList<>();
+                for (int i = 0; i < dests.length(); i++) {
+                    destinationsCheckin.add(dests.getString(i));
+                }
+            }
+
+            if (object.has("fixed_rates_checkin")) {
+                JSONArray fixRates = object.getJSONArray("fixed_rates_checkin");
+                fixedRatesCheckin = new ArrayList<>();
+                for (int i = 0; i < fixRates.length(); i++) {
+                    fixedRatesCheckin.add(new CargoFixedRate(fixRates.getJSONObject(i)));
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -116,8 +138,10 @@ public class CargoFareMatrix implements Parcelable {
         parcel.writeDoubleArray(regRates);
 
         parcel.writeStringList(destinations);
+        parcel.writeStringList(destinationsCheckin);
 
         parcel.writeParcelableList(fixedRates, flags);
+        parcel.writeParcelableList(fixedRatesCheckin, flags);
     }
 
     public JSONObject toJSON() {
@@ -153,6 +177,18 @@ public class CargoFareMatrix implements Parcelable {
                 fixRates.put(fixedRates.get(i).toJSON());
             }
             object.put("fixed_rates", fixRates);
+
+            JSONArray destsCheckin = new JSONArray();
+            for (int i = 0; i < destinationsCheckin.size(); i++) {
+                destsCheckin.put(destinationsCheckin.get(i));
+            }
+            object.put("destinations_checkin", destsCheckin);
+
+            JSONArray fixRatesCheckin = new JSONArray();
+            for (int i = 0; i < fixedRatesCheckin.size(); i++) {
+                fixRatesCheckin.put(fixedRatesCheckin.get(i).toJSON());
+            }
+            object.put("fixed_rates_checkin", fixRatesCheckin);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -177,7 +213,9 @@ public class CargoFareMatrix implements Parcelable {
 
     public ArrayList<Double> getRegularRates() { return regularRates; }
     public ArrayList<String> getDestinations() { return destinations; }
+    public ArrayList<String> getDestinationsCheckin() { return destinationsCheckin; }
     public ArrayList<CargoFixedRate> getFixedRates() { return fixedRates; }
+    public ArrayList<CargoFixedRate> getFixedRatesCheckin() { return fixedRatesCheckin; }
 
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setName(String name) { this.name = name; }
@@ -192,8 +230,14 @@ public class CargoFareMatrix implements Parcelable {
     public void setTotalAmountFixed(String totalAmountFixed) { this.totalAmountFixed = totalAmountFixed; }
     public void setRegularRates(ArrayList<Double> regularRates) { this.regularRates = regularRates; }
     public void setDestinations(ArrayList<String> destinations) { this.destinations = destinations; }
+    public void setDestinationsCheckin(ArrayList<String> destinationsCheckin) {
+        this.destinationsCheckin = destinationsCheckin;
+    }
     public void setFixedRates(ArrayList<CargoFixedRate> fixedRates) {
         this.fixedRates = fixedRates;
+    }
+    public void setFixedRatesCheckin(ArrayList<CargoFixedRate> fixedRatesCheckin) {
+        this.fixedRatesCheckin = fixedRatesCheckin;
     }
 
     public static Parcelable.Creator<CargoFareMatrix> CREATOR = new Parcelable.Creator<CargoFareMatrix>() {
