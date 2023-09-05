@@ -38,7 +38,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     private String mongoId, origin, destination, description, linerName,
             senderMobile = "", receiverMobile = "", referenceNumber, paymentType = "Cash", paymentRemarks,
             shippedBy, paymentQr = "", blNumber, discountRemarks = "", sellerCode = "", cancelledBy = "",
-            office = "";
+            office = "", fixedItem = "";
 
     @Bindable
     private Date dropOffDate = Calendar.getInstance().getTime(), cancelledDate = null;
@@ -89,7 +89,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         discountPercent = doubles[9];
         discountAmount = doubles[10];
 
-        String[] strings = new String[17];
+        String[] strings = new String[18];
         mongoId = strings[0];
         origin = strings[1];
         destination = strings[2];
@@ -107,6 +107,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         sellerCode = strings[14];
         cancelledBy = strings[15];
         office = strings[16];
+        fixedItem = strings[17];
 
         long[] longs = new long[2];
         parcel.readLongArray(longs);
@@ -156,6 +157,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("description")) description = object.getString("description");
             if (object.has("office")) office = object.getString("office");
             if (object.has("liner_name")) linerName = object.getString("liner_name");
+            if (object.has("fixed_item")) fixedItem = object.getString("fixed_item");
             if (object.has("sender_mobile")) senderMobile = object.getString("sender_mobile");
             if (object.has("receiver_mobile")) receiverMobile = object.getString("receiver_mobile");
             if (object.has("reference_number")) referenceNumber = object.getString("reference_number");
@@ -238,6 +240,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             object.put("description", description);
             object.put("office", office);
             object.put("liner_name", linerName);
+            object.put("fixed_item", fixedItem);
             object.put("sender_mobile", senderMobile);
             object.put("receiver_mobile", receiverMobile);
             object.put("reference_number", referenceNumber);
@@ -277,7 +280,7 @@ public class Cargo extends BaseObservable implements Parcelable {
                 discountPercent, discountAmount });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, description, linerName,
                 senderMobile, receiverMobile, referenceNumber, paymentType, paymentRemarks,
-                shippedBy, paymentQr, blNumber, discountRemarks, sellerCode, cancelledBy, office });
+                shippedBy, paymentQr, blNumber, discountRemarks, sellerCode, cancelledBy, office, fixedItem });
         parcel.writeLongArray(new long[] { dropOffDate.getTime(),
             cancelledDate != null ? cancelledDate.getTime() : -1 });
 
@@ -316,6 +319,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public String getDescription() { return description; }
     public String getOffice() { return office; }
     public String getLinerName() { return linerName; }
+    public String getFixedItem() { return fixedItem; }
     public String getSenderMobile() { return senderMobile; }
     public String getReceiverMobile() { return receiverMobile; }
     public String getReferenceNumber() { return referenceNumber; }
@@ -456,6 +460,11 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void setLinerName(String linerName) {
         this.linerName = linerName;
         notifyPropertyChanged(BR.linerName);
+    }
+
+    public void setFixedItem(String fixedItem) {
+        this.fixedItem = fixedItem;
+        notifyPropertyChanged(BR.fixedItem);
     }
 
     public void setSenderMobile(String senderMobile) {
