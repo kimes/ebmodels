@@ -18,6 +18,9 @@ public class Liner implements Parcelable {
     private boolean serviceFeeEnabled = false;
 
     private String policies, linerName, rebookingFee = "";
+
+    private TripDisplaySetting tripDisplay = new TripDisplaySetting();
+
     private ArrayList<Office> offices = new ArrayList<>();
 
     public Liner() {}
@@ -40,6 +43,8 @@ public class Liner implements Parcelable {
         linerName = data[1];
         rebookingFee = data[2];
 
+        tripDisplay = parcel.readParcelable(TripDisplaySetting.class.getClassLoader());
+
         ArrayList<Office> officeList = new ArrayList<>();
         parcel.readTypedList(officeList, Office.CREATOR);
 
@@ -59,6 +64,10 @@ public class Liner implements Parcelable {
                     if (payments.has("paymaya")) paymayaEnabled = payments.getBoolean("paymaya");
                     if (payments.has("gcash")) gCashEnabled = payments.getBoolean("gcash");
                 }
+            }
+
+            if (object.has("trip_display")) {
+                tripDisplay = new TripDisplaySetting(object.getJSONObject("trip_display"));
             }
 
             if (object.has("rebooking_fee")) rebookingFee = object.getString("rebooking_fee");
@@ -94,6 +103,8 @@ public class Liner implements Parcelable {
             object.put("booker_settings", settings);
 
             object.put("rebooking_fee", rebookingFee);
+
+            object.put("trip_display", tripDisplay);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -108,6 +119,8 @@ public class Liner implements Parcelable {
         parcel.writeBooleanArray(new boolean[] { serviceFeeEnabled, paymayaEnabled, gCashEnabled });
         parcel.writeStringArray(new String[] { policies, linerName, rebookingFee });
 
+        parcel.writeParcelable(tripDisplay, flags);
+
         parcel.writeTypedList(offices);
     }
 
@@ -117,11 +130,16 @@ public class Liner implements Parcelable {
     public String getPolicies() { return policies; }
     public String getLinerName() { return linerName; }
     public String getRebookingFee() { return rebookingFee; }
+    public TripDisplaySetting getTripDisplay() { return tripDisplay; }
     public ArrayList<Office> getOffices() { return offices; }
 
     public void setServiceFeeEnabled(boolean serviceFeeEnabled) { this.serviceFeeEnabled = serviceFeeEnabled; }
     public void setPaymayaEnabled(boolean paymayaEnabled){ this.paymayaEnabled = paymayaEnabled; }
     public void setGCashEnabled(boolean gCashEnabled) { this.gCashEnabled = gCashEnabled; }
+
+    public void setTripDisplay(TripDisplaySetting tripDisplay) {
+        this.tripDisplay = tripDisplay;
+    }
 
     public void setOffices(ArrayList<Office> offices) { this.offices = offices; }
     public void setPolicies(String policies) { this.policies = policies; }
