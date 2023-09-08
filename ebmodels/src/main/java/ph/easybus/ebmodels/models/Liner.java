@@ -104,7 +104,7 @@ public class Liner implements Parcelable {
 
             object.put("rebooking_fee", rebookingFee);
 
-            object.put("trip_display", tripDisplay);
+            object.put("trip_display", tripDisplay.toJSON());
         } catch (JSONException e) {
             e.printStackTrace();
         }
