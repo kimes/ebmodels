@@ -22,9 +22,9 @@ public class TripDisplaySetting implements Parcelable {
 
     public TripDisplaySetting(JSONObject object) {
         try {
-            if (object.has("header")) object.getString("header");
-            if (object.has("footer")) object.getString("footer");
-            if (object.has("background")) object.getString("background");
+            if (object.has("header")) header = object.getString("header");
+            if (object.has("footer")) footer = object.getString("footer");
+            if (object.has("background")) background = object.getString("background");
         } catch (JSONException e) {
             e.printStackTrace();
         }
