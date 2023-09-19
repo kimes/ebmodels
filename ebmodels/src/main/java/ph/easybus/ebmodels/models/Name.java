@@ -3,11 +3,16 @@ package ph.easybus.ebmodels.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Name implements Parcelable {
+public class Name extends BaseObservable implements Parcelable {
 
+    @Bindable
     private String first = "", last = "";
 
     public Name() {}
@@ -53,8 +58,14 @@ public class Name implements Parcelable {
 
     public String getFirst() { return first; }
     public String getLast() { return last; }
-    public void setFirst(String first) { this.first = first; }
-    public void setLast(String last) { this.last = last; }
+    public void setFirst(String first) {
+        this.first = first;
+        notifyPropertyChanged(BR.first);
+    }
+    public void setLast(String last) {
+        this.last = last;
+        notifyPropertyChanged(BR.last);
+    }
 
     public String toString() { return first + " " + last; }
 
