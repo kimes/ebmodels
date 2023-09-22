@@ -10,6 +10,8 @@ import androidx.databinding.library.baseAdapters.BR;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class Passenger extends BaseObservable implements Parcelable {
 
     @Bindable
@@ -32,6 +34,9 @@ public class Passenger extends BaseObservable implements Parcelable {
 
     @Bindable
     private Discount discount = new Discount();
+
+    @Bindable
+    private ArrayList<Passenger> suggestedPassengers = new ArrayList<>();
 
     public Passenger() {}
 
@@ -126,6 +131,7 @@ public class Passenger extends BaseObservable implements Parcelable {
     public String getMobile() { return mobile; }
     public Name getName() { return name; }
     public Discount getDiscount() { return discount; }
+    public ArrayList<Passenger> getSuggestedPassengers() { return suggestedPassengers; }
     public void setSeatNo(int seatNo) { this.seatNo = seatNo; }
     public void setSeatSpecialType(int seatSpecialType) { this.seatSpecialType = seatSpecialType; }
     public void setSeriesNo(int seriesNo) {
@@ -173,6 +179,10 @@ public class Passenger extends BaseObservable implements Parcelable {
     public void setDiscount(Discount discount) {
         this.discount = discount;
         notifyPropertyChanged(BR.discount);
+    }
+    public void setSuggestedPassengers(ArrayList<Passenger> suggestedPassengers) {
+        this.suggestedPassengers = suggestedPassengers;
+        notifyPropertyChanged(BR.suggestedPassengers);
     }
 
     public static final Creator<Passenger> CREATOR = new Creator<Passenger>() {
