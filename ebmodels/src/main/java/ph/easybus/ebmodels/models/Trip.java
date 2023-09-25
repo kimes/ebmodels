@@ -28,7 +28,7 @@ public class Trip extends BaseObservable implements Parcelable {
     private double fare, ferryFare, cargoTotalWeights, cargoTotalAmount, cargoTotalPorters;
     private String mongoId, dltbId, linerName, origin, destination, office, createdBy, code, via;
     private Bus bus;
-    private Date time, date, dateCreated, startDate, expiryDate;
+    private Date time, date, dateCreated, startDate, expiryDate, officeTime;
     private ThirdParty thirdParty;
 
     @Bindable
@@ -76,7 +76,7 @@ public class Trip extends BaseObservable implements Parcelable {
         dltbId = strings[7];
         via = strings[8];
 
-        long[] datesData = new long[5];
+        long[] datesData = new long[6];
         parcel.readLongArray(datesData);
         time = new Date(datesData[0]);
         date = new Date(datesData[1]);
@@ -84,6 +84,7 @@ public class Trip extends BaseObservable implements Parcelable {
         if (datesData[2] > -1) startDate = new Date(datesData[2]);
         if (datesData[3] > -1) expiryDate = new Date(datesData[3]);
         if (datesData[4] > -1) dateCreated = new Date(datesData[4]);
+        if (datesData[5] > -1) officeTime = new Date(datesData[5]);
 
         long[] disabledDatesData = new long[disabledDatesCount];
         parcel.readLongArray(disabledDatesData);
@@ -199,7 +200,8 @@ public class Trip extends BaseObservable implements Parcelable {
         parcel.writeLongArray(new long[] { time.getTime(), date.getTime(),
                 startDate != null ? startDate.getTime() : -1,
                 expiryDate != null ? expiryDate.getTime() : -1,
-                dateCreated != null ? dateCreated.getTime() : -1 });
+                dateCreated != null ? dateCreated.getTime() : -1,
+                officeTime != null ? officeTime.getTime() : -1 });
 
         long[] disabledDatesArray = new long[disabledDates.size()];
         for (int i = 0; i < disabledDates.size(); i++) {
@@ -239,6 +241,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public Date getStartDate() { return startDate; }
     public Date getExpiryDate() { return expiryDate; }
     public Date getDateCreated() { return dateCreated; }
+    public Date getOfficeTime() { return officeTime; }
     public Bus getBus() { return bus; }
     public ThirdParty getThirdParty() { return thirdParty; }
     public TripAssign getTripAssign() { return tripAssign; }
@@ -289,6 +292,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public void setStartDate(Date startDate) { this.startDate = startDate; }
     public void setExpiryDate(Date expiryDate) { this.expiryDate = expiryDate; }
     public void setDateCreated(Date dateCreated) { this.dateCreated = dateCreated; }
+    public void setOfficeTime(Date officeTime) { this.officeTime = officeTime; }
     public void setBus(Bus bus) { this.bus = bus; }
     public void setThirdParty(ThirdParty thirdParty) { this.thirdParty = thirdParty; }
     public void setTripAssign(TripAssign tripAssign) {
