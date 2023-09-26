@@ -21,7 +21,7 @@ import ph.easybus.ebmodels.utils.DateTimeUtils;
  */
 public class Trip extends BaseObservable implements Parcelable {
 
-    private boolean special, extra;
+    private boolean special, extra, showSeats;
     @Bindable
     private int id, reservationCount, cargoTotalPackages, cargoTransactions;
     @Bindable
@@ -42,10 +42,11 @@ public class Trip extends BaseObservable implements Parcelable {
 
     public Trip() {}
     public Trip(Parcel parcel) {
-        boolean[] booleans = new boolean[2];
+        boolean[] booleans = new boolean[3];
         parcel.readBooleanArray(booleans);
         special = booleans[0];
         extra = booleans[1];
+        showSeats = booleans[2];
 
         int disabledDatesCount = 0;
         int[] ints = new int[5];
@@ -108,6 +109,7 @@ public class Trip extends BaseObservable implements Parcelable {
             if (object.has("_id")) mongoId = object.getString("_id");
             if (object.has("id")) dltbId = object.getString("id");
             if (object.has("isExtra")) extra = object.getBoolean("isExtra");
+            if (object.has("show_seats")) showSeats = object.getBoolean("show_seats");
             if (object.has("reservation_count")) reservationCount = object.getInt("reservation_count");
             if (object.has("fare")) fare = object.getDouble("fare");
             if (object.has("ferry_fare")) ferryFare = object.getDouble("ferry_fare");
@@ -191,7 +193,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public int describeContents() { return 0; }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeBooleanArray(new boolean[] { special, extra });
+        parcel.writeBooleanArray(new boolean[] { special, extra, showSeats });
         parcel.writeIntArray(new int[] { id, reservationCount, disabledDates.size(),
                 cargoTotalPackages, cargoTransactions });
         parcel.writeDoubleArray(new double[] { fare, ferryFare, cargoTotalWeights, cargoTotalAmount, cargoTotalPorters });
@@ -218,6 +220,7 @@ public class Trip extends BaseObservable implements Parcelable {
 
     public boolean isSpecial() { return special; }
     public boolean isExtra() { return extra; }
+    public boolean isShowSeats() { return showSeats; }
     public int getId() { return id; }
     public int getReservationCount() { return reservationCount; }
     public int getCargoTotalPackages() { return cargoTotalPackages; }
@@ -251,6 +254,7 @@ public class Trip extends BaseObservable implements Parcelable {
 
     public void setSpecial(boolean special) { this.special = special; }
     public void setExtra(boolean extra) { this.extra = extra; }
+    public void setShowSeats(boolean showSeats) { this.showSeats = showSeats; }
     public void setId(int id) { this.id = id; }
     public void setReservationCount(int reservationCount) {
         this.reservationCount = reservationCount;
