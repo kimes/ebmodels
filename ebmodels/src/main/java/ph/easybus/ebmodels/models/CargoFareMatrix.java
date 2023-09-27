@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class CargoFareMatrix implements Parcelable {
 
-    private double minWeight = 0;
+    private double minWeight = 0, declaredValueFactor = 0;
     private String mongoId = "", name = "", origin = "", linerName = "",
         portersFee = "", systemFee = "",
         baseAmountRegular = "", baseAmountFixed = "",
@@ -27,6 +27,11 @@ public class CargoFareMatrix implements Parcelable {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public CargoFareMatrix(Parcel parcel) {
+        double[] doubles = new double[2];
+        parcel.readDoubleArray(doubles);
+        minWeight = doubles[0];
+        declaredValueFactor = doubles[1];
+
         String[] strings = new String[4];
         parcel.readStringArray(strings);
         mongoId = strings[0];
@@ -63,6 +68,7 @@ public class CargoFareMatrix implements Parcelable {
             if (object.has("liner_name")) linerName = object.getString("liner_name");
 
             if (object.has("min_weight")) minWeight = object.getDouble("min_weight");
+            if (object.has("declared_value_factor")) declaredValueFactor = object.getDouble("declared_value_factor");
 
             if (object.has("porters_fee"))
                 portersFee = object.getString("porters_fee");
@@ -125,7 +131,7 @@ public class CargoFareMatrix implements Parcelable {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeDoubleArray(new double[] { minWeight });
+        parcel.writeDoubleArray(new double[] { minWeight, declaredValueFactor });
         parcel.writeStringArray(new String[] { mongoId, name, origin, linerName,
             portersFee, systemFee, baseAmountRegular, baseAmountFixed,
             totalAmountRegular, totalAmountFixed });
@@ -153,6 +159,7 @@ public class CargoFareMatrix implements Parcelable {
             object.put("liner_name", linerName);
 
             object.put("min_weight", minWeight);
+            object.put("declared_value_factor", declaredValueFactor);
             object.put("porters_fee", portersFee);
             object.put("system_fee", systemFee);
             object.put("base_amount_regular", baseAmountRegular);
@@ -203,6 +210,7 @@ public class CargoFareMatrix implements Parcelable {
     public String getLinerName() { return linerName; }
 
     public double getMinWeight() { return minWeight; }
+    public double getDeclaredValueFactor() { return declaredValueFactor; }
     public String getPortersFee() { return portersFee; }
     public String getSystemFee() { return systemFee; }
     public String getBaseAmountRegular() { return baseAmountRegular; }
@@ -222,6 +230,7 @@ public class CargoFareMatrix implements Parcelable {
     public void setOrigin(String origin) { this.origin = origin; }
     public void setLinerName(String linerName) { this.linerName = linerName; }
     public void setMinWeight(double minWeight) { this.minWeight = minWeight; }
+    public void setDeclaredValueFactor(double declaredValueFactor) { this.declaredValueFactor = declaredValueFactor; }
     public void setPortersFee(String portersFee) { this.portersFee = portersFee; }
     public void setSystemFee(String systemFee) { this.systemFee = systemFee; }
     public void setBaseAmountRegular(String baseAmountRegular) { this.baseAmountRegular = baseAmountRegular; }
