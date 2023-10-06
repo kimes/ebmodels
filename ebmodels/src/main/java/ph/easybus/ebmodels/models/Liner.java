@@ -21,6 +21,7 @@ public class Liner implements Parcelable {
 
     private TripDisplaySetting tripDisplay = new TripDisplaySetting();
 
+    private ArrayList<String> subLiners = new ArrayList<>();
     private ArrayList<Office> offices = new ArrayList<>();
 
     public Liner() {}
@@ -44,6 +45,8 @@ public class Liner implements Parcelable {
         rebookingFee = data[2];
 
         tripDisplay = parcel.readParcelable(TripDisplaySetting.class.getClassLoader());
+
+        parcel.readStringList(subLiners);
 
         ArrayList<Office> officeList = new ArrayList<>();
         parcel.readTypedList(officeList, Office.CREATOR);
@@ -81,6 +84,15 @@ public class Liner implements Parcelable {
                 }
                 offices = officeList;
             }
+
+            if (object.has("sub_liners")) {
+                JSONArray subLinersArray = object.getJSONArray("sub_liners");
+
+                subLiners = new ArrayList<>();
+                for (int i = 0; i < subLinersArray.length(); i++) {
+                    subLiners.add(subLinersArray.getString(i));
+                }
+            }
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
@@ -105,6 +117,12 @@ public class Liner implements Parcelable {
             object.put("rebooking_fee", rebookingFee);
 
             object.put("trip_display", tripDisplay.toJSON());
+
+            JSONArray subLinersArray = new JSONArray();
+            for (int i = 0; i < subLiners.size(); i++) {
+                subLinersArray.put(subLiners.get(i));
+            }
+            object.put("sub_liners", subLinersArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -121,6 +139,8 @@ public class Liner implements Parcelable {
 
         parcel.writeParcelable(tripDisplay, flags);
 
+        parcel.writeStringList(subLiners);
+
         parcel.writeTypedList(offices);
     }
 
@@ -131,6 +151,7 @@ public class Liner implements Parcelable {
     public String getLinerName() { return linerName; }
     public String getRebookingFee() { return rebookingFee; }
     public TripDisplaySetting getTripDisplay() { return tripDisplay; }
+    public ArrayList<String> getSubLiners() { return subLiners; }
     public ArrayList<Office> getOffices() { return offices; }
 
     public void setServiceFeeEnabled(boolean serviceFeeEnabled) { this.serviceFeeEnabled = serviceFeeEnabled; }
@@ -141,6 +162,9 @@ public class Liner implements Parcelable {
         this.tripDisplay = tripDisplay;
     }
 
+    public void setSubLiners(ArrayList<String> subLiners) {
+        this.subLiners = subLiners;
+    }
     public void setOffices(ArrayList<Office> offices) { this.offices = offices; }
     public void setPolicies(String policies) { this.policies = policies; }
     public void setLinerName(String linerName) { this.linerName = linerName; }

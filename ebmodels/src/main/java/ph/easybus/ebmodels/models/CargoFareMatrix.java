@@ -218,7 +218,6 @@ public class CargoFareMatrix implements Parcelable {
     public String getTotalAmountRegular() { return totalAmountRegular; }
     public String getTotalAmountFixed() { return totalAmountFixed; }
 
-
     public ArrayList<Double> getRegularRates() { return regularRates; }
     public ArrayList<String> getDestinations() { return destinations; }
     public ArrayList<String> getDestinationsCheckin() { return destinationsCheckin; }
