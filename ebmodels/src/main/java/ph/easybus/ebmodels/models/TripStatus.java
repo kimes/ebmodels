@@ -27,6 +27,9 @@ public class TripStatus extends BaseObservable implements Parcelable {
     @Bindable
     private Date tripDate = Calendar.getInstance().getTime(), dispatchedDate = null;
 
+    @Bindable
+    private ThirdParty thirdParty;
+
     public TripStatus() {}
     public TripStatus(JSONObject object) {
         try {
@@ -38,6 +41,10 @@ public class TripStatus extends BaseObservable implements Parcelable {
 
             if (object.has("trip_date")) {
                 tripDate = DateTimeUtils.toDate(object.getString("trip_date"));
+            }
+
+            if (object.has("third_party")) {
+                thirdParty = new ThirdParty(object.getJSONObject("third_party"));
             }
 
             if (object.has("dispatched_date")) {
@@ -66,6 +73,8 @@ public class TripStatus extends BaseObservable implements Parcelable {
         parcel.readLongArray(dates);
         tripDate = new Date(dates[0]);
         if (dates[1] > 0)  dispatchedDate = new Date(dates[1]);
+
+        thirdParty = parcel.readParcelable(ThirdParty.class.getClassLoader());
     }
 
     public JSONObject toJSON() {
@@ -81,6 +90,10 @@ public class TripStatus extends BaseObservable implements Parcelable {
             if (dispatchedDate != null) {
                 object.put("dispatched_date", DateTimeUtils.toISODateUtc(dispatchedDate));
             }
+
+            if (thirdParty != null) {
+                object.put("third_party", thirdParty.toJSON());
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -92,6 +105,7 @@ public class TripStatus extends BaseObservable implements Parcelable {
         parcel.writeStringArray(new String[] { tripId, lane, terminal, customStatus });
         parcel.writeLongArray(new long[] { tripDate.getTime(),
                 (dispatchedDate != null) ? dispatchedDate.getTime() : -1 });
+        parcel.writeParcelable(thirdParty, flags);
     }
 
     public int describeContents() { return 0; }
@@ -103,6 +117,7 @@ public class TripStatus extends BaseObservable implements Parcelable {
     public String getCustomStatus() { return customStatus; }
     public Date getTripDate() { return tripDate; }
     public Date getDispatchedDate() { return dispatchedDate; }
+    public ThirdParty getThirdParty() { return thirdParty; }
 
     public void setStatus(int status) {
         this.status = status;
@@ -119,6 +134,10 @@ public class TripStatus extends BaseObservable implements Parcelable {
     public void setDispatchedDate(Date dispatchedDate) {
         this.dispatchedDate = dispatchedDate;
         notifyPropertyChanged(BR.dispatchedDate);
+    }
+    public void setThirdParty(ThirdParty thirdParty) {
+        this.thirdParty = thirdParty;
+        notifyPropertyChanged(BR.thirdParty);
     }
 
     public static final Creator<TripStatus> CREATOR = new Creator<TripStatus>() {
