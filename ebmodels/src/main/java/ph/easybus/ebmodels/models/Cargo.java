@@ -20,14 +20,20 @@ import ph.easybus.ebmodels.utils.DateTimeUtils;
 
 public class Cargo extends BaseObservable implements Parcelable {
 
-    public static final int TYPE_DEFAULT = 0, TYPE_CHECKED_IN = 1;
+    @Deprecated
+    public static final int TYPE_CHECKED_IN = 1;
+
+    public static final int TYPE_DEFAULT = 0, TYPE_CHECK_IN = 1;
+
+    public static final int AMOUNT_TYPE_REGULAR = 0, AMOUNT_TYPE_FIXED = 1, AMOUNT_TYPE_SPECIAL = 2;
 
     @Bindable
     private boolean fixed = false, d2d = false;
 
     @Bindable
     private int id = 0, status = 0, shipmentStatus = 0, packagesCount = 0,
-            type = TYPE_DEFAULT, paxCount = 0, minWeight = 0, seriesNo = 1;
+            type = TYPE_DEFAULT, paxCount = 0, minWeight = 0, seriesNo = 1,
+            amountType = AMOUNT_TYPE_REGULAR;
 
     @Bindable
     private double declaredValue = 0, totalAmount = 0, totalWeight = 0, processingFee = 0,
@@ -140,6 +146,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("shipment_status")) shipmentStatus = object.getInt("shipment_status");
             if (object.has("packages_count")) packagesCount = object.getInt("packages_count");
             if (object.has("type")) type = object.getInt("type");
+            if (object.has("amount_type")) amountType = object.getInt("amount_type");
             if (object.has("pax_count")) paxCount = object.getInt("pax_count");
             if (object.has("min_weight")) minWeight = object.getInt("min_weight");
 
@@ -225,6 +232,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             object.put("shipment_status", shipmentStatus);
             object.put("packages_count", packagesCount);
             object.put("type", type);
+            object.put("amount_type", amountType);
             object.put("pax_count", paxCount);
             object.put("min_weight", minWeight);
 
@@ -280,7 +288,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { fixed, d2d });
         parcel.writeIntArray(new int[] { id, status, shipmentStatus, packagesCount, type,
-                paxCount, minWeight, seriesNo });
+                paxCount, minWeight, seriesNo, amountType });
         parcel.writeDoubleArray(new double[] { declaredValue, totalAmount, totalWeight, processingFee,
                 systemFee, baseAmount, excessFee, portersFee, declaredValueFee,
                 discountPercent, discountAmount });
@@ -307,6 +315,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public int getShipmentStatus() { return shipmentStatus; }
     public int getPackagesCount() { return packagesCount; }
     public int getType() { return type; }
+    public int getAmountType() { return amountType; }
     public int getPaxCount() { return paxCount; }
     public int getMinWeight() { return minWeight; }
     public int getSeriesNo() { return seriesNo; }
@@ -377,6 +386,11 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void setType(int type) {
         this.type = type;
         notifyPropertyChanged(BR.type);
+    }
+
+    public void setAmountType(int amountType) {
+        this.amountType = amountType;
+        notifyPropertyChanged(BR.amountType);
     }
 
     public void setPaxCount(int paxCount) {
