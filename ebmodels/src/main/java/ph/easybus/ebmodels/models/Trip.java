@@ -25,7 +25,8 @@ public class Trip extends BaseObservable implements Parcelable {
     @Bindable
     private int id, reservationCount, cargoTotalPackages, cargoTransactions;
     @Bindable
-    private double fare, ferryFare, cargoTotalWeights, cargoTotalAmount, cargoTotalPorters;
+    private double fare, ferryFare, cargoTotalWeights, cargoTotalAmount,
+            cargoTotalPorters, choiceFare, upperFare;
     private String mongoId, dltbId, linerName, origin, destination, office, createdBy, code, via;
     private Bus bus;
     private Date time, date, dateCreated, startDate, expiryDate, officeTime;
@@ -36,6 +37,8 @@ public class Trip extends BaseObservable implements Parcelable {
 
     @Bindable
     private TripStatus status = new TripStatus();
+
+    private ArrayList<Integer> choiceSeats = new ArrayList<>(), upperSeats = new ArrayList<>();
 
     private ArrayList<Route> routes = new ArrayList<>();
     private ArrayList<Date> disabledDates = new ArrayList<>();
@@ -57,13 +60,15 @@ public class Trip extends BaseObservable implements Parcelable {
         cargoTotalPackages = ints[3];
         cargoTransactions = ints[4];
 
-        double[] doubles = new double[5];
+        double[] doubles = new double[7];
         parcel.readDoubleArray(doubles);
         fare = doubles[0];
         ferryFare = doubles[1];
         cargoTotalWeights = doubles[2];
         cargoTotalAmount = doubles[3];
         cargoTotalPorters = doubles[4];
+        choiceFare = doubles[5];
+        upperFare = doubles[6];
 
         String[] strings = new String[9];
         parcel.readStringArray(strings);
@@ -102,6 +107,22 @@ public class Trip extends BaseObservable implements Parcelable {
         thirdParty = parcel.readParcelable(ThirdParty.class.getClassLoader());
         tripAssign = parcel.readParcelable(TripAssign.class.getClassLoader());
         status = parcel.readParcelable(TripStatus.class.getClassLoader());
+
+        int[] choiceSeatsArray = new int[parcel.readInt()];
+        parcel.readIntArray(choiceSeatsArray);
+
+        choiceSeats = new ArrayList<>();
+        for (int i = 0; i < choiceSeatsArray.length; i++) {
+            choiceSeats.add(choiceSeatsArray[i]);
+        }
+
+        int[] upperSeatsArray = new int[parcel.readInt()];
+        parcel.readIntArray(upperSeatsArray);
+
+        upperSeats = new ArrayList<>();
+        for (int i = 0; i < upperSeatsArray.length; i++) {
+            upperSeats.add(upperSeatsArray[i]);
+        }
     }
 
     public Trip(JSONObject object, Date date) {
@@ -113,6 +134,8 @@ public class Trip extends BaseObservable implements Parcelable {
             if (object.has("reservation_count")) reservationCount = object.getInt("reservation_count");
             if (object.has("fare")) fare = object.getDouble("fare");
             if (object.has("ferry_fare")) ferryFare = object.getDouble("ferry_fare");
+            if (object.has("choice_fare")) choiceFare = object.getDouble("choice_fare");
+            if (object.has("upper_fare")) upperFare = object.getDouble("upper_fare");
 
             if (object.has("cargo_total_packages")) cargoTotalPackages = object.getInt("cargo_total_packages");
             if (object.has("cargo_transactions")) cargoTransactions = object.getInt("cargo_transactions");
@@ -156,6 +179,22 @@ public class Trip extends BaseObservable implements Parcelable {
 
             if (object.has("bus")) {
                 bus = new Bus(object.getJSONObject("bus"));
+            }
+
+            if (object.has("choice_seats")) {
+                JSONArray seatsArray = object.getJSONArray("choice_seats");
+                choiceSeats = new ArrayList<>();
+                for (int i = 0; i < seatsArray.length(); i++) {
+                    choiceSeats.add(seatsArray.getInt(i));
+                }
+            }
+
+            if (object.has("upper_seats")) {
+                JSONArray seatsArray = object.getJSONArray("upper_seats");
+                upperSeats = new ArrayList<>();
+                for (int i = 0; i < seatsArray.length(); i++) {
+                    upperSeats.add(seatsArray.getInt(i));
+                }
             }
 
             if (object.has("routes")) {
@@ -216,6 +255,20 @@ public class Trip extends BaseObservable implements Parcelable {
         parcel.writeParcelable(thirdParty, flags);
         parcel.writeParcelable(tripAssign, flags);
         parcel.writeParcelable(status, flags);
+
+        int[] choiceSeatsArray = new int[choiceSeats.size()];
+        for (int i = 0; i < choiceSeats.size(); i++) {
+            choiceSeatsArray[i] = choiceSeats.get(i);
+        }
+        parcel.writeInt(choiceSeats.size());
+        parcel.writeIntArray(choiceSeatsArray);
+
+        int[] upperSeatsArray = new int[upperSeats.size()];
+        for (int i = 0; i < upperSeats.size(); i++) {
+            upperSeatsArray[i] = upperSeats.get(i);
+        }
+        parcel.writeInt(upperSeats.size());
+        parcel.writeIntArray(upperSeatsArray);
     }
 
     public boolean isSpecial() { return special; }
