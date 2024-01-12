@@ -283,6 +283,8 @@ public class Trip extends BaseObservable implements Parcelable {
     public double getCargoTotalWeights() { return cargoTotalWeights; }
     public double getCargoTotalAmount() { return cargoTotalAmount; }
     public double getCargoTotalPorters() { return cargoTotalPorters; }
+    public double getChoiceFare() { return choiceFare; }
+    public double getUpperFare() { return upperFare; }
     public String getMongoId() { return mongoId; }
     public String getLinerName() { return linerName; }
     public String getOffice() { return office; }
@@ -304,6 +306,8 @@ public class Trip extends BaseObservable implements Parcelable {
     public TripStatus getStatus() { return status; }
     public ArrayList<Date> getDisabledDates() { return disabledDates; }
     public ArrayList<Route> getRoutes() { return routes; }
+    public ArrayList<Integer> getChoiceSeats() { return choiceSeats; }
+    public ArrayList<Integer> getUpperSeats() { return upperSeats; }
 
     public void setSpecial(boolean special) { this.special = special; }
     public void setExtra(boolean extra) { this.extra = extra; }
@@ -333,6 +337,12 @@ public class Trip extends BaseObservable implements Parcelable {
         this.cargoTotalPorters = cargoTotalPorters;
         notifyPropertyChanged(BR.cargoTotalPorters);
     }
+    public void setChoiceFare(double choiceFare) {
+        this.choiceFare = choiceFare;
+    }
+    public void setUpperFare(double upperFare) {
+        this.upperFare = upperFare;
+    }
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setLinerName(String linerName) { this.linerName = linerName; }
     public void setOffice(String office) { this.office = office; }
@@ -359,6 +369,12 @@ public class Trip extends BaseObservable implements Parcelable {
     public void setStatus(TripStatus status) {
         this.status = status;
         notifyPropertyChanged(BR.status);
+    }
+    public void setChoiceSeats(ArrayList<Integer> choiceSeats) {
+        this.choiceSeats = choiceSeats;
+    }
+    public void setUpperSeats(ArrayList<Integer> upperSeats) {
+        this.upperSeats = upperSeats;
     }
     public void setRoutes(ArrayList<Route> routes) { this.routes = routes; }
     public void setDisabledDates(ArrayList<Date> disabledDates) { this.disabledDates = disabledDates; }
