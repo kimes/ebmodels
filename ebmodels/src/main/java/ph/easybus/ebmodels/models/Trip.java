@@ -235,7 +235,9 @@ public class Trip extends BaseObservable implements Parcelable {
         parcel.writeBooleanArray(new boolean[] { special, extra, showSeats });
         parcel.writeIntArray(new int[] { id, reservationCount, disabledDates.size(),
                 cargoTotalPackages, cargoTransactions });
-        parcel.writeDoubleArray(new double[] { fare, ferryFare, cargoTotalWeights, cargoTotalAmount, cargoTotalPorters });
+        parcel.writeDoubleArray(new double[] { fare, ferryFare,
+                cargoTotalWeights, cargoTotalAmount, cargoTotalPorters,
+                choiceFare, upperFare });
         parcel.writeStringArray(new String[] { mongoId, linerName, origin, destination,
                 office, createdBy, code, dltbId, via });
         parcel.writeLongArray(new long[] { time.getTime(), date.getTime(),
