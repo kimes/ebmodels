@@ -13,7 +13,7 @@ import ph.easybus.ebmodels.utils.DateTimeUtils;
 public class ThirdParty implements Parcelable {
 
     private int trip;
-    private String name, reference, origin, destination,
+    private String name, reference, origin, destination, originId, destinationId,
             tripCode, reservationPath;
     private Date tripTime;
 
@@ -24,7 +24,7 @@ public class ThirdParty implements Parcelable {
         parcel.readIntArray(ints);
         trip = ints[0];
 
-        String[] data = new String[6];
+        String[] data = new String[8];
         parcel.readStringArray(data);
         name = data[0];
         reference = data[1];
@@ -32,6 +32,8 @@ public class ThirdParty implements Parcelable {
         destination = data[3];
         tripCode = data[4];
         reservationPath = data[5];
+        originId = data[6];
+        destinationId = data[7];
 
         long[] longs = new long[1];
         parcel.readLongArray(longs);
@@ -46,6 +48,8 @@ public class ThirdParty implements Parcelable {
             if (object.has("reference")) reference = object.getString("reference");
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("destination")) destination = object.getString("destination");
+            if (object.has("origin_id")) originId = object.getString("origin_id");
+            if (object.has("destination_id")) destinationId = object.getString("destination_id");
             if (object.has("trip_code")) tripCode = object.getString("trip_code");
             if (object.has("reservation_path")) reservationPath = object.getString("reservation_path");
 
@@ -66,6 +70,8 @@ public class ThirdParty implements Parcelable {
             object.put("reference", reference);
             object.put("origin", origin);
             object.put("destination", destination);
+            object.put("origin_id", originId);
+            object.put("destination_id", destinationId);
             object.put("trip_code", tripCode);
             object.put("trip", trip);
 
@@ -80,7 +86,7 @@ public class ThirdParty implements Parcelable {
         parcel.writeIntArray(new int[] { trip });
         parcel.writeStringArray(new String[] {
             name, reference, origin, destination,
-            tripCode, reservationPath });
+            tripCode, reservationPath, originId, destinationId });
         parcel.writeLongArray(new long[] {
                 (tripTime != null) ? tripTime.getTime() : -1 });
     }
@@ -96,6 +102,8 @@ public class ThirdParty implements Parcelable {
     public String getDestination() { return destination; }
     public String getTripCode() { return tripCode; }
     public String getReservationPath() { return reservationPath; }
+    public String getOriginId() { return originId; }
+    public String getDestinationId() { return destinationId; }
     public Date getTripTime() { return tripTime; }
     public void setTrip(int trip) { this.trip = trip; }
 
@@ -105,6 +113,8 @@ public class ThirdParty implements Parcelable {
     public void setDestination(String destination) { this.destination = destination; }
     public void setTripCode(String tripCode) { this.tripCode = tripCode; }
     public void setReservationPath(String reservationPath) { this.reservationPath = reservationPath; }
+    public void setOriginId(String originId) { this.originId = originId; }
+    public void setDestinationId(String destinationId) { this.destinationId = destinationId; }
     public void setTripTime(Date tripTime) { this.tripTime = tripTime; }
 
     public static final Creator<ThirdParty> CREATOR = new Creator<ThirdParty>() {
