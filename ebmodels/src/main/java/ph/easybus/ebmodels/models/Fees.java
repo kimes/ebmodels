@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,10 +61,22 @@ public class Fees extends BaseObservable implements Parcelable {
     public double getUpperFare() { return upperFare; }
     public double getInsurance() { return insurance; }
     public double getLiner() { return liner; }
-    public void setChoice(double choice) { this.choice = choice; }
-    public void setUpperFare(double upperFare) { this.upperFare = upperFare; }
-    public void setInsurance(double insurance) { this.insurance = insurance; }
-    public void setLiner(double liner) { this.liner = liner; }
+    public void setChoice(double choice) {
+        this.choice = choice;
+        notifyPropertyChanged(BR.choice);
+    }
+    public void setUpperFare(double upperFare) {
+        this.upperFare = upperFare;
+        notifyPropertyChanged(BR.upperFare);
+    }
+    public void setLiner(double liner) {
+        this.liner = liner;
+        notifyPropertyChanged(BR.liner);
+    }
+    public void setInsurance(double insurance) {
+        this.insurance = insurance;
+        notifyPropertyChanged(BR.insurance);
+    }
 
     public double getTotalFees() {
         return choice + upperFare + insurance + liner;
