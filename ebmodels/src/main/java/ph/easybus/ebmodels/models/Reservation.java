@@ -123,6 +123,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         discount = reservation.getDiscount();
         fees = reservation.getFees();
         thirdParty = reservation.getThirdParty();
+        adjustment = reservation.getAdjustment();
 
         reservedSeats = reservation.getReservedSeats();
         passengers = reservation.getPassengers();
