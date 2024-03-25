@@ -26,7 +26,7 @@ public class Adjustment extends BaseObservable implements Parcelable {
     private int status;
 
     @Bindable
-    private double amount = 0;
+    private double amount = 0, fareDifference = 0;
 
     @Bindable
     private String related = "", rebookBy = "";
@@ -51,9 +51,10 @@ public class Adjustment extends BaseObservable implements Parcelable {
         parcel.readIntArray(ints);
         status = ints[0];
 
-        double[] doubles = new double[1];
+        double[] doubles = new double[2];
         parcel.readDoubleArray(doubles);
         amount = doubles[0];
+        fareDifference = doubles[1];
 
         String[] strings = new String[2];
         parcel.readStringArray(strings);
@@ -88,6 +89,7 @@ public class Adjustment extends BaseObservable implements Parcelable {
             if (object.has("isSeatsLeft")) seatsLeft = object.getBoolean("isSeatsLeft");
             if (object.has("status")) status = object.getInt("status");
             if (object.has("amount")) amount = object.getDouble("amount");
+            if (object.has("fare_difference")) fareDifference = object.getDouble("fare_difference");
             if (object.has("related")) related = object.getString("related");
             if (object.has("rebook_by")) rebookBy = object.getString("rebook_by");
 
@@ -120,6 +122,7 @@ public class Adjustment extends BaseObservable implements Parcelable {
             object.put("isSeatsLeft", seatsLeft);
             object.put("status", status);
             object.put("amount", amount);
+            object.put("fare_difference", fareDifference);
             object.put("related", related);
             object.put("rebook_by", rebookBy);
 
@@ -145,7 +148,7 @@ public class Adjustment extends BaseObservable implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { seatsLeft });
         parcel.writeIntArray(new int[] { status });
-        parcel.writeDoubleArray(new double[] { amount });
+        parcel.writeDoubleArray(new double[] { amount, fareDifference });
         parcel.writeStringArray(new String[] { related, rebookBy });
 
         parcel.writeLongArray(new long[] { (rebookDate != null ? rebookDate.getTime() : -1) });
@@ -170,6 +173,7 @@ public class Adjustment extends BaseObservable implements Parcelable {
     public boolean isSeatsLeft() { return seatsLeft; }
     public int getStatus() { return status; }
     public double getAmount() { return amount; }
+    public double getFareDifference() { return fareDifference; }
     public String getRelated() { return related; }
     public String getRebookBy() { return rebookBy; }
     public Date getRebookDate() { return rebookDate; }
@@ -187,6 +191,10 @@ public class Adjustment extends BaseObservable implements Parcelable {
     public void setAmount(double amount) {
         this.amount = amount;
         notifyPropertyChanged(BR.amount);
+    }
+    public void setFareDifference(double fareDifference) {
+        this.fareDifference = fareDifference;
+        notifyPropertyChanged(BR.fareDifference);
     }
     public void setRelated(String related) {
         this.related = related;
