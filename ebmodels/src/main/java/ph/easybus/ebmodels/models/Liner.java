@@ -17,7 +17,7 @@ public class Liner implements Parcelable {
     private boolean paymayaEnabled = false, gCashEnabled = false;
     private boolean serviceFeeEnabled = false;
 
-    private String policies, linerName, rebookingFee = "";
+    private String policies, linerName, rebookingFee = "", pencilExpiration = "";
 
     private TripDisplaySetting tripDisplay = new TripDisplaySetting();
 
@@ -38,11 +38,12 @@ public class Liner implements Parcelable {
         paymayaEnabled = booleans[1];
         gCashEnabled = booleans[2];
 
-        String[] data = new String[3];
+        String[] data = new String[4];
         parcel.readStringArray(data);
         policies = data[0];
         linerName = data[1];
         rebookingFee = data[2];
+        pencilExpiration = data[3];
 
         tripDisplay = parcel.readParcelable(TripDisplaySetting.class.getClassLoader());
 
@@ -74,6 +75,8 @@ public class Liner implements Parcelable {
             }
 
             if (object.has("rebooking_fee")) rebookingFee = object.getString("rebooking_fee");
+
+            if (object.has("pencil_expiration")) pencilExpiration = object.getString("pencil_expiration");
 
             if (object.has("offices")) {
                 JSONArray officeJSONArray = object.getJSONArray("offices");
@@ -116,6 +119,8 @@ public class Liner implements Parcelable {
 
             object.put("rebooking_fee", rebookingFee);
 
+            object.put("pencil_expiration", pencilExpiration);
+
             object.put("trip_display", tripDisplay.toJSON());
 
             JSONArray subLinersArray = new JSONArray();
@@ -135,7 +140,7 @@ public class Liner implements Parcelable {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { serviceFeeEnabled, paymayaEnabled, gCashEnabled });
-        parcel.writeStringArray(new String[] { policies, linerName, rebookingFee });
+        parcel.writeStringArray(new String[] { policies, linerName, rebookingFee, pencilExpiration });
 
         parcel.writeParcelable(tripDisplay, flags);
 
@@ -150,6 +155,7 @@ public class Liner implements Parcelable {
     public String getPolicies() { return policies; }
     public String getLinerName() { return linerName; }
     public String getRebookingFee() { return rebookingFee; }
+    public String getPencilExpiration() { return pencilExpiration; }
     public TripDisplaySetting getTripDisplay() { return tripDisplay; }
     public ArrayList<String> getSubLiners() { return subLiners; }
     public ArrayList<Office> getOffices() { return offices; }
@@ -170,6 +176,7 @@ public class Liner implements Parcelable {
     public void setLinerName(String linerName) { this.linerName = linerName; }
 
     public void setRebookingFee(String rebookingFee) { this.rebookingFee = rebookingFee; }
+    public void setPencilExpiration(String pencilExpiration) { this.pencilExpiration = pencilExpiration; }
 
     public static final Creator<Liner> CREATOR = new Creator<Liner>() {
         public Liner createFromParcel(Parcel parcel) {
