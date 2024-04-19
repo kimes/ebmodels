@@ -261,6 +261,14 @@ public class Reservation extends BaseObservable implements Parcelable {
                     e.printStackTrace();
                 }
             }
+            if (object.has("trip")) {
+                try {
+                    JSONObject tripObject = object.getJSONObject("trip");
+                    reservationTrip = new Trip(tripObject, reservationTrip.getDate());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
             if (object.has("bus")) {
                 reservationTrip.setBus(new Bus(object.getJSONObject("bus")));
