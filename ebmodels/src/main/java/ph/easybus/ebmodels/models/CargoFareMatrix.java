@@ -16,7 +16,7 @@ public class CargoFareMatrix implements Parcelable {
 
     private double minWeight = 0, declaredValueFactor = 0;
     private String mongoId = "", name = "", origin = "", linerName = "",
-        portersFee = "", systemFee = "",
+        portersFee = "", systemFee = "", additionalFee = "",
         baseAmountRegular = "", baseAmountFixed = "",
         totalAmountRegular = "", totalAmountFixed = "";
     private ArrayList<Double> regularRates = new ArrayList<>();
@@ -32,12 +32,19 @@ public class CargoFareMatrix implements Parcelable {
         minWeight = doubles[0];
         declaredValueFactor = doubles[1];
 
-        String[] strings = new String[4];
+        String[] strings = new String[11];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         name = strings[1];
         origin = strings[2];
         linerName = strings[3];
+        portersFee = strings[4];
+        systemFee = strings[5];
+        baseAmountRegular = strings[6];
+        baseAmountFixed = strings[7];
+        totalAmountRegular = strings[8];
+        totalAmountFixed = strings[9];
+        additionalFee = strings[10];
 
         int size = parcel.readInt();
         double[] regRates = new double[size];
@@ -74,6 +81,8 @@ public class CargoFareMatrix implements Parcelable {
                 portersFee = object.getString("porters_fee");
             if (object.has("system_fee"))
                 systemFee = object.getString("system_fee");
+            if (object.has("additional_fee"))
+                additionalFee = object.getString("additional_fee");
 
             if (object.has("base_amount_regular"))
                 baseAmountRegular = object.getString("base_amount_regular");
@@ -134,7 +143,7 @@ public class CargoFareMatrix implements Parcelable {
         parcel.writeDoubleArray(new double[] { minWeight, declaredValueFactor });
         parcel.writeStringArray(new String[] { mongoId, name, origin, linerName,
             portersFee, systemFee, baseAmountRegular, baseAmountFixed,
-            totalAmountRegular, totalAmountFixed });
+            totalAmountRegular, totalAmountFixed, additionalFee });
 
         double[] regRates = new double[regularRates.size()];
         for (int i = 0; i < regularRates.size(); i++) {
@@ -162,6 +171,7 @@ public class CargoFareMatrix implements Parcelable {
             object.put("declared_value_factor", declaredValueFactor);
             object.put("porters_fee", portersFee);
             object.put("system_fee", systemFee);
+            object.put("additional_fee", additionalFee);
             object.put("base_amount_regular", baseAmountRegular);
             object.put("base_amount_fixed", baseAmountFixed);
             object.put("total_amount_regular", totalAmountRegular);
@@ -213,6 +223,7 @@ public class CargoFareMatrix implements Parcelable {
     public double getDeclaredValueFactor() { return declaredValueFactor; }
     public String getPortersFee() { return portersFee; }
     public String getSystemFee() { return systemFee; }
+    public String getAdditionalFee() { return additionalFee; }
     public String getBaseAmountRegular() { return baseAmountRegular; }
     public String getBaseAmountFixed() { return baseAmountFixed; }
     public String getTotalAmountRegular() { return totalAmountRegular; }
@@ -232,6 +243,7 @@ public class CargoFareMatrix implements Parcelable {
     public void setDeclaredValueFactor(double declaredValueFactor) { this.declaredValueFactor = declaredValueFactor; }
     public void setPortersFee(String portersFee) { this.portersFee = portersFee; }
     public void setSystemFee(String systemFee) { this.systemFee = systemFee; }
+    public void setAdditionalFee(String additionalFee) { this.additionalFee = additionalFee; }
     public void setBaseAmountRegular(String baseAmountRegular) { this.baseAmountRegular = baseAmountRegular; }
     public void setBaseAmountFixed(String baseAmountFixed) { this.baseAmountFixed = baseAmountFixed; }
     public void setTotalAmountRegular(String totalAmountRegular) { this.totalAmountRegular = totalAmountRegular; }
