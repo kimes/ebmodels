@@ -20,7 +20,7 @@ public class CargoFareMatrix implements Parcelable {
         baseAmountRegular = "", baseAmountFixed = "",
         totalAmountRegular = "", totalAmountFixed = "",
         totalAmountCheckin = "";
-    private ArrayList<Double> regularRates = new ArrayList<>();
+    private ArrayList<Double> regularRates = new ArrayList<>(), regularRatesCheckin = new ArrayList<>();
     private ArrayList<String> destinations = new ArrayList<>(), destinationsCheckin = new ArrayList<>();
     private ArrayList<CargoFixedRate> fixedRates = new ArrayList<>(), fixedRatesCheckin = new ArrayList<>();
 
@@ -54,6 +54,14 @@ public class CargoFareMatrix implements Parcelable {
         parcel.readDoubleArray(regRates);
         for (int i = 0; i < regRates.length; i++) {
             regularRates.add(regRates[i]);
+        }
+
+        size = parcel.readInt();
+        regRates = new double[size];
+        regularRatesCheckin = new ArrayList<>();
+        parcel.readDoubleArray(regRates);
+        for (int i = 0; i < regRates.length; i++) {
+            regularRatesCheckin.add(regRates[i]);
         }
 
         destinations = new ArrayList<>();
@@ -131,6 +139,14 @@ public class CargoFareMatrix implements Parcelable {
                 }
             }
 
+            if (object.has("regular_rates_checkin")) {
+                JSONArray rates = object.getJSONArray("regular_rates_checkin");
+                regularRatesCheckin = new ArrayList<>();
+                for (int i = 0; i < rates.length(); i++) {
+                    regularRatesCheckin.add(rates.getDouble(i));
+                }
+            }
+
             if (object.has("fixed_rates_checkin")) {
                 JSONArray fixRates = object.getJSONArray("fixed_rates_checkin");
                 fixedRatesCheckin = new ArrayList<>();
@@ -155,6 +171,13 @@ public class CargoFareMatrix implements Parcelable {
             regRates[i] = regularRates.get(i);
         }
         parcel.writeInt(regularRates.size());
+        parcel.writeDoubleArray(regRates);
+
+        regRates = new double[regularRatesCheckin.size()];
+        for (int i = 0; i < regularRatesCheckin.size(); i++) {
+            regRates[i] = regularRatesCheckin.get(i);
+        }
+        parcel.writeInt(regularRatesCheckin.size());
         parcel.writeDoubleArray(regRates);
 
         parcel.writeStringList(destinations);
@@ -237,6 +260,7 @@ public class CargoFareMatrix implements Parcelable {
     public String getTotalAmountFixed() { return totalAmountFixed; }
     public String getTotalAmountCheckin() { return totalAmountCheckin; }
     public ArrayList<Double> getRegularRates() { return regularRates; }
+    public ArrayList<Double> getRegularRatesCheckin() { return regularRatesCheckin; }
     public ArrayList<String> getDestinations() { return destinations; }
     public ArrayList<String> getDestinationsCheckin() { return destinationsCheckin; }
     public ArrayList<CargoFixedRate> getFixedRates() { return fixedRates; }
@@ -257,6 +281,7 @@ public class CargoFareMatrix implements Parcelable {
     public void setTotalAmountFixed(String totalAmountFixed) { this.totalAmountFixed = totalAmountFixed; }
     public void setTotalAmountCheckin(String totalAmountCheckin) { this.totalAmountCheckin = totalAmountCheckin; }
     public void setRegularRates(ArrayList<Double> regularRates) { this.regularRates = regularRates; }
+    public void setRegularRatesCheckin(ArrayList<Double> regularRatesCheckin) { this.regularRatesCheckin = regularRatesCheckin; }
     public void setDestinations(ArrayList<String> destinations) { this.destinations = destinations; }
     public void setDestinationsCheckin(ArrayList<String> destinationsCheckin) {
         this.destinationsCheckin = destinationsCheckin;
