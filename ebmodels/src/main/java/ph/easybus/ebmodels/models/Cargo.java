@@ -38,7 +38,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     @Bindable
     private double declaredValue = 0, totalAmount = 0, totalWeight = 0, processingFee = 0,
             baseAmount = 0, excessFee = 0, portersFee = 0, declaredValueFee = 0,
-            systemFee = 0, discountPercent = 0, discountAmount = 0, additionalFee = 0;
+            systemFee = 0, discountPercent = 0, discountAmount = 0, additionalFee = 0, insuranceFee = 0;
 
     @Bindable
     private String mongoId, origin, destination, description, linerName,
@@ -82,7 +82,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         /* { declaredValue, totalAmount, totalWeight, processingFee,
                 systemFee, baseAmount, excessFee, portersFee, declaredValueFee,
                 discountPercent, discountAmount } */
-        double[] doubles = new double[12];
+        double[] doubles = new double[13];
         parcel.readDoubleArray(doubles);
         declaredValue = doubles[0];
         totalAmount = doubles[1];
@@ -96,6 +96,7 @@ public class Cargo extends BaseObservable implements Parcelable {
         discountPercent = doubles[9];
         discountAmount = doubles[10];
         additionalFee = doubles[11];
+        insuranceFee = doubles[12];
 
         String[] strings = new String[19];
         mongoId = strings[0];
@@ -160,6 +161,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             if (object.has("excess_fee")) excessFee = object.getDouble("excess_fee");
             if (object.has("porters_fee")) portersFee = object.getDouble("porters_fee");
             if (object.has("additional_fee")) additionalFee = object.getDouble("additional_fee");
+            if (object.has("insurance_fee")) insuranceFee = object.getDouble("insurance_fee");
             if (object.has("declared_value_fee")) declaredValueFee = object.getDouble("declared_value_fee");
             if (object.has("discount_percent")) discountPercent = object.getDouble("discount_percent");
             if (object.has("discount_amount")) discountAmount = object.getDouble("discount_amount");
@@ -247,6 +249,7 @@ public class Cargo extends BaseObservable implements Parcelable {
             object.put("excess_fee", excessFee);
             object.put("porters_fee", portersFee);
             object.put("additional_fee", additionalFee);
+            object.put("insurance_fee", insuranceFee);
             object.put("declared_value_fee", declaredValueFee);
             object.put("discount_percent", discountPercent);
             object.put("discount_amount", discountAmount);
@@ -294,7 +297,7 @@ public class Cargo extends BaseObservable implements Parcelable {
                 paxCount, minWeight, seriesNo, amountType });
         parcel.writeDoubleArray(new double[] { declaredValue, totalAmount, totalWeight, processingFee,
                 systemFee, baseAmount, excessFee, portersFee, declaredValueFee,
-                discountPercent, discountAmount, additionalFee });
+                discountPercent, discountAmount, additionalFee, insuranceFee });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, description, linerName,
                 senderMobile, receiverMobile, referenceNumber, paymentType, paymentRemarks,
                 shippedBy, paymentQr, blNumber, discountRemarks, sellerCode, cancelledBy,
@@ -331,6 +334,7 @@ public class Cargo extends BaseObservable implements Parcelable {
     public double getExcessFee() { return excessFee; }
     public double getPortersFee() { return portersFee; }
     public double getAdditionalFee() { return additionalFee; }
+    public double getInsuranceFee() { return insuranceFee; }
     public double getDeclaredValueFee() { return declaredValueFee; }
     public double getDiscountPercent() { return discountPercent; }
     public double getDiscountAmount() { return discountAmount; }
@@ -455,6 +459,11 @@ public class Cargo extends BaseObservable implements Parcelable {
     public void setAdditionalFee(double additionalFee) {
         this.additionalFee = additionalFee;
         notifyPropertyChanged(BR.additionalFee);
+    }
+
+    public void setInsuranceFee(double insuranceFee) {
+        this.insuranceFee = insuranceFee;
+        notifyPropertyChanged(BR.insuranceFee);
     }
 
     public void setDeclaredValueFee(double declaredValueFee) {
