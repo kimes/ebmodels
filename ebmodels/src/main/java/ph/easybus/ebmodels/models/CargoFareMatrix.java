@@ -20,7 +20,7 @@ public class CargoFareMatrix implements Parcelable {
         portersFee = "", systemFee = "", additionalFee = "",
         baseAmountRegular = "", baseAmountFixed = "",
         totalAmountRegular = "", totalAmountFixed = "",
-        totalAmountCheckin = "", insuranceFee = "", baseAmountCheckin = "";
+        totalAmountCheckin = "", insuranceFee = "", baseAmountCheckin = "", declaredValueFee = "";
 
     private ArrayList<Double> regularRates = new ArrayList<>(), regularRatesCheckin = new ArrayList<>(),
         regularMinRates = new ArrayList<>(), regularAdditionalRates = new ArrayList<>();
@@ -38,7 +38,7 @@ public class CargoFareMatrix implements Parcelable {
         minWeight = doubles[0];
         declaredValueFactor = doubles[1];
 
-        String[] strings = new String[14];
+        String[] strings = new String[15];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         name = strings[1];
@@ -54,6 +54,7 @@ public class CargoFareMatrix implements Parcelable {
         totalAmountCheckin = strings[11];
         insuranceFee = strings[12];
         baseAmountCheckin = strings[13];
+        declaredValueFee = strings[14];
 
         int size = parcel.readInt();
         double[] regRates = new double[size];
@@ -116,6 +117,8 @@ public class CargoFareMatrix implements Parcelable {
                 additionalFee = object.getString("additional_fee");
             if (object.has("insurance_fee"))
                 insuranceFee = object.getString("insurance_fee");
+            if (object.has("declared_value_fee"))
+                declaredValueFee = object.getString("declared_value_fee");
 
             if (object.has("base_amount_regular"))
                 baseAmountRegular = object.getString("base_amount_regular");
@@ -206,7 +209,7 @@ public class CargoFareMatrix implements Parcelable {
         parcel.writeStringArray(new String[] { mongoId, name, origin, linerName,
             portersFee, systemFee, baseAmountRegular, baseAmountFixed,
             totalAmountRegular, totalAmountFixed, additionalFee, totalAmountCheckin,
-            insuranceFee, baseAmountCheckin });
+            insuranceFee, baseAmountCheckin, declaredValueFee });
 
         double[] regRates = new double[regularRates.size()];
         for (int i = 0; i < regularRates.size(); i++) {
@@ -257,6 +260,7 @@ public class CargoFareMatrix implements Parcelable {
             object.put("system_fee", systemFee);
             object.put("additional_fee", additionalFee);
             object.put("insurance_fee", insuranceFee);
+            object.put("declared_value_fee", declaredValueFee);
 
             object.put("base_amount_regular", baseAmountRegular);
             object.put("base_amount_fixed", baseAmountFixed);
@@ -326,6 +330,7 @@ public class CargoFareMatrix implements Parcelable {
     public String getSystemFee() { return systemFee; }
     public String getAdditionalFee() { return additionalFee; }
     public String getInsuranceFee() { return insuranceFee; }
+    public String getDeclaredValueFee() { return declaredValueFee; }
     public String getBaseAmountRegular() { return baseAmountRegular; }
     public String getBaseAmountFixed() { return baseAmountFixed; }
     public String getTotalAmountRegular() { return totalAmountRegular; }
@@ -351,6 +356,7 @@ public class CargoFareMatrix implements Parcelable {
     public void setSystemFee(String systemFee) { this.systemFee = systemFee; }
     public void setAdditionalFee(String additionalFee) { this.additionalFee = additionalFee; }
     public void setInsuranceFee(String insuranceFee) { this.insuranceFee = insuranceFee; }
+    public void setDeclaredValueFee(String declaredValueFee) { this.declaredValueFee = declaredValueFee; }
     public void setBaseAmountRegular(String baseAmountRegular) { this.baseAmountRegular = baseAmountRegular; }
     public void setBaseAmountFixed(String baseAmountFixed) { this.baseAmountFixed = baseAmountFixed; }
     public void setTotalAmountRegular(String totalAmountRegular) { this.totalAmountRegular = totalAmountRegular; }
