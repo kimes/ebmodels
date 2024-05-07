@@ -20,7 +20,8 @@ public class CargoFareMatrix implements Parcelable {
         portersFee = "", systemFee = "", additionalFee = "",
         baseAmountRegular = "", baseAmountFixed = "",
         totalAmountRegular = "", totalAmountFixed = "",
-        totalAmountCheckin = "", insuranceFee = "", baseAmountCheckin = "", declaredValueFee = "";
+        totalAmountCheckin = "", insuranceFee = "", baseAmountCheckin = "", declaredValueFee = "",
+        baseAmountSpecial = "", totalAmountSpecial = "";
 
     private ArrayList<Double> regularRates = new ArrayList<>(), regularRatesCheckin = new ArrayList<>(),
         regularMinRates = new ArrayList<>(), regularAdditionalRates = new ArrayList<>();
@@ -38,7 +39,7 @@ public class CargoFareMatrix implements Parcelable {
         minWeight = doubles[0];
         declaredValueFactor = doubles[1];
 
-        String[] strings = new String[15];
+        String[] strings = new String[17];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         name = strings[1];
@@ -55,6 +56,8 @@ public class CargoFareMatrix implements Parcelable {
         insuranceFee = strings[12];
         baseAmountCheckin = strings[13];
         declaredValueFee = strings[14];
+        baseAmountSpecial = strings[15];
+        totalAmountSpecial = strings[16];
 
         int size = parcel.readInt();
         double[] regRates = new double[size];
@@ -129,6 +132,11 @@ public class CargoFareMatrix implements Parcelable {
                 totalAmountRegular = object.getString("total_amount_regular");
             if (object.has("total_amount_fixed"))
                 totalAmountFixed = object.getString("total_amount_fixed");
+
+            if (object.has("base_amount_special"))
+                baseAmountSpecial = object.getString("base_amount_special");
+            if (object.has("total_amount_special"))
+                totalAmountSpecial = object.getString("total_amount_special");
 
             if (object.has("base_amount_checkin"))
                 baseAmountCheckin = object.getString("base_amount_checkin");
@@ -209,7 +217,7 @@ public class CargoFareMatrix implements Parcelable {
         parcel.writeStringArray(new String[] { mongoId, name, origin, linerName,
             portersFee, systemFee, baseAmountRegular, baseAmountFixed,
             totalAmountRegular, totalAmountFixed, additionalFee, totalAmountCheckin,
-            insuranceFee, baseAmountCheckin, declaredValueFee });
+            insuranceFee, baseAmountCheckin, declaredValueFee, baseAmountSpecial, totalAmountSpecial });
 
         double[] regRates = new double[regularRates.size()];
         for (int i = 0; i < regularRates.size(); i++) {
@@ -263,9 +271,13 @@ public class CargoFareMatrix implements Parcelable {
             object.put("declared_value_fee", declaredValueFee);
 
             object.put("base_amount_regular", baseAmountRegular);
-            object.put("base_amount_fixed", baseAmountFixed);
             object.put("total_amount_regular", totalAmountRegular);
+
+            object.put("base_amount_fixed", baseAmountFixed);
             object.put("total_amount_fixed", totalAmountFixed);
+
+            object.put("base_amount_special", baseAmountSpecial);
+            object.put("total_amount_special", totalAmountSpecial);
 
             object.put("base_amount_checkin", baseAmountCheckin);
             object.put("total_amount_checkin", totalAmountCheckin);
@@ -332,9 +344,11 @@ public class CargoFareMatrix implements Parcelable {
     public String getInsuranceFee() { return insuranceFee; }
     public String getDeclaredValueFee() { return declaredValueFee; }
     public String getBaseAmountRegular() { return baseAmountRegular; }
-    public String getBaseAmountFixed() { return baseAmountFixed; }
     public String getTotalAmountRegular() { return totalAmountRegular; }
+    public String getBaseAmountFixed() { return baseAmountFixed; }
     public String getTotalAmountFixed() { return totalAmountFixed; }
+    public String getBaseAmountSpecial() { return baseAmountSpecial; }
+    public String getTotalAmountSpecial() { return totalAmountSpecial; }
     public String getBaseAmountCheckin() { return baseAmountCheckin; }
     public String getTotalAmountCheckin() { return totalAmountCheckin; }
     public ArrayList<Double> getRegularRates() { return regularRates; }
@@ -358,9 +372,11 @@ public class CargoFareMatrix implements Parcelable {
     public void setInsuranceFee(String insuranceFee) { this.insuranceFee = insuranceFee; }
     public void setDeclaredValueFee(String declaredValueFee) { this.declaredValueFee = declaredValueFee; }
     public void setBaseAmountRegular(String baseAmountRegular) { this.baseAmountRegular = baseAmountRegular; }
-    public void setBaseAmountFixed(String baseAmountFixed) { this.baseAmountFixed = baseAmountFixed; }
     public void setTotalAmountRegular(String totalAmountRegular) { this.totalAmountRegular = totalAmountRegular; }
+    public void setBaseAmountFixed(String baseAmountFixed) { this.baseAmountFixed = baseAmountFixed; }
     public void setTotalAmountFixed(String totalAmountFixed) { this.totalAmountFixed = totalAmountFixed; }
+    public void setBaseAmountSpecial(String baseAmountSpecial) { this.baseAmountSpecial = baseAmountSpecial; }
+    public void setTotalAmountSpecial(String totalAmountSpecial) { this.totalAmountSpecial = totalAmountSpecial; }
     public void setBaseAmountCheckin(String baseAmountCheckin) { this.baseAmountCheckin = baseAmountCheckin; }
     public void setTotalAmountCheckin(String totalAmountCheckin) { this.totalAmountCheckin = totalAmountCheckin; }
     public void setRegularRates(ArrayList<Double> regularRates) { this.regularRates = regularRates; }
