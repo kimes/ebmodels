@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class CargoFixedRate extends BaseObservable implements Parcelable {
 
-    private double weight = 0;
+    private double weight = 0, maxDeclaredValue = 0;
     private String item;
     private ArrayList<Double> rates = new ArrayList<>();
 
@@ -27,6 +27,7 @@ public class CargoFixedRate extends BaseObservable implements Parcelable {
         try {
             if (object.has("item")) item = object.getString("item");
             if (object.has("weight")) weight = object.getDouble("weight");
+            if (object.has("max_declared_value")) maxDeclaredValue = object.getDouble("max_declared_value");
 
             if (object.has("rates")) {
                 JSONArray ratesArray = object.getJSONArray("rates");
@@ -43,7 +44,11 @@ public class CargoFixedRate extends BaseObservable implements Parcelable {
     public CargoFixedRate(Parcel parcel) {
         item = parcel.readString();
 
-        weight = parcel.readDouble();
+        //weight = parcel.readDouble();
+        double[] doubles = new double[2];
+        parcel.readDoubleArray(doubles);
+        weight = doubles[0];
+        maxDeclaredValue = doubles[1];
 
         int rateCount = parcel.readInt();
         double[] ratesArray = new double[rateCount];
@@ -58,7 +63,8 @@ public class CargoFixedRate extends BaseObservable implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(item);
 
-        parcel.writeDouble(weight);
+        //parcel.writeDouble(weight);
+        parcel.writeDoubleArray(new double[] { weight, maxDeclaredValue });
 
         parcel.writeInt(rates.size());
         double[] ratesArray = new double[rates.size()];
@@ -73,6 +79,7 @@ public class CargoFixedRate extends BaseObservable implements Parcelable {
         try {
             object.put("item", item);
             object.put("weight", weight);
+            object.put("max_declared_value", maxDeclaredValue);
 
             JSONArray ratesArray = new JSONArray();
             for (int i = 0; i < rates.size(); i++) {
@@ -88,11 +95,13 @@ public class CargoFixedRate extends BaseObservable implements Parcelable {
     public int describeContents() { return 0; }
 
     public double getWeight() { return weight; }
+    public double getMaxDeclaredValue() { return maxDeclaredValue; }
     public String getItem() { return item; }
     public ArrayList<Double> getRates() { return rates; }
 
     public void setItem(String item) { this.item = item; }
     public void setWeight(double weight) { this.weight = weight; }
+    public void setMaxDeclaredValue(double maxDeclaredValue) { this.maxDeclaredValue = maxDeclaredValue; }
     public void setRates(ArrayList<Double> rates) { this.rates = rates; }
 
     public static Parcelable.Creator<CargoFixedRate> CREATOR = new Parcelable.Creator<CargoFixedRate>() {
