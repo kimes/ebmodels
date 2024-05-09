@@ -21,7 +21,7 @@ public class CargoFareMatrix implements Parcelable {
         baseAmountRegular = "", baseAmountFixed = "",
         totalAmountRegular = "", totalAmountFixed = "",
         totalAmountCheckin = "", insuranceFee = "", baseAmountCheckin = "", declaredValueFee = "",
-        baseAmountSpecial = "", totalAmountSpecial = "";
+        baseAmountSpecial = "", totalAmountSpecial = "", maxDeclaredValue = "";
 
     private ArrayList<Double> regularRates = new ArrayList<>(), regularRatesCheckin = new ArrayList<>(),
         regularMinRates = new ArrayList<>(), regularAdditionalRates = new ArrayList<>();
@@ -39,7 +39,7 @@ public class CargoFareMatrix implements Parcelable {
         minWeight = doubles[0];
         declaredValueFactor = doubles[1];
 
-        String[] strings = new String[17];
+        String[] strings = new String[18];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         name = strings[1];
@@ -58,6 +58,7 @@ public class CargoFareMatrix implements Parcelable {
         declaredValueFee = strings[14];
         baseAmountSpecial = strings[15];
         totalAmountSpecial = strings[16];
+        maxDeclaredValue = strings[17];
 
         int size = parcel.readInt();
         double[] regRates = new double[size];
@@ -122,6 +123,8 @@ public class CargoFareMatrix implements Parcelable {
                 insuranceFee = object.getString("insurance_fee");
             if (object.has("declared_value_fee"))
                 declaredValueFee = object.getString("declared_value_fee");
+            if (object.has("max_declared_value"))
+                maxDeclaredValue = object.getString("max_declared_value");
 
             if (object.has("base_amount_regular"))
                 baseAmountRegular = object.getString("base_amount_regular");
@@ -217,7 +220,8 @@ public class CargoFareMatrix implements Parcelable {
         parcel.writeStringArray(new String[] { mongoId, name, origin, linerName,
             portersFee, systemFee, baseAmountRegular, baseAmountFixed,
             totalAmountRegular, totalAmountFixed, additionalFee, totalAmountCheckin,
-            insuranceFee, baseAmountCheckin, declaredValueFee, baseAmountSpecial, totalAmountSpecial });
+            insuranceFee, baseAmountCheckin, declaredValueFee, baseAmountSpecial,
+            totalAmountSpecial, maxDeclaredValue });
 
         double[] regRates = new double[regularRates.size()];
         for (int i = 0; i < regularRates.size(); i++) {
@@ -269,6 +273,7 @@ public class CargoFareMatrix implements Parcelable {
             object.put("additional_fee", additionalFee);
             object.put("insurance_fee", insuranceFee);
             object.put("declared_value_fee", declaredValueFee);
+            object.put("max_declared_value", maxDeclaredValue);
 
             object.put("base_amount_regular", baseAmountRegular);
             object.put("total_amount_regular", totalAmountRegular);
@@ -343,6 +348,7 @@ public class CargoFareMatrix implements Parcelable {
     public String getAdditionalFee() { return additionalFee; }
     public String getInsuranceFee() { return insuranceFee; }
     public String getDeclaredValueFee() { return declaredValueFee; }
+    public String getMaxDeclaredValue() { return maxDeclaredValue; }
     public String getBaseAmountRegular() { return baseAmountRegular; }
     public String getTotalAmountRegular() { return totalAmountRegular; }
     public String getBaseAmountFixed() { return baseAmountFixed; }
@@ -371,6 +377,7 @@ public class CargoFareMatrix implements Parcelable {
     public void setAdditionalFee(String additionalFee) { this.additionalFee = additionalFee; }
     public void setInsuranceFee(String insuranceFee) { this.insuranceFee = insuranceFee; }
     public void setDeclaredValueFee(String declaredValueFee) { this.declaredValueFee = declaredValueFee; }
+    public void setMaxDeclaredValue(String maxDeclaredValue) { this.maxDeclaredValue = maxDeclaredValue; }
     public void setBaseAmountRegular(String baseAmountRegular) { this.baseAmountRegular = baseAmountRegular; }
     public void setTotalAmountRegular(String totalAmountRegular) { this.totalAmountRegular = totalAmountRegular; }
     public void setBaseAmountFixed(String baseAmountFixed) { this.baseAmountFixed = baseAmountFixed; }
