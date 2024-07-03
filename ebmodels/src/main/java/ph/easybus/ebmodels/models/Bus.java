@@ -19,6 +19,8 @@ public class Bus implements Parcelable {
     private ArrayList<String> seatMap;
     private ArrayList<Integer> amenities = new ArrayList<>();
 
+    private ArrayList<ArrayList<Integer>> seatNumbers = new ArrayList<>();
+
     public Bus() {}
 
     public Bus(String name) {
@@ -51,6 +53,21 @@ public class Bus implements Parcelable {
         ArrayList<String> seatMapList = new ArrayList<>();
         parcel.readStringList(seatMapList);
         seatMap = seatMapList;
+
+        ArrayList<ArrayList<Integer>> seatNumbersList = new ArrayList<>();
+        int seatNumbersListSize = parcel.readInt();
+        for (int i = 0; i < seatNumbersListSize; i++) {
+            int seatNumbersItemSize = parcel.readInt();
+            ArrayList<Integer> seatNumbersItem = new ArrayList<>();
+
+            int[] seatNumbersItemList = new int[seatNumbersItemSize];
+            parcel.readIntArray(seatNumbersItemList);
+            for (int j = 0; j < seatNumbersItemSize; j++) {
+                seatNumbersItem.add(seatNumbersItemList[j]);
+            }
+            seatNumbersList.add(seatNumbersItem);
+        }
+        seatNumbers = seatNumbersList;
     }
 
     public Bus(JSONObject object) {
@@ -78,6 +95,21 @@ public class Bus implements Parcelable {
                 ArrayList<String> seatMap = new ArrayList<String>();
                 for (int i = 0; i < busSeatMapArray.length(); i++) seatMap.add(busSeatMapArray.getString(i));
                 this.seatMap = seatMap;
+            }
+
+            /* Getting Seat Numbers */
+            if (object.has("seat_numbers")) {
+                JSONArray seatsNumberArray = object.getJSONArray("seat_numbers");
+                ArrayList<ArrayList<Integer>> seatNumbers = new ArrayList<>();
+                for (int i = 0; i < seatsNumberArray.length(); i++) {
+                    JSONArray currSeatsArray = seatsNumberArray.getJSONArray(i);
+                    ArrayList<Integer> currSeats = new ArrayList<>();
+                    for (int j = 0; j < currSeatsArray.length(); j++) {
+                        currSeats.add(currSeatsArray.getInt(j));
+                    }
+                    seatNumbers.add(currSeats);
+                }
+                this.seatNumbers = seatNumbers;
             }
         } catch (JSONException ex) {
             ex.printStackTrace();
@@ -131,6 +163,17 @@ public class Bus implements Parcelable {
         parcel.writeIntArray(parcelAmen);
 
         parcel.writeStringList(seatMap);
+
+        parcel.writeInt(seatNumbers.size());
+        for (int i = 0; i < seatNumbers.size(); i++) {
+            int[] currRow = new int[seatNumbers.get(i).size()];
+
+            parcel.writeInt(seatNumbers.get(i).size());
+            for (int j = 0; j < seatNumbers.get(i).size(); j++) {
+                currRow[j] = seatNumbers.get(i).get(j);
+            }
+            parcel.writeIntArray(currRow);
+        }
     }
 
     public int getTotalSeats() { return totalSeats; }
@@ -144,6 +187,7 @@ public class Bus implements Parcelable {
     public String getBusNumber() { return busNumber; }
     public ArrayList<String> getSeatMap() { return seatMap; }
     public ArrayList<Integer> getAmenities() { return amenities; }
+    public ArrayList<ArrayList<Integer>> getSeatNumbers() { return seatNumbers; }
 
     public void setPwdSeats(int pwdSeats) { this.pwdSeats = pwdSeats; }
     public void setTotalSeats(int totalSeats) { this.totalSeats = totalSeats; }
@@ -155,6 +199,9 @@ public class Bus implements Parcelable {
     public void setLayout(String layout) { this.layout = layout; }
     public void setBusNumber(String busNumber) { this.busNumber = busNumber; }
     public void setSeatMap(ArrayList<String> seatMap) { this.seatMap = seatMap; }
+    public void setSeatNumbers(ArrayList<ArrayList<Integer>> seatNumbers) {
+        this.seatNumbers = seatNumbers;
+    }
     public void setAmenities(ArrayList<Integer> amenities) {
         this.amenities = amenities;
     }
