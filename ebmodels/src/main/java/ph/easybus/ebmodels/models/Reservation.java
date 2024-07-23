@@ -211,6 +211,8 @@ public class Reservation extends BaseObservable implements Parcelable {
         if (longData[2] > 0) { printedDate = new Date(longData[2]); }
         if (longData[3] > 0) { openTicketDate = new Date(longData[3]); }
 
+        fees = parcel.readParcelable(Fees.class.getClassLoader());
+
         Parcelable[] passParcel = parcel.readParcelableArray(Passenger.class.getClassLoader());
         ObservableArrayList<Passenger> pass = new ObservableArrayList<>();
         for (Parcelable parcelable : passParcel) {
@@ -512,6 +514,8 @@ public class Reservation extends BaseObservable implements Parcelable {
                 (expiresAt != null ? expiresAt.getTime() : -1),
                 (printedDate != null ? printedDate.getTime() : -1),
                 (openTicketDate != null ? openTicketDate.getTime() : -1 )});
+
+        parcel.writeParcelable(fees, flags);
 
         Passenger[] pass = new Passenger[passengers.size()];
         for (int i = 0; i < passengers.size(); i++) {

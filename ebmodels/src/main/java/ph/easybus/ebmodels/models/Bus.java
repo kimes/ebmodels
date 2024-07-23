@@ -154,7 +154,9 @@ public class Bus implements Parcelable {
     public int describeContents() { return 0; }
 
     public void writeToParcel(Parcel parcel, int flags) {
+        System.out.println("WRITING TO PARCEL..");
         parcel.writeStringArray(new String[] { name, description, linerName, layout, busNumber });
+
         parcel.writeIntArray(new int[] { blockedSeats, pwdSeats, totalSeats, allocatedSeats });
 
         int[] parcelAmen = new int[amenities.size()];
