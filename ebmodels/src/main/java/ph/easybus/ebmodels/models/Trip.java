@@ -33,6 +33,9 @@ public class Trip extends BaseObservable implements Parcelable {
     private ThirdParty thirdParty;
 
     @Bindable
+    private Liner liner = new Liner();
+
+    @Bindable
     private TripAssign tripAssign = new TripAssign();
 
     @Bindable
@@ -104,6 +107,7 @@ public class Trip extends BaseObservable implements Parcelable {
         routes = routeList;
 
         bus = parcel.readParcelable(Bus.class.getClassLoader());
+        liner = parcel.readParcelable(Liner.class.getClassLoader());
         thirdParty = parcel.readParcelable(ThirdParty.class.getClassLoader());
         tripAssign = parcel.readParcelable(TripAssign.class.getClassLoader());
         status = parcel.readParcelable(TripStatus.class.getClassLoader());
@@ -165,6 +169,10 @@ public class Trip extends BaseObservable implements Parcelable {
                 dateCreated = DateTimeUtils.toDateUtc(object.getString("date_created"));
             }
             this.date = date;
+
+            if (object.has("liner_id")) {
+                liner = new Liner(object.getJSONObject("liner_id"));
+            }
 
             if (object.has("third_party"))
                 thirdParty = new ThirdParty(object.getJSONObject("third_party"));
@@ -254,6 +262,7 @@ public class Trip extends BaseObservable implements Parcelable {
 
         parcel.writeTypedList(routes);
         parcel.writeParcelable(bus, flags);
+        parcel.writeParcelable(liner, flags);
         parcel.writeParcelable(thirdParty, flags);
         parcel.writeParcelable(tripAssign, flags);
         parcel.writeParcelable(status, flags);
@@ -303,6 +312,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public Date getDateCreated() { return dateCreated; }
     public Date getOfficeTime() { return officeTime; }
     public Bus getBus() { return bus; }
+    public Liner getLiner() { return liner; }
     public ThirdParty getThirdParty() { return thirdParty; }
     public TripAssign getTripAssign() { return tripAssign; }
     public TripStatus getStatus() { return status; }
@@ -363,6 +373,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public void setDateCreated(Date dateCreated) { this.dateCreated = dateCreated; }
     public void setOfficeTime(Date officeTime) { this.officeTime = officeTime; }
     public void setBus(Bus bus) { this.bus = bus; }
+    public void setLiner(Liner liner) { this.liner = liner; }
     public void setThirdParty(ThirdParty thirdParty) { this.thirdParty = thirdParty; }
     public void setTripAssign(TripAssign tripAssign) {
         this.tripAssign = tripAssign;
