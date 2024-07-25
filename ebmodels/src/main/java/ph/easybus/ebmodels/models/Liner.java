@@ -129,7 +129,7 @@ public class Liner implements Parcelable {
 
             object.put("pencil_expiration", pencilExpiration);
 
-            object.put("fees", fees);
+            object.put("fees", fees.toJSON());
 
             object.put("trip_display", tripDisplay.toJSON());
 
