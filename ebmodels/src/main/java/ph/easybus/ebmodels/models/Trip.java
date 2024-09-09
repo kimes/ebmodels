@@ -43,6 +43,8 @@ public class Trip extends BaseObservable implements Parcelable {
 
     private ArrayList<Integer> choiceSeats = new ArrayList<>(), upperSeats = new ArrayList<>();
 
+    private ArrayList<String> choiceSeatsAlias = new ArrayList<>();
+
     private ArrayList<Route> routes = new ArrayList<>();
     private ArrayList<Date> disabledDates = new ArrayList<>();
 
@@ -127,6 +129,9 @@ public class Trip extends BaseObservable implements Parcelable {
         for (int i = 0; i < upperSeatsArray.length; i++) {
             upperSeats.add(upperSeatsArray[i]);
         }
+
+        choiceSeatsAlias = new ArrayList<>();
+        parcel.readStringList(choiceSeatsAlias);
     }
 
     public Trip(JSONObject object, Date date) {
@@ -205,6 +210,14 @@ public class Trip extends BaseObservable implements Parcelable {
                 }
             }
 
+            if (object.has("choice_seats_alias")) {
+                JSONArray seatsArray = object.getJSONArray("choice_seats_alias");
+                choiceSeatsAlias = new ArrayList<>();
+                for (int i = 0; i < seatsArray.length(); i++) {
+                    choiceSeatsAlias.add(seatsArray.getString(i));
+                }
+            }
+
             if (object.has("routes")) {
                 JSONArray routeJSONArray = object.getJSONArray("routes");
                 ArrayList<Route> routeArray = new ArrayList<>();
@@ -280,6 +293,8 @@ public class Trip extends BaseObservable implements Parcelable {
         }
         parcel.writeInt(upperSeats.size());
         parcel.writeIntArray(upperSeatsArray);
+
+        parcel.writeStringList(choiceSeatsAlias);
     }
 
     public boolean isSpecial() { return special; }
@@ -320,6 +335,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public ArrayList<Route> getRoutes() { return routes; }
     public ArrayList<Integer> getChoiceSeats() { return choiceSeats; }
     public ArrayList<Integer> getUpperSeats() { return upperSeats; }
+    public ArrayList<String> getChoiceSeatsAlias() { return choiceSeatsAlias; }
 
     public void setSpecial(boolean special) { this.special = special; }
     public void setExtra(boolean extra) { this.extra = extra; }
@@ -388,6 +404,9 @@ public class Trip extends BaseObservable implements Parcelable {
     }
     public void setUpperSeats(ArrayList<Integer> upperSeats) {
         this.upperSeats = upperSeats;
+    }
+    public void setChoiceSeatsAlias(ArrayList<String> choiceSeatsAlias) {
+        this.choiceSeatsAlias = choiceSeatsAlias;
     }
     public void setRoutes(ArrayList<Route> routes) { this.routes = routes; }
     public void setDisabledDates(ArrayList<Date> disabledDates) { this.disabledDates = disabledDates; }

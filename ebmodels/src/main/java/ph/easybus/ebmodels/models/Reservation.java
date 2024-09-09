@@ -1,5 +1,6 @@
 package ph.easybus.ebmodels.models;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -55,6 +57,9 @@ public class Reservation extends BaseObservable implements Parcelable {
 
     @Bindable
     private ObservableArrayList<Integer> reservedSeats = new ObservableArrayList<>();
+
+    @Bindable
+    private ObservableArrayList<String> reservedSeatsAlias;
 
     @Bindable
     private ObservableArrayList<Passenger> passengers = new ObservableArrayList<>();
@@ -126,6 +131,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         adjustment = reservation.getAdjustment();
 
         reservedSeats = reservation.getReservedSeats();
+
         passengers = reservation.getPassengers();
         infants = reservation.getInfants();
         children = reservation.getChildren();
@@ -233,6 +239,16 @@ public class Reservation extends BaseObservable implements Parcelable {
             childs.add((Reservation)parcelable);
         }
         children = childs;
+
+        boolean hasSeatAlias = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            hasSeatAlias = parcel.readBoolean();
+        }
+        if (hasSeatAlias) {
+            ObservableArrayList<String> reservedSeatsAlias = new ObservableArrayList<>();
+            parcel.readStringList(reservedSeatsAlias);
+            this.reservedSeatsAlias = reservedSeatsAlias;
+        }
     }
 
     public Reservation(JSONObject object) {
@@ -378,6 +394,15 @@ public class Reservation extends BaseObservable implements Parcelable {
                 this.reservedSeats = reservedSeats;
             }
 
+            if (object.has("reserved_seats_alias")) {
+                JSONArray reservedSeatsAliasJSONArray = object.getJSONArray("reserved_seats_alias");
+                ObservableArrayList<String> reservedSeatsAlias = new ObservableArrayList<>();
+                for (int i = 0; i < reservedSeatsAliasJSONArray.length(); i++) {
+                    reservedSeatsAlias.add(reservedSeatsAliasJSONArray.getString(i));
+                }
+                this.reservedSeatsAlias = reservedSeatsAlias;
+            }
+
             if (object.has("third_party"))
                 thirdParty = new ThirdParty(object.getJSONObject("third_party"));
         } catch (JSONException ex) {
@@ -479,6 +504,15 @@ public class Reservation extends BaseObservable implements Parcelable {
             object.put("name", name.toJSON());
 
             object.put("reserved_seats", new JSONArray(reservedSeats));
+
+            if (reservedSeatsAlias != null) {
+                JSONArray reservedSeatsAliasJSONArray = new JSONArray();
+                for (int i = 0; i < reservedSeatsAlias.size(); i++) {
+                    reservedSeatsAliasJSONArray.put(reservedSeatsAliasJSONArray.get(i));
+                }
+                object.put("reserved_seats_alias", reservedSeatsAliasJSONArray);
+            }
+
             object.put("discount", discount.toJSON());
             object.put("fees", fees.toJSON());
         } catch (JSONException e) {
@@ -501,6 +535,7 @@ public class Reservation extends BaseObservable implements Parcelable {
         }
         parcel.writeInt(reservedSeats.size());
         parcel.writeIntArray(parcelReservedSeats);
+
         parcel.writeParcelable(name, flags);
         parcel.writeParcelable(trip, flags);
         parcel.writeParcelable(liner, flags);
@@ -534,6 +569,11 @@ public class Reservation extends BaseObservable implements Parcelable {
             childArray[i] = children.get(i);
         }
         parcel.writeParcelableArray(childArray, flags);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            parcel.writeBoolean(reservedSeatsAlias != null);
+            parcel.writeStringList(reservedSeatsAlias);
+        }
     }
 
     public int describeContents() { return 0; }
@@ -586,6 +626,7 @@ public class Reservation extends BaseObservable implements Parcelable {
     public ObservableArrayList<Integer> getReservedSeats() {
         return reservedSeats;
     }
+    public ObservableArrayList<String> getReservedSeatsAlias() { return reservedSeatsAlias; }
     public Liner getLiner() { return liner; }
     public Name getName() { return name; }
     public Trip getTrip() { return trip; }
@@ -755,6 +796,10 @@ public class Reservation extends BaseObservable implements Parcelable {
     public void setReservedSeats(ObservableArrayList<Integer> reservedSeats) {
         this.reservedSeats = reservedSeats;
         notifyPropertyChanged(BR.reservedSeats);
+    }
+    public void setReservedSeatsAlias(ObservableArrayList<String> reservedSeatsAlias) {
+        this.reservedSeatsAlias = reservedSeatsAlias;
+        notifyPropertyChanged(BR.reservedSeatsAlias);
     }
     public void setBoardingDropping(String boarding, String dropping) {
         this.boarding = boarding;
