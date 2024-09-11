@@ -27,7 +27,7 @@ public class Passenger extends BaseObservable implements Parcelable {
     private double editFee = 0d;
 
     @Bindable
-    private String referenceNo = "", mobile = "";
+    private String referenceNo = "", mobile = "", seatAlias = "";
 
     @Bindable
     private Name name = new Name();
@@ -83,10 +83,11 @@ public class Passenger extends BaseObservable implements Parcelable {
         parcel.readDoubleArray(doubles);
         editFee = doubles[0];
 
-        String[] strings = new String[2];
+        String[] strings = new String[3];
         parcel.readStringArray(strings);
         referenceNo = strings[0];
         mobile = strings[1];
+        seatAlias = strings[2];
 
         name = parcel.readParcelable(Name.class.getClassLoader());
         discount = parcel.readParcelable(Discount.class.getClassLoader());
@@ -111,7 +112,7 @@ public class Passenger extends BaseObservable implements Parcelable {
         parcel.writeIntArray(new int[] { seatNo, seatSpecialType, seriesNo });
         parcel.writeLongArray(new long[] { ticketNo });
         parcel.writeDoubleArray(new double[] { editFee });
-        parcel.writeStringArray(new String[] { referenceNo, mobile });
+        parcel.writeStringArray(new String[] { referenceNo, mobile, seatAlias });
         parcel.writeParcelable(name, flags);
         parcel.writeParcelable(discount, flags);
     }
@@ -129,6 +130,7 @@ public class Passenger extends BaseObservable implements Parcelable {
     public double getEditFee() { return editFee; }
     public String getReferenceNo() { return referenceNo; }
     public String getMobile() { return mobile; }
+    public String getSeatAlias() { return seatAlias; }
     public Name getName() { return name; }
     public Discount getDiscount() { return discount; }
     public ArrayList<Passenger> getSuggestedPassengers() { return suggestedPassengers; }
@@ -171,6 +173,10 @@ public class Passenger extends BaseObservable implements Parcelable {
     public void setMobile(String mobile) {
         this.mobile = mobile;
         notifyPropertyChanged(BR.mobile);
+    }
+    public void setSeatAlias(String seatAlias) {
+        this.seatAlias = seatAlias;
+        notifyPropertyChanged(BR.seatAlias);
     }
     public void setName(Name name) {
         this.name = name;

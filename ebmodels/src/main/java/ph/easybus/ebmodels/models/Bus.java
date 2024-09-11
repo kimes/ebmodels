@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class Bus implements Parcelable {
 
-    public boolean useAlias = false;
+    private boolean useAlias = false;
     private String name, description, linerName, layout, busNumber;
     private int blockedSeats = 0, pwdSeats = 0, totalSeats = 0, allocatedSeats = 0;
     private ArrayList<String> seatMap;
