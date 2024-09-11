@@ -508,7 +508,7 @@ public class Reservation extends BaseObservable implements Parcelable {
             if (reservedSeatsAlias != null) {
                 JSONArray reservedSeatsAliasJSONArray = new JSONArray();
                 for (int i = 0; i < reservedSeatsAlias.size(); i++) {
-                    reservedSeatsAliasJSONArray.put(reservedSeatsAliasJSONArray.get(i));
+                    reservedSeatsAliasJSONArray.put(reservedSeatsAlias.get(i));
                 }
                 object.put("reserved_seats_alias", reservedSeatsAliasJSONArray);
             }
