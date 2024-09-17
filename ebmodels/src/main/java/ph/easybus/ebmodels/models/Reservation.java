@@ -240,15 +240,25 @@ public class Reservation extends BaseObservable implements Parcelable {
         }
         children = childs;
 
-        boolean hasSeatAlias = false;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            hasSeatAlias = parcel.readBoolean();
-        }
+        boolean[] booleansHasSeatAlias = new boolean[1];
+        parcel.readBooleanArray(booleansHasSeatAlias);
+        boolean hasSeatAlias = booleansHasSeatAlias[0];
         if (hasSeatAlias) {
             ObservableArrayList<String> reservedSeatsAlias = new ObservableArrayList<>();
             parcel.readStringList(reservedSeatsAlias);
             this.reservedSeatsAlias = reservedSeatsAlias;
         }
+        /*
+        boolean hasSeatAlias = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            hasSeatAlias = parcel.readBoolean();
+
+            if (hasSeatAlias) {
+                ObservableArrayList<String> reservedSeatsAlias = new ObservableArrayList<>();
+                parcel.readStringList(reservedSeatsAlias);
+                this.reservedSeatsAlias = reservedSeatsAlias;
+            }
+        } */
     }
 
     public Reservation(JSONObject object) {
@@ -570,8 +580,9 @@ public class Reservation extends BaseObservable implements Parcelable {
         }
         parcel.writeParcelableArray(childArray, flags);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            parcel.writeBoolean(reservedSeatsAlias != null);
+        boolean hasSeatsAlias = (reservedSeatsAlias != null);
+        parcel.writeBooleanArray(new boolean[] { hasSeatsAlias });
+        if (hasSeatsAlias) {
             parcel.writeStringList(reservedSeatsAlias);
         }
     }
