@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class Liner implements Parcelable {
 
     private boolean paymayaEnabled = false, gCashEnabled = false;
-    private boolean serviceFeeEnabled = false;
+    private boolean serviceFeeEnabled = false, pencilExpirationDisability = false;
 
     private String policies, linerName, rebookingFee = "", pencilExpiration = "";
 
@@ -34,11 +34,12 @@ public class Liner implements Parcelable {
     }
 
     public Liner(Parcel parcel) {
-        boolean[] booleans = new boolean[3];
+        boolean[] booleans = new boolean[4];
         parcel.readBooleanArray(booleans);
         serviceFeeEnabled = booleans[0];
         paymayaEnabled = booleans[1];
         gCashEnabled = booleans[2];
+        pencilExpirationDisability = booleans[3];
 
         String[] data = new String[4];
         parcel.readStringArray(data);
@@ -86,6 +87,9 @@ public class Liner implements Parcelable {
 
             if (object.has("pencil_expiration")) pencilExpiration = object.getString("pencil_expiration");
 
+            if (object.has("pencil_expiration_disability"))
+                pencilExpirationDisability = object.getBoolean("pencil_expiration_disability");
+
             if (object.has("offices")) {
                 JSONArray officeJSONArray = object.getJSONArray("offices");
 
@@ -127,6 +131,7 @@ public class Liner implements Parcelable {
 
             object.put("rebooking_fee", rebookingFee);
 
+            object.put("pencil_expiration_disability", pencilExpirationDisability);
             object.put("pencil_expiration", pencilExpiration);
 
             object.put("fees", fees.toJSON());
@@ -149,7 +154,8 @@ public class Liner implements Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeBooleanArray(new boolean[] { serviceFeeEnabled, paymayaEnabled, gCashEnabled });
+        parcel.writeBooleanArray(new boolean[] { serviceFeeEnabled, paymayaEnabled,
+                gCashEnabled, pencilExpirationDisability });
         parcel.writeStringArray(new String[] { policies, linerName, rebookingFee, pencilExpiration });
 
         parcel.writeParcelable(fees, flags);
@@ -164,6 +170,7 @@ public class Liner implements Parcelable {
     public boolean isServiceFeeEnabled() { return serviceFeeEnabled; }
     public boolean isPaymayaEnabled() { return paymayaEnabled; }
     public boolean isGCashEnabled() { return gCashEnabled; }
+    public boolean isPencilExpirationDisability() { return pencilExpirationDisability; }
     public String getPolicies() { return policies; }
     public String getLinerName() { return linerName; }
     public String getRebookingFee() { return rebookingFee; }
