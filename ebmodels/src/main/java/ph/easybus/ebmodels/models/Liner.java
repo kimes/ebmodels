@@ -15,7 +15,8 @@ import java.util.ArrayList;
 public class Liner implements Parcelable {
 
     private boolean paymayaEnabled = false, gCashEnabled = false;
-    private boolean serviceFeeEnabled = false, pencilExpirationDisability = false;
+    private boolean serviceFeeEnabled = false, pencilExpirationDisability = false,
+            restrictOnlineAllocations = false;
 
     private String policies, linerName, rebookingFee = "", pencilExpiration = "";
 
@@ -34,12 +35,13 @@ public class Liner implements Parcelable {
     }
 
     public Liner(Parcel parcel) {
-        boolean[] booleans = new boolean[4];
+        boolean[] booleans = new boolean[5];
         parcel.readBooleanArray(booleans);
         serviceFeeEnabled = booleans[0];
         paymayaEnabled = booleans[1];
         gCashEnabled = booleans[2];
         pencilExpirationDisability = booleans[3];
+        restrictOnlineAllocations = booleans[4];
 
         String[] data = new String[4];
         parcel.readStringArray(data);
@@ -90,6 +92,9 @@ public class Liner implements Parcelable {
             if (object.has("pencil_expiration_disability"))
                 pencilExpirationDisability = object.getBoolean("pencil_expiration_disability");
 
+            if (object.has("restrict_online_allocations"))
+                restrictOnlineAllocations = object.getBoolean("restrict_online_allocations");
+
             if (object.has("offices")) {
                 JSONArray officeJSONArray = object.getJSONArray("offices");
 
@@ -134,6 +139,8 @@ public class Liner implements Parcelable {
             object.put("pencil_expiration_disability", pencilExpirationDisability);
             object.put("pencil_expiration", pencilExpiration);
 
+            object.put("restrict_online_allocations", restrictOnlineAllocations);
+
             object.put("fees", fees.toJSON());
 
             object.put("trip_display", tripDisplay.toJSON());
@@ -155,7 +162,7 @@ public class Liner implements Parcelable {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { serviceFeeEnabled, paymayaEnabled,
-                gCashEnabled, pencilExpirationDisability });
+                gCashEnabled, pencilExpirationDisability, restrictOnlineAllocations });
         parcel.writeStringArray(new String[] { policies, linerName, rebookingFee, pencilExpiration });
 
         parcel.writeParcelable(fees, flags);
@@ -171,6 +178,7 @@ public class Liner implements Parcelable {
     public boolean isPaymayaEnabled() { return paymayaEnabled; }
     public boolean isGCashEnabled() { return gCashEnabled; }
     public boolean isPencilExpirationDisability() { return pencilExpirationDisability; }
+    public boolean isRestrictOnlineAllocations() { return restrictOnlineAllocations; }
     public String getPolicies() { return policies; }
     public String getLinerName() { return linerName; }
     public String getRebookingFee() { return rebookingFee; }
@@ -183,6 +191,12 @@ public class Liner implements Parcelable {
     public void setServiceFeeEnabled(boolean serviceFeeEnabled) { this.serviceFeeEnabled = serviceFeeEnabled; }
     public void setPaymayaEnabled(boolean paymayaEnabled){ this.paymayaEnabled = paymayaEnabled; }
     public void setGCashEnabled(boolean gCashEnabled) { this.gCashEnabled = gCashEnabled; }
+    public void setPencilExpirationDisability(boolean pencilExpirationDisability) {
+        this.pencilExpirationDisability = pencilExpirationDisability;
+    }
+    public void setRestrictOnlineAllocations(boolean restrictOnlineAllocations) {
+        this.restrictOnlineAllocations = restrictOnlineAllocations;
+    }
     public void setFees(Fees fees) { this.fees = fees; }
 
     public void setTripDisplay(TripDisplaySetting tripDisplay) {
