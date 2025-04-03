@@ -20,7 +20,7 @@ import ph.easybus.ebmodels.utils.DateTimeUtils;
 public class ReservationValidation extends BaseObservable implements Parcelable {
 
     @Bindable
-    private String mongoId, validatedBy = "";
+    private String mongoId, validatedBy = "", reservationId = "";
 
     @Bindable
     private Date validatedDate = new Date();
@@ -31,10 +31,11 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
     public ReservationValidation() {}
 
     public ReservationValidation(Parcel parcel) {
-        String[] strings = new String[2];
+        String[] strings = new String[3];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         validatedBy = strings[1];
+        reservationId = strings[2];
 
         long[] longs = new long[1];
         parcel.readLongArray(longs);
@@ -51,6 +52,7 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
     public ReservationValidation(JSONObject object) {
         try {
             if (object.has("_id")) mongoId = object.getString("_id");
+            if (object.has("reservation_id")) reservationId = object.getString("reservation_id");
             if (object.has("validated_by")) validatedBy = object.getString("validated_by");
 
             if (object.has("validated_date")) {
@@ -74,6 +76,7 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
         JSONObject object = new JSONObject();
         try {
             object.put("_id", mongoId);
+            object.put("reservation_id", reservationId);
             object.put("validated_by", validatedBy);
             object.put("validated_date", DateTimeUtils.toISODateUtc(validatedDate));
 
@@ -92,7 +95,7 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
 
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int flags) {
-        parcel.writeStringArray(new String[] { mongoId, validatedBy });
+        parcel.writeStringArray(new String[] { mongoId, validatedBy, reservationId });
         parcel.writeLongArray(new long[] { validatedDate.getTime() });
 
         Passenger[] pass = new Passenger[passengers.size()];
@@ -107,12 +110,17 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
 
     public String getMongoId() { return mongoId; }
     public String getValidatedBy() { return validatedBy; }
+    public String getReservationId() { return reservationId; }
     public Date getValidatedDate() { return validatedDate; }
     public ObservableArrayList<Passenger> getPassengers() { return passengers; }
 
     public void setMongoId(String mongoId) {
         this.mongoId = mongoId;
         notifyPropertyChanged(BR.mongoId);
+    }
+    public void setReservationId(String reservationId) {
+        this.reservationId = reservationId;
+        notifyPropertyChanged(BR.reservationId);
     }
     public void setValidatedBy(String validatedBy) {
         this.validatedBy = validatedBy;
