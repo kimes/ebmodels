@@ -51,6 +51,11 @@ public class Reservation extends BaseObservable implements Parcelable {
     private Adjustment adjustment;
     private Reservation parent;
 
+    private ReservationValidation validation = new ReservationValidation();
+
+    @Bindable
+    private ObservableArrayList<ReservationValidation> validations = new ObservableArrayList<>();
+
     @Bindable
     private Discount discount = new Discount();
     private Fees fees = new Fees();
@@ -252,6 +257,15 @@ public class Reservation extends BaseObservable implements Parcelable {
             parcel.readStringList(reservedSeatsAlias);
             this.reservedSeatsAlias = reservedSeatsAlias;
         }
+
+        validation = parcel.readParcelable(ReservationValidation.class.getClassLoader());
+
+        Parcelable[] validationsParcel = parcel.readParcelableArray(ReservationValidation.class.getClassLoader());
+        ObservableArrayList<ReservationValidation> valids = new ObservableArrayList<>();
+        for (Parcelable parcelable : validationsParcel) {
+            valids.add((ReservationValidation)parcelable);
+        }
+        validations = valids;
         /*
         boolean hasSeatAlias = false;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
@@ -423,6 +437,18 @@ public class Reservation extends BaseObservable implements Parcelable {
 
             if (object.has("third_party"))
                 thirdParty = new ThirdParty(object.getJSONObject("third_party"));
+
+            if (object.has("validation"))
+                validation = new ReservationValidation(object.getJSONObject("validation"));
+
+            if (object.has("validations")) {
+                ObservableArrayList<ReservationValidation> validations = new ObservableArrayList<>();
+                JSONArray array = object.getJSONArray("validations");
+                for (int i = 0; i < array.length(); i++) {
+                    validations.add(new ReservationValidation(array.getJSONObject(i)));
+                }
+                this.validations = validations;
+            }
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
@@ -594,6 +620,13 @@ public class Reservation extends BaseObservable implements Parcelable {
         if (hasSeatsAlias) {
             parcel.writeStringList(reservedSeatsAlias);
         }
+
+        parcel.writeParcelable(validation, flags);
+        ReservationValidation[] validationArray = new ReservationValidation[validations.size()];
+        for (int i = 0; i < validations.size(); i++) {
+            validationArray[i] = validations.get(i);
+        }
+        parcel.writeParcelableArray(validationArray, flags);
     }
 
     public int describeContents() { return 0; }
@@ -656,9 +689,11 @@ public class Reservation extends BaseObservable implements Parcelable {
     public Fees getFees() { return fees; }
     public ThirdParty getThirdParty() { return thirdParty; }
     public Reservation getParent() { return parent; }
+    public ReservationValidation getValidation() { return validation; }
     public ObservableArrayList<Passenger> getPassengers() { return passengers; }
     public ObservableArrayList<Infant> getInfants() { return infants; }
     public ObservableArrayList<Reservation> getChildren() { return children; }
+    public ObservableArrayList<ReservationValidation> getValidations() { return validations; }
 
     public void setWebReservation(boolean webReservation) {
         this.webReservation = webReservation;
@@ -825,6 +860,12 @@ public class Reservation extends BaseObservable implements Parcelable {
     public void setParent(Reservation parent) {
         this.parent = parent;
     }
+
+    public void setValidation(ReservationValidation validation) { this.validation = validation; }
+    public void setValidations(ObservableArrayList<ReservationValidation> validations) {
+        this.validations = validations;
+    }
+
     public void setBoardingDropping(String boarding, String dropping) {
         this.boarding = boarding;
         this.dropping = dropping;
