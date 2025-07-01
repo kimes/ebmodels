@@ -57,8 +57,8 @@ public class Ad extends BaseObservable implements Parcelable {
             this.mongoId = object.getString("_id");
             this.video = object.getString("video");
             this.appearPerCycle = object.getInt("appear_per_cycle");
-            this.startDate = DateTimeUtils.toDateUtc("start_date");
-            this.expiryDate = DateTimeUtils.toDateUtc("expiry_date");
+            this.startDate = DateTimeUtils.toDateUtc(object.getString("start_date"));
+            this.expiryDate = DateTimeUtils.toDateUtc(object.getString("expiry_date"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
