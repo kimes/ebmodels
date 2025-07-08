@@ -23,7 +23,7 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
     private String mongoId, validatedBy = "", reservationId = "";
 
     @Bindable
-    private Date validatedDate = new Date();
+    private Date validationDate = new Date();
 
     @Bindable
     private ObservableArrayList<Passenger> passengers = new ObservableArrayList<>();
@@ -42,7 +42,7 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
 
         long[] longs = new long[1];
         parcel.readLongArray(longs);
-        validatedDate = new Date(longs[0]);
+        validationDate = new Date(longs[0]);
 
         Parcelable[] passParcel = parcel.readParcelableArray(Passenger.class.getClassLoader());
         ObservableArrayList<Passenger> pass = new ObservableArrayList<>();
@@ -67,8 +67,8 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
             if (object.has("reservation_id")) reservationId = object.getString("reservation_id");
             if (object.has("validated_by")) validatedBy = object.getString("validated_by");
 
-            if (object.has("validated_date")) {
-                validatedDate = DateTimeUtils.toDateUtc(object.getString("validated_date"));
+            if (object.has("validation_date")) {
+                validationDate = DateTimeUtils.toDateUtc(object.getString("validation_date"));
             }
 
             if (object.has("passengers")) {
@@ -99,7 +99,7 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
             object.put("_id", mongoId);
             object.put("reservation_id", reservationId);
             object.put("validated_by", validatedBy);
-            object.put("validated_date", DateTimeUtils.toISODateUtc(validatedDate));
+            object.put("validated_date", DateTimeUtils.toISODateUtc(validationDate));
 
             if (passengers != null) {
                 JSONArray passengersJSONArray = new JSONArray();
@@ -117,7 +117,7 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int flags) {
         parcel.writeStringArray(new String[] { mongoId, validatedBy, reservationId });
-        parcel.writeLongArray(new long[] { validatedDate.getTime() });
+        parcel.writeLongArray(new long[] { validationDate.getTime() });
 
         Passenger[] pass = new Passenger[passengers.size()];
         for (int i = 0; i < passengers.size(); i++) {
@@ -139,7 +139,7 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
     public String getMongoId() { return mongoId; }
     public String getValidatedBy() { return validatedBy; }
     public String getReservationId() { return reservationId; }
-    public Date getValidatedDate() { return validatedDate; }
+    public Date getValidationDate() { return validationDate; }
     public ObservableArrayList<Integer> getReservedSeats() { return reservedSeats; }
     public ObservableArrayList<Passenger> getPassengers() { return passengers; }
 
@@ -155,9 +155,9 @@ public class ReservationValidation extends BaseObservable implements Parcelable 
         this.validatedBy = validatedBy;
         notifyPropertyChanged(BR.validatedBy);
     }
-    public void setValidatedDate(Date validatedDate) {
-        this.validatedDate = validatedDate;
-        notifyPropertyChanged(BR.validatedDate);
+    public void setValidationDate(Date validationDate) {
+        this.validationDate = validationDate;
+        notifyPropertyChanged(BR.validationDate);
     }
     public void setReservedSeats(ObservableArrayList<Integer> reservedSeats) {
         this.reservedSeats = reservedSeats;
