@@ -23,7 +23,7 @@ public class Trip extends BaseObservable implements Parcelable {
 
     private boolean special, extra, showSeats;
     @Bindable
-    private int id, reservationCount, cargoTotalPackages, cargoTransactions, reservedSeats, validatedSeats;
+    private int id, reservationCount, cargoTotalPackages, cargoTransactions, reservedSeatsCount, validatedSeats;
     @Bindable
     private double fare, ferryFare, cargoTotalWeights, cargoTotalAmount,
             cargoTotalPorters, choiceFare, upperFare;
@@ -64,7 +64,7 @@ public class Trip extends BaseObservable implements Parcelable {
         disabledDatesCount = ints[2];
         cargoTotalPackages = ints[3];
         cargoTransactions = ints[4];
-        reservedSeats = ints[5];
+        reservedSeatsCount = ints[5];
         validatedSeats = ints[6];
 
         double[] doubles = new double[7];
@@ -157,8 +157,8 @@ public class Trip extends BaseObservable implements Parcelable {
             if (object.has("cargo_total_porters"))
                 cargoTotalPorters = object.getDouble("cargo_total_porters");
 
-            if (object.has("reserved_seats"))
-                reservedSeats = object.getInt("reserved_seats");
+            if (object.has("reservedSeatsCount"))
+                reservedSeatsCount = object.getInt("reserved_seats");
 
             if (object.has("validatedSeats"))
                 validatedSeats = object.getInt("validatedSeats");
@@ -263,7 +263,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { special, extra, showSeats });
         parcel.writeIntArray(new int[] { id, reservationCount, disabledDates.size(),
-                cargoTotalPackages, cargoTransactions, reservedSeats, validatedSeats });
+                cargoTotalPackages, cargoTransactions, reservedSeatsCount, validatedSeats });
         parcel.writeDoubleArray(new double[] { fare, ferryFare,
                 cargoTotalWeights, cargoTotalAmount, cargoTotalPorters,
                 choiceFare, upperFare });
@@ -312,7 +312,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public int getReservationCount() { return reservationCount; }
     public int getCargoTotalPackages() { return cargoTotalPackages; }
     public int getCargoTransactions() { return cargoTransactions; }
-    public int getReservedSeats() { return reservedSeats; }
+    public int getReservedSeatsCount() { return reservedSeatsCount; }
     public int getValidatedSeats() { return validatedSeats; }
     public double getFare() { return fare; }
     public double getFerryFare() { return ferryFare; }
@@ -363,9 +363,9 @@ public class Trip extends BaseObservable implements Parcelable {
         this.cargoTransactions = cargoTransactions;
         notifyPropertyChanged(BR.cargoTransactions);
     }
-    public void setReservedSeats(int reservedSeats) {
-        this.reservedSeats = reservedSeats;
-        notifyPropertyChanged(BR.reservedSeats);
+    public void setReservedSeatsCount(int reservedSeatsCount) {
+        this.reservedSeatsCount = reservedSeatsCount;
+        notifyPropertyChanged(BR.reservedSeatsCount);
     }
     public void setValidatedSeats(int validatedSeats) {
         this.validatedSeats = validatedSeats;
