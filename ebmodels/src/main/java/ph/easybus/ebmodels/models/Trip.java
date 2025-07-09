@@ -23,7 +23,7 @@ public class Trip extends BaseObservable implements Parcelable {
 
     private boolean special, extra, showSeats;
     @Bindable
-    private int id, reservationCount, cargoTotalPackages, cargoTransactions;
+    private int id, reservationCount, cargoTotalPackages, cargoTransactions, reservedSeats, validatedSeats;
     @Bindable
     private double fare, ferryFare, cargoTotalWeights, cargoTotalAmount,
             cargoTotalPorters, choiceFare, upperFare;
@@ -57,13 +57,15 @@ public class Trip extends BaseObservable implements Parcelable {
         showSeats = booleans[2];
 
         int disabledDatesCount = 0;
-        int[] ints = new int[5];
+        int[] ints = new int[7];
         parcel.readIntArray(ints);
         id = ints[0];
         reservationCount = ints[1];
         disabledDatesCount = ints[2];
         cargoTotalPackages = ints[3];
         cargoTransactions = ints[4];
+        reservedSeats = ints[5];
+        validatedSeats = ints[6];
 
         double[] doubles = new double[7];
         parcel.readDoubleArray(doubles);
@@ -154,6 +156,12 @@ public class Trip extends BaseObservable implements Parcelable {
                 cargoTotalAmount = object.getDouble("cargo_total_amount");
             if (object.has("cargo_total_porters"))
                 cargoTotalPorters = object.getDouble("cargo_total_porters");
+
+            if (object.has("reserved_seats"))
+                reservedSeats = object.getInt("reserved_seats");
+
+            if (object.has("validatedSeats"))
+                validatedSeats = object.getInt("validatedSeats");
 
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("destination")) destination = object.getString("destination");
@@ -255,7 +263,7 @@ public class Trip extends BaseObservable implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { special, extra, showSeats });
         parcel.writeIntArray(new int[] { id, reservationCount, disabledDates.size(),
-                cargoTotalPackages, cargoTransactions });
+                cargoTotalPackages, cargoTransactions, reservedSeats, validatedSeats });
         parcel.writeDoubleArray(new double[] { fare, ferryFare,
                 cargoTotalWeights, cargoTotalAmount, cargoTotalPorters,
                 choiceFare, upperFare });
@@ -304,6 +312,8 @@ public class Trip extends BaseObservable implements Parcelable {
     public int getReservationCount() { return reservationCount; }
     public int getCargoTotalPackages() { return cargoTotalPackages; }
     public int getCargoTransactions() { return cargoTransactions; }
+    public int getReservedSeats() { return reservedSeats; }
+    public int getValidatedSeats() { return validatedSeats; }
     public double getFare() { return fare; }
     public double getFerryFare() { return ferryFare; }
     public double getCargoTotalWeights() { return cargoTotalWeights; }
@@ -352,6 +362,14 @@ public class Trip extends BaseObservable implements Parcelable {
     public void setCargoTransactions(int cargoTransactions) {
         this.cargoTransactions = cargoTransactions;
         notifyPropertyChanged(BR.cargoTransactions);
+    }
+    public void setReservedSeats(int reservedSeats) {
+        this.reservedSeats = reservedSeats;
+        notifyPropertyChanged(BR.reservedSeats);
+    }
+    public void setValidatedSeats(int validatedSeats) {
+        this.validatedSeats = validatedSeats;
+        notifyPropertyChanged(BR.validatedSeats);
     }
     public void setCargoTotalWeights(double cargoTotalWeights) {
         this.cargoTotalWeights = cargoTotalWeights;
