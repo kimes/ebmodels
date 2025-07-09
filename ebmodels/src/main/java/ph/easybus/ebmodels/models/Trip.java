@@ -158,7 +158,7 @@ public class Trip extends BaseObservable implements Parcelable {
                 cargoTotalPorters = object.getDouble("cargo_total_porters");
 
             if (object.has("reservedSeatsCount"))
-                reservedSeatsCount = object.getInt("reserved_seats");
+                reservedSeatsCount = object.getInt("reservedSeatsCount");
 
             if (object.has("validatedSeats"))
                 validatedSeats = object.getInt("validatedSeats");
